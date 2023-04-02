@@ -1,0 +1,116 @@
+:root {
+  --first-color: #2455fe;
+}
+
+.customRadio {
+  height: 90px;
+  width: 80px;
+  position: relative;
+}
+
+.label {
+  height: 100%;
+  width: 100%;
+  border: 3px solid rgba(182, 182, 250, 0.39);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  transform: translateY(-25px);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.customRadio .label img {
+  width: 50px;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+}
+.radio input {
+  opacity: 0;
+}
+
+
+.radio input:checked ~ .label {
+  border: 3px solid var(--first-color);
+}
+
+.checked {
+  display: none;
+}
+
+.radio input:checked ~ .label {
+  border: 3px solid var(--first-color);
+}
+
+.radio input:disabled ~ .label {
+  border: 3px solid rgba(182, 182, 250, 0.39);
+  cursor: not-allowed;
+}
+
+.radio input:checked ~ .label .checked {
+  display: block;
+}
+
+.radio input:disabled ~ .label .checked {
+  color: rgb(156, 174, 201);
+  cursor: not-allowed;
+}
+
+.form-group{
+    height: 1.3cm;
+    padding-left: 15px;
+    position: relative;
+    border-radius: 8px;
+    border-color: rgba(182, 182, 250, 0.39);
+    transition: .3s ease-in-out;
+}
+
+
+.form-group.active{
+    border-color: var(--first-color);
+}
+
+.form-group.disabled{
+    border-color: rgba(182, 182, 250, 0.39);
+    cursor: not-allowed;
+}
+
+
+
+.form-group input {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0px;
+    background-color: transparent;
+    outline: none;
+}
+
+.form-group input:disabled {
+    cursor: not-allowed;
+}
+
+.form-group label{
+    position: absolute;
+    padding: 0px 10px 0px 10px;
+    transform: translateY(6px);
+    font-size: 18px;
+    font-weight: 800;
+    transition: .3s ease-in-out;
+}
+
+.form-group.active label{
+    position: absolute;
+    background-color: white;
+    padding: 0px 10px 0px 10px;
+    transform: translateY(-13px);
+    font-size: medium;
+}
+ .form-group.disabled label{
+   color: gray;
+}
