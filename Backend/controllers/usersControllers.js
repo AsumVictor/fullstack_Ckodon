@@ -5,9 +5,12 @@ const bcrypt = require("bcrypt");
 //get all users
 const getAllUsers = asyncHandler(async (req, res) => {
   const users = await User.find().select("-password").lean();
-  if (!users) {
-    return res.status(400).json({ message: "No user found" });
+
+  // If no users
+  if (!users?.length) {
+    return res.status(400).json({ message: "No users found" });
   }
+
   res.json(users);
 });
 
@@ -31,10 +34,11 @@ const addNewUser = asyncHandler(async (req, res) => {
     !residence ||
     !role ||
     !school ||
-    !password;
+    !password ||
+    typeof isActive !== "boolean";
 
   if (anyEmptyField) {
-    return res.status(400).json({ message: "You can fill all the fields" });
+    return res.status(400).json({ message: "all fileds are required" });
   }
 
   //check for duplicats
@@ -62,7 +66,7 @@ const addNewUser = asyncHandler(async (req, res) => {
   if (user) {
     res
       .status(201)
-      .json({ message: `user student ${firstName} ${lastName} successfuly` });
+      .json({ message: `${firstName} ${lastName} has been added successfuly` });
   } else {
     res.status(400).json({ message: `Invalid user data recieved` });
   }
@@ -88,19 +92,17 @@ const updateUser = asyncHandler(async (req, res) => {
     !lastName ||
     !email ||
     !residence ||
-    !role ||
     !school ||
-    !password ||
     !isActive;
 
   if (anyEmptyField) {
-    return res.status(400).json({ message: "You can fill all the fields" });
+    return res.status(400).json({ message: "You must filled the form" });
   }
 
   const user = await User.findById(id).exec();
 
   if (!user) {
-    return res.status(400).json({ message: "User not find" });
+    return res.status(400).json({ message: "User not found" });
   }
 
   //check duplicate
@@ -116,7 +118,7 @@ const updateUser = asyncHandler(async (req, res) => {
   user.residence = residence;
   user.school = school;
   user.isActive = isActive;
-
+  user.role = role;
   if (password) {
     //hash
     user.password = await bcrypt.hash(password, 10); // salt rounds
@@ -128,21 +130,20 @@ const updateUser = asyncHandler(async (req, res) => {
 
 //delete a user
 const deleteUser = asyncHandler(async (req, res) => {
-    const {id} = req.body
-    if(!id) {
-        res.status(400).json({message: 'User ID required'})
-    }
+  const { id } = req.body;
+  if (!id) {
+    res.status(400).json({ message: "User ID required" });
+  }
 
-    const user = await User.findById(id).exec()
-    if (!user) {
-        return res.status(400).json({message: 'User not found'})
-    }
+  const user = await User.findById(id).exec();
+  if (!user) {
+    return res.status(400).json({ message: "User not found" });
+  }
 
-    const result = await user.deleteOne()
-    const reply = `${result.firstName} has been deleted`
+  const result = await user.deleteOne();
+  const reply = `${result.firstName} has been deleted`;
 
-    res.json(reply)
-
+  res.json(reply);
 });
 
 module.exports = {

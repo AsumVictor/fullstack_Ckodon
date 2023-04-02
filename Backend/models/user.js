@@ -17,12 +17,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  role: [
-    {
-      type: String,
-      default: "undergraduate",
-    },
-  ],
+  role: {
+    type: String,
+    default: "undergraduate",
+  },
   school: {
     type: String,
     required: true,
