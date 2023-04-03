@@ -51,7 +51,7 @@ function Login() {
           name="email"
           label="email"
           type="email"
-          classExtend='mt-7'
+          classextend='mt-7'
         />
 
         <TextInputs
@@ -60,7 +60,7 @@ function Login() {
           name="password"
           label="password"
           type="password"
-          classExtend='mt-7'
+          classextend='mt-7'
         />
 
         <a href="#" className="text-MdBlue underline mt-2 self-start">

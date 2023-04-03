@@ -15,7 +15,7 @@ export function TextInputs(props) {
 
   return (
     <div
-    className={`form-group w-full border-2 relative ${props.classExtend}`}
+    className={`form-group w-full border-2 relative ${props.classextend}`}
   >
 
     <label htmlFor={props.id} className='capitalize'>
@@ -34,4 +34,12 @@ export function TextInputs(props) {
   )
 }
 
+
+export function NormalInputs(props){
+  return(
+    <div className={`py-3 px-2 bg-white w-full overflow-hidden  h-10 rounded-md border-2 relative ${props.classextend}`}>
+      <input type="text" className='absolute outline-none w-full h-full top-0 left-0 px-2 text-18' {...props}/>
+    </div>
+  )
+}
 

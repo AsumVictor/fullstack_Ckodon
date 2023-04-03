@@ -3,5 +3,17 @@
 @tailwind utilities;
 
 *{
-    transition:.4s ;
+    user-select: none;
 }
+
+
+*::-webkit-scrollbar {
+    width: 5px;
+    background-color: rgba(156, 157, 228, 0.288);
+    height: 5px;
+  }
+  
+  *::-webkit-scrollbar-thumb{
+    background-color: rgb(59, 6, 184);
+  
+  }

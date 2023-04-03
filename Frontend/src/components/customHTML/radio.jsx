@@ -4,7 +4,7 @@ import './style.css'
 
 export function RadioWithIcon(props) {
   return (
-    <div className={`customRadio cursor-pointer ${props.classExtend}`}>
+    <div className={`customRadio cursor-pointer ${props.classextend}`}>
 
       <label htmlFor={props.id} className="radio">
         <input
