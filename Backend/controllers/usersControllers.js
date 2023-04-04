@@ -25,6 +25,8 @@ const addNewUser = asyncHandler(async (req, res) => {
     school,
     password,
     isActive,
+    phone,
+    gender,
   } = req.body;
 
   const anyEmptyField =
@@ -35,6 +37,7 @@ const addNewUser = asyncHandler(async (req, res) => {
     !role ||
     !school ||
     !password ||
+    !gender ||
     typeof isActive !== "boolean";
 
   if (anyEmptyField) {
@@ -59,6 +62,8 @@ const addNewUser = asyncHandler(async (req, res) => {
     role,
     school,
     password: hashPassword,
+    gender,
+    phone,
   };
 
   //create and store new user
@@ -84,6 +89,8 @@ const updateUser = asyncHandler(async (req, res) => {
     school,
     password,
     isActive,
+    gender,
+    phone,
   } = req.body;
 
   const anyEmptyField =
@@ -119,6 +126,8 @@ const updateUser = asyncHandler(async (req, res) => {
   user.school = school;
   user.isActive = isActive;
   user.role = role;
+  user.gender = gender;
+  user.phone = phone;
   if (password) {
     //hash
     user.password = await bcrypt.hash(password, 10); // salt rounds

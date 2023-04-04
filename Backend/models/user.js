@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   residence: {
     type: String,
@@ -33,6 +34,17 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  phone: {
+    type: String,
+    required: false,
+  },
+  gender:{
+    type: String,
+    required: true,
+  }
+},
+{
+    timestamps:true,
 });
 
 module.exports = mongoose.model("User", userSchema);
