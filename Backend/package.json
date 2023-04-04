@@ -2,7 +2,7 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Ckodon Fullstack projects",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server",
     "dev": "nodemon server"

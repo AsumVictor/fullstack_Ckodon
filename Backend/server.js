@@ -1,31 +1,33 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 const path = require("path");
 const { logger, logEvents } = require("./middleware/logger");
 const errorHandler = require("./middleware/errorHandler");
-const cookieParser = require("cookie-parser");
+const cookieParser = require('cookie-parser')
 const cors = require("cors");
 const corOptions = require("./config/corsOptions");
 const connectDB = require("./config/dbConn");
 const mongoose = require("mongoose");
 
+
 connectDB();
 
-app.use(logger);
+ app.use(logger);
 
-app.use(cors(corOptions));
+ app.use(cors(corOptions));
 
-app.use(express.json());
+ app.use(express.json());
 
-app.use(cookieParser);
+ app.use(cookieParser());
 
 app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use("/", require("./routes/root"));
 
 app.use('/users', require('./routes/userRoutes'))
+app.use('/undergraduteApplicants', require('./routes/undergraduteApplicantRoutes'))
 
 app.all("*", (req, res) => {
   res.status(404);
