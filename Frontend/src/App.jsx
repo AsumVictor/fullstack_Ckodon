@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 //PAGES PUBLIC
 import Login from "./features/public/login/login";
-import UnderConstruction from "./components/underConstruction";
+import UnderConstruction from "./components/indications/underConstruction";
 
 //PAges FOR ADMIN
 import SharedLayout from "./features/admin/layouts/shareLayout";
@@ -11,7 +11,10 @@ import {
   RedirectToAdminDash,
   RedirectToAdminStudents,
 } from "./features/public/redirects";
-import AllStudent from "./features/admin/currentStudents/allStudent";
+import AllStudent from "./features/admin/currentStudents/undergraduate/allStudent";
+import StudentDetails from "./features/admin/currentStudents/undergraduate/studentDetails";
+import AllApplicants from "./features/admin/applicants/undergraduate/allApplicants";
+import ApplicantDetails from "./features/admin/applicants/undergraduate/applicantsDetails";
 
 function App() {
   return (
@@ -26,9 +29,18 @@ function App() {
           <Route
             path="admin/students/undergraduates"
             element={<AllStudent />}
-          >
-            {/* Layouts */}
-          </Route>
+          />
+          <Route
+            path="admin/students/undergraduates/:id"
+            element={<StudentDetails />}
+          />
+
+          <Route
+            path="admin/students/undergraduates/:id/:id"
+            element={<h1>Document</h1>}
+          />
+
+          {/* Layouts */}
           <Route
             path="admin/students/graduates"
             element={<UnderConstruction />}
@@ -41,10 +53,19 @@ function App() {
             path="admin/reviews/gradutes"
             element={<UnderConstruction />}
           />
+
+          {/* All applicants in Ckodon */}
+
           <Route
             path="admin/applicants/undergraduates"
-            element={<UnderConstruction />}
+            element={<AllApplicants />}
           />
+
+          <Route
+            path="admin/applicants/undergraduates/:id"
+            element={<ApplicantDetails />}
+          />
+
           <Route
             path="admin/applicants/graduates"
             element={<UnderConstruction />}

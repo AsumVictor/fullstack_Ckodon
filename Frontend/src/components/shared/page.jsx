@@ -2,7 +2,7 @@ import React from 'react'
 
 function Page(props) {
   return (
-    <div className='page relative px-3 py-5 md:px-10'>
+    <div className='page relative flex overflow-y-auto flex-col px-3 py-5 md:px-10'>
      {props.children}
     </div>
   )

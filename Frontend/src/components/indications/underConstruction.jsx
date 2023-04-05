@@ -2,7 +2,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Lottie from "lottie-react";
-import construction from "../assets/animations/construction.json";
+import construction from "../../assets/animations/construction.json";
 
 
 export default function Construction(){
