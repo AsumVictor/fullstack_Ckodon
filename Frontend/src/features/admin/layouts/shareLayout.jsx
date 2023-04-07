@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, Navigate } from "react-router-dom";
 import { HiSun, HiChartPie, HiChevronDown, HiUsers } from "react-icons/hi";
 import {
   HiAcademicCap,
@@ -16,6 +16,7 @@ import Navbar from "../../../components/shared/navbar";
 import "../../../components/shared/style.css";
 
 function SharedLayout() {
+  
   const [isSideNavShow, setIsSideNavShow] = useState(false);
   const [showProfileSettings, setShowProfileSettings] = useState(false);
   const [isDropdown1Open, setIsDropdown1Open] = useState(false);
@@ -46,7 +47,7 @@ function SharedLayout() {
         <div className="">
           <NavLink
           end
-            to="admin/dashboard"
+            to="."
             onClick={() => setIsSideNavShow(false)}
             className={`flex capitalize flex-row items-center gap-3 ${
               !isSideNavShow ? "justify-center" : "justify-start"
@@ -70,7 +71,7 @@ function SharedLayout() {
             {isDropdown1Open && (
               <div className="px-1">
                 <NavLink
-                  to="admin/students/undergraduates"
+                  to="undergraduate-students"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
@@ -81,7 +82,7 @@ function SharedLayout() {
                   {isSideNavShow && <span> undergradute</span>}
                 </NavLink>
                 <NavLink
-                  to="admin/students/graduates"
+                  to="graduate-students"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
@@ -108,7 +109,7 @@ function SharedLayout() {
             {isDropdown3Open && (
               <div className="px-1">
                 <NavLink
-                  to="admin/reviews/undergraduates"
+                  to="reviews/undergraduates"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
@@ -119,7 +120,7 @@ function SharedLayout() {
                   {isSideNavShow && <span> undergradute</span>}
                 </NavLink>
                 <NavLink
-                  to="admin/reviews/gradutes"
+                  to="reviews/gradutes"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
@@ -147,7 +148,7 @@ function SharedLayout() {
             {isDropdown2Open && (
               <div className="px-1">
                 <NavLink
-                  to="admin/applicants/undergraduates"
+                  to="undergraduate-applicants"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
@@ -158,7 +159,7 @@ function SharedLayout() {
                   {isSideNavShow && <span> undergradute</span>}
                 </NavLink>
                 <NavLink
-                  to="admin/applicants/graduates"
+                  to="applicants/graduates"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
@@ -172,7 +173,7 @@ function SharedLayout() {
           </div>
 
           <NavLink
-            to="admin/sat-students"
+            to="sat-students"
             onClick={() => setIsSideNavShow(false)}
             className={`flex capitalize flex-row items-center gap-3 mt-2 ${
               !isSideNavShow ? "justify-center" : "justify-start"
@@ -183,7 +184,7 @@ function SharedLayout() {
           </NavLink>
 
           <NavLink
-            to="admin/broadcast"
+            to="broadcast"
             onClick={() => setIsSideNavShow(false)}
             className={`flex capitalize flex-row items-center gap-3 mt-2 ${
               !isSideNavShow ? "justify-center" : "justify-start"
@@ -194,7 +195,7 @@ function SharedLayout() {
           </NavLink>
 
           <NavLink
-            to="admin/chat"
+            to="chat"
             onClick={() => setIsSideNavShow(false)}
             className={`flex capitalize flex-row items-center gap-3 mt-2 ${
               !isSideNavShow ? "justify-center" : "justify-start"

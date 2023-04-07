@@ -13,6 +13,9 @@ export function RadioWithIcon(props) {
           id={props.id}
           name={props.name}
           {...props}
+          required={props.required}
+          onChange={props.handlechange}
+          checked={props.isCheck}
         />
 
         <div className="label flex flex-col justify-center items-center relative">

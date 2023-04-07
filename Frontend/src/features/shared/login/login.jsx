@@ -6,7 +6,7 @@ import { TextInputs } from "../../../components/customHTML/textInputs";
 function Login() {
   return (
     <>
-    <section className="flex flex-col justify-center py-2 items-center w-full px-2">
+    <section className="section flex flex-col justify-center py-2 items-center w-full px-2">
       <form className="bg-white py-10 w-full md:w-96 flex flex-col items-center px-3 md:px-5">
         <h2 className="text-center text-MdBlue font-bold text-4xl">
           Welcome Back!

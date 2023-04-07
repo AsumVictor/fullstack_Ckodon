@@ -3,9 +3,15 @@ import { apiSlice } from "../app/api/apiSlice";
 
 const undergraduateApplicantsAdapter = createEntityAdapter({
   sortComparer: (a, b) => {
-    if (a.applicationStatus === "pending" && b.applicationStatus !== "pending") {
+    if (
+      a.applicationStatus === "pending" &&
+      b.applicationStatus !== "pending"
+    ) {
       return -1;
-    } else if (a.applicationStatus !== "pending" && b.applicationStatus === "pending") {
+    } else if (
+      a.applicationStatus !== "pending" &&
+      b.applicationStatus === "pending"
+    ) {
       return 1;
     } else {
       return 0;
@@ -42,11 +48,47 @@ export const undergraduateApplicantsApiSlice = apiSlice.injectEndpoints({
         } else return [{ type: "UndergraduateApplicant", id: "LIST" }];
       },
     }),
+    addNewUndergraduateApplicant: builder.mutation({
+      query: (initialUserData) => ({
+        url: "/undergraduteApplicants",
+        method: "POST",
+        body: {
+          ...initialUserData,
+        },
+      }),
+      invalidatesTags: [{ type: "UndergraduateApplicant", id: "LIST" }],
+    }),
+    updateUndergraduateApplicant: builder.mutation({
+      query: (initialUserData) => ({
+        url: "/undergraduteApplicants",
+        method: "PATCH",
+        body: {
+          ...initialUserData,
+        },
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "UndergraduateApplicant", id: arg.id },
+      ],
+    }),
+    deleteUndergraduateApplicant: builder.mutation({
+      query: ({ id }) => ({
+        url: `/undergraduteApplicants`,
+        method: "DELETE",
+        body: { id },
+      }),
+      invalidatesTags: (result, error, arg) => [
+        { type: "UndergraduateApplicant", id: arg.id },
+      ],
+    }),
   }),
 });
 
-export const { useGetUndergraduateApplicantsQuery } =
-  undergraduateApplicantsApiSlice;
+export const {
+  useGetUndergraduateApplicantsQuery,
+  useAddNewUndergraduateApplicantMutation,
+  useUpdateUndergraduateApplicantMutation,
+  useDeleteUndergraduateApplicantMutation,
+} = undergraduateApplicantsApiSlice;
 
 // returns the query result object
 export const selectUndergraduateApplicantsResult =

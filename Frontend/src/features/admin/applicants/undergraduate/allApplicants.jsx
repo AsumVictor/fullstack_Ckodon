@@ -75,7 +75,7 @@ function AllApplicants() {
         All enrolled undergraduate Applicants
       </h1>
 
-      <div className="flex felx-row justify-between items-center w-full flex-wrap gap-y-2 mt-5 sticky top-0">
+      <div className="flex felx-row justify-between bg-white shadow-md py-2 px-2 rounded-md items-center w-full flex-wrap gap-y-2 mt-5 sticky top-0">
         <div className="flex flex-row justify-between items-center w-full gap-2 md:w-5/12">
           <NormalInputs
             type="text"

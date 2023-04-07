@@ -4,6 +4,8 @@ export function ButtonDefault(props) {
   return (
     <button
       className={`py-2 px-3 flex flex-row justify-center items-center bg-MdBlue text-white font-bold rounded-xl hover:bg-blue-800 ${props.classExtend}`}
+      {...props}
+      type={props.type}
       onClick={props.ClickAction}
     >
       {props.children}

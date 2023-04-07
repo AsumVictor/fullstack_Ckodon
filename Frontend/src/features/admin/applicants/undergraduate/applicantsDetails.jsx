@@ -1,12 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Page from "../../../../components/shared/page";
+import { nanoid } from "@reduxjs/toolkit";
 import { Link, useParams } from "react-router-dom";
 import { HiChevronDoubleLeft } from "react-icons/hi";
 import Logo from "../../../../assets/images/studentLogo.png";
 import { HiChevronDown, HiChevronUp } from "react-icons/hi";
 import { useSelector } from "react-redux";
-import { selectUndergraduateApplicantById } from "../../../../apiSlice/undergrauteApplicantsApiSlice";
-import { useGetUndergraduateApplicantsQuery } from "../../../../apiSlice/undergrauteApplicantsApiSlice";
+import {
+  selectUndergraduateApplicantById,
+  useGetUndergraduateApplicantsQuery,
+  useUpdateUndergraduateApplicantMutation,
+} from "../../../../apiSlice/undergrauteApplicantsApiSlice";
+import { useAddNewUserMutation } from "../../../../apiSlice/usersApiSlice";
 import "./style.css";
 import { NormalInputs } from "../../../../components/customHTML/textInputs";
 import { ButtonDefault } from "../../../../components/buttons";
@@ -16,8 +21,14 @@ import {
   RefreshToolkit,
   CustomToolkit,
 } from "../../../../components/toolkits/tollkit";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { SmallLoader } from "../../../../components/loaders/loader";
+
 
 function ApplicantDetails() {
+  const [loading, setLoading] = useState(false);
+
   const {
     data: applicants,
     isLoading,
@@ -25,6 +36,11 @@ function ApplicantDetails() {
     isError,
     error,
   } = useGetUndergraduateApplicantsQuery();
+
+  const [addNewUser] = useAddNewUserMutation();
+
+  const [updateApplicant] = useUpdateUndergraduateApplicantMutation();
+
   let content = null;
   const params = useParams();
   const applicantId = params.id;
@@ -32,11 +48,26 @@ function ApplicantDetails() {
     selectUndergraduateApplicantById(state, applicantId)
   );
 
+  let applicantBasicInfo = null;
+
   if (isLoading) {
-    content = <h1>Loading...</h1>;
+    content = <SmallLoader />;
   }
 
   if (isSuccess) {
+    applicantBasicInfo = {
+      firstName: applicant.firstName,
+      lastName: applicant.lastName,
+      email: applicant.email,
+      residence: applicant.residence,
+      role: "undergraduate",
+      school: applicant.recentSchool,
+      password: nanoid(8),
+      phone: applicant.phone,
+      gender: applicant.gender,
+      isActive: true,
+    };
+
     content = (
       <div className="flex flex-col items-center">
         <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2      md:justify-between justify-end items-center w-full flex-wrap gap-y-2 mt-5   sticky top-0">
@@ -196,12 +227,113 @@ function ApplicantDetails() {
     text: null,
   });
 
-  function rejectStudent() {
-    console.log("reject");
+  //Adding new user and updating user Status
+
+  async function rejectStudent() {
+    try {
+      setLoading(true);
+      let updatingResponse = await updateApplicant({
+        ...applicant,
+        applicationStatus: "rejected",
+      });
+      if (updatingResponse.data) {
+        toast.info(`${applicant.firstName} has been denied`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        //send mail to student
+        setLoading(false);
+        setShowModal({
+          show: false,
+          text: null,
+        })
+      } else {
+        toast.error(`${updatingResponse.error.data.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error(`${error.message}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
   }
 
-  function acceptStudent() {
-    console.log("accept");
+  async function acceptStudent() {
+    try {
+      setLoading(true);
+      let addingResponse = await addNewUser(applicantBasicInfo);
+      if (addingResponse.data) {
+        let updatingResponse = await updateApplicant({
+          ...applicant,
+          applicationStatus: "admitted",
+        });
+        if (updatingResponse.data) {
+          toast.success(`${applicant.firstName} has been enrolled`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+        //send mail to student
+        setLoading(false);
+        setShowModal({
+          show: false,
+          text: null,
+        })
+      } else {
+        toast.error(`${addingResponse.error.data.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      toast.error(`${error.message}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
   }
 
   return (
@@ -215,7 +347,6 @@ function ApplicantDetails() {
           <HiChevronDoubleLeft /> Back to all applicants
         </Link>
         {content}
-
         {/*  */}
 
         {showModal?.show ? (
@@ -249,9 +380,10 @@ function ApplicantDetails() {
                   {/*footer*/}
                   <div className="flex items-center justify-end px-6 py-2 border-t border-solid border-slate-200 rounded-b">
                     <button
-                      className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                      className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:text-slate-300"
                       type="button"
                       onClick={() => setShowModal(false)}
+                      disabled={loading}
                     >
                       Close
                     </button>
@@ -260,7 +392,7 @@ function ApplicantDetails() {
                         showModal?.text == "reject"
                           ? "bg-pink-600 active:bg-pink-900"
                           : "bg-emerald-500 active:bg-emerald-600"
-                      } text-white   font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`}
+                      } text-white flex flex-row justify-center gap-4 font-bold uppercase items-center text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150 disabled:bg-slate-300`}
                       type="button"
                       onClick={
                         showModal?.text == "reject"
@@ -269,8 +401,10 @@ function ApplicantDetails() {
                           ? acceptStudent
                           : null
                       }
+                      disabled={loading}
                     >
                       {`yes ${showModal?.text}`}
+                      {loading && <SmallLoader />}
                     </button>
                   </div>
                 </div>
@@ -280,6 +414,7 @@ function ApplicantDetails() {
           </>
         ) : null}
       </Page>
+      <ToastContainer />
     </>
   );
 }

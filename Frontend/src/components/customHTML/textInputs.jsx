@@ -13,9 +13,12 @@ export function TextInputs(props) {
     }
   }
 
+  const inputBlur = document.querySelector('.inputBlur')
+
+
   return (
     <div
-    className={`form-group w-full border-2 relative ${props.classextend}`}
+    className={`form-group w-full border-2 relative ${props.value !== '' ? 'active' : null}  ${props.classextend}`}
   >
 
     <label htmlFor={props.id} className='capitalize'>
@@ -24,10 +27,12 @@ export function TextInputs(props) {
     <input
       id={props.id}
       {...props}  
+      value={props.value}
       onFocus={FocusInput}
       onBlur={BlurInput}
+      onChange={props.handlechange}
       required={props.required}
-      className='w-full absolute top-0 left-0 bg-transparent h-full outline-none px-3'
+      className={`inputBlur w-full absolute top-0 left-0 bg-transparent h-full outline-none px-3`}
     />
   </div>
   
@@ -42,4 +47,17 @@ export function NormalInputs(props){
     </div>
   )
 }
+
+export function NormalTextArea(props){
+  return(
+    <div className={`px-2 bg-white w-full rounded-md border-2 border-red-500 relative ${props.classextend}`}>
+      <textArea  
+      className='outline-none w-full top-0 left-0 px-2 text-18'
+
+      />
+
+    </div>
+  )
+}
+
 

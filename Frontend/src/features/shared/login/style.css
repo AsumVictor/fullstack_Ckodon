@@ -4,8 +4,8 @@ body{
     overflow: hidden;
 }
 
-section{
+.section{
     height: 100vh;
     overflow-y: auto;
-    background-color: rgb(235, 236, 241);
+    background-color: rgb(1, 14, 48);
 }
