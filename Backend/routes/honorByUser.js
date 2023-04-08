@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const honorByuserController = require('../controllers/honorByUserControllers')
+const honorByuserController = require('../controllers/Specificuser/honorByUserControllers')
 
 router.route("/")
 .get(honorByuserController.getHonorOfUser)

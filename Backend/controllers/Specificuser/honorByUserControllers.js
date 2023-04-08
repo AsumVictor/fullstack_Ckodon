@@ -1,6 +1,6 @@
-const Honor = require("../models/honor");
-const Review = require("../models/review");
-const User = require("../models/user");
+const Honor = require("../../models/honor");
+const Review = require("../../models/review");
+const User = require("../../models/user");
 const asyncHandler = require("express-async-handler");
 
 //get Honor by Id

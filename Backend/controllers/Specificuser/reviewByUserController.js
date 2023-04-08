@@ -1,6 +1,6 @@
-const Review = require("../models/review");
-const Honor = require("../models/honor");
-const User = require("../models/user");
+const Review = require("../../models/review");
+const Honor = require("../../models/honor");
+const User = require("../../models/user");
 const asyncHandler = require("express-async-handler");
 
 const getReviewByUser = asyncHandler(async (req, res) => {

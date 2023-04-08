@@ -20,8 +20,6 @@ const addNewHonor = asyncHandler(async (req, res) => {
   const anyEmptyField =
     !user || !status || !submitted || !Array.isArray(honors);
 
-  console.log(anyEmptyField);
-
   if (anyEmptyField) {
     return res.status(400).json({ message: "All fields are required" });
   }

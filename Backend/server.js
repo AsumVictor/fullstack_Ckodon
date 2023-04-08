@@ -32,6 +32,10 @@ app.use('/honors', require('./routes/honorRoutes'))
 app.use('/honors/user', require('./routes/honorByUser'))
 app.use('/undergradeReviews', require('./routes/reviewRoutes'))
 app.use('/undergradeReviews/user', require('./routes/reviewByUserRouts'))
+app.use('/activities', require('./routes/activityRoutes'))
+app.use('/essays', require('./routes/essaysRoutes'))
+app.use('/recommendations', require('./routes/recommendationsRoutes'))
+app.use('/aids', require('./routes/aidsRoutes'))
 
 
 
