@@ -28,6 +28,12 @@ app.use("/", require("./routes/root"));
 
 app.use('/users', require('./routes/userRoutes'))
 app.use('/undergraduteApplicants', require('./routes/undergraduteApplicantRoutes'))
+app.use('/honors', require('./routes/honorRoutes'))
+app.use('/honors/user', require('./routes/honorByUser'))
+app.use('/undergradeReviews', require('./routes/reviewRoutes'))
+app.use('/undergradeReviews/user', require('./routes/reviewByUserRouts'))
+
+
 
 app.all("*", (req, res) => {
   res.status(404);

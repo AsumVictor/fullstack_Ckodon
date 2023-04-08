@@ -23,6 +23,7 @@ const undergraduteApplicantSchema = new mongoose.Schema(
     role: {
       type: String,
       default: "undergraduate",
+      required: true,
     },
     recentSchool: {
       type: String,
@@ -31,7 +32,7 @@ const undergraduteApplicantSchema = new mongoose.Schema(
 
     applicationStatus: {
       type: String,
-      default: "not reviewed",
+      default: "pending",
     },
     dateOfBirth: {
       type: Date,
@@ -39,7 +40,7 @@ const undergraduteApplicantSchema = new mongoose.Schema(
     },
     currentUniversity: {
       type: String,
-      require: true,
+      require: false,
     },
     yearOfCompletion: {
       type: Date,
@@ -64,6 +65,14 @@ const undergraduteApplicantSchema = new mongoose.Schema(
     phone:{
       type: String,
       require: false,
+    },
+    whatsappNumber:{
+      type: String,
+      required: false,
+    },
+    level:{
+      type: String,
+      required: false,
     }
   },
   {

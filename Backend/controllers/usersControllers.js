@@ -4,7 +4,10 @@ const bcrypt = require("bcrypt");
 
 //get all users
 const getAllUsers = asyncHandler(async (req, res) => {
-  const users = await User.find().select("-password").lean();
+  const users = await User.find()
+    .select("-password")
+    .lean()
+    .sort({ createdAt: -1 });
 
   // If no users
   if (!users?.length) {
@@ -27,6 +30,7 @@ const addNewUser = asyncHandler(async (req, res) => {
     isActive,
     phone,
     gender,
+    avatar,
   } = req.body;
 
   const anyEmptyField =
@@ -64,6 +68,7 @@ const addNewUser = asyncHandler(async (req, res) => {
     password: hashPassword,
     gender,
     phone,
+    avatar,
   };
 
   //create and store new user
@@ -91,6 +96,7 @@ const updateUser = asyncHandler(async (req, res) => {
     isActive,
     gender,
     phone,
+    avatar,
   } = req.body;
 
   const anyEmptyField =
@@ -128,6 +134,7 @@ const updateUser = asyncHandler(async (req, res) => {
   user.role = role;
   user.gender = gender;
   user.phone = phone;
+  user.avatar = avatar;
   if (password) {
     //hash
     user.password = await bcrypt.hash(password, 10); // salt rounds

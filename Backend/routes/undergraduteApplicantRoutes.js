@@ -5,6 +5,7 @@ const undergraduteApplicantsController = require('../controllers/undergraduteApp
 router.route("/")
 .get(undergraduteApplicantsController.getAllUndergraduateApplicants)
 .post(undergraduteApplicantsController.addNewApplicant)
+.patch(undergraduteApplicantsController.updateApplicant)
 
 
 module.exports = router
