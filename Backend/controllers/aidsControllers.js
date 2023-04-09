@@ -18,7 +18,7 @@ const addNewAid = asyncHandler(async (req, res) => {
   // Confirm data
 
   const anyEmptyField =
-    !user || !status || !submitted || !Array.isArray(aids);
+    !user || !status || !typeof submitted == "boolean" || !Array.isArray(aids);
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All fields are required" });
@@ -60,7 +60,7 @@ const addNewAid = asyncHandler(async (req, res) => {
 const updateAid = asyncHandler(async (req, res) => {
   const { id, status, submitted, aids } = req.body;
 
-  const anyEmptyField = !status || !submitted || !Array.isArray(aids);
+  const anyEmptyField = !status || !typeof submitted == "boolean" || !Array.isArray(aids);
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });

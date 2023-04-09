@@ -1,10 +1,10 @@
-const Honor = require("../../models/honor");
+const Aid = require("../../models/aid");
 const User = require("../../models/user");
 const asyncHandler = require("express-async-handler");
 
-//get Honor by Id
+//get Aid by Id
 
-const getHonorOfUser = asyncHandler(async (req, res) => {
+const getAidOfUser = asyncHandler(async (req, res) => {
   const { userId } = req.body;
 
   // Confirm data
@@ -20,17 +20,17 @@ const getHonorOfUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "User not found" });
   }
 
-  const honors = await Honor.find({ user: userId }).lean().exec();
-  if (!honors) {
-    return res.status(400).json({ message: "No honors found" });
+  const aids = await Aid.find({ user: userId }).lean().exec();
+  if (!aids) {
+    return res.status(400).json({ message: "No aids found" });
   }
 
 
-  res.json(honors);
+  res.json(aids);
 
   // Create and store the new user
 });
 
 module.exports = {
-  getHonorOfUser,
+  getAidOfUser,
 };

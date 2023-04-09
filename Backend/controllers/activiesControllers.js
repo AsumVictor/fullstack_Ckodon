@@ -18,7 +18,7 @@ const addNewActivity = asyncHandler(async (req, res) => {
   // Confirm data
 
   const anyEmptyField =
-    !user || !status || !submitted || !Array.isArray(activities);
+    !user || !status || !typeof submitted == 'boolean'  || !Array.isArray(activities);
 
 
   if (anyEmptyField) {

@@ -29,13 +29,17 @@ app.use("/", require("./routes/root"));
 app.use('/users', require('./routes/userRoutes'))
 app.use('/undergraduteApplicants', require('./routes/undergraduteApplicantRoutes'))
 app.use('/honors', require('./routes/honorRoutes'))
-app.use('/honors/user', require('./routes/honorByUser'))
+app.use('/honors/user', require('./routes/bySpecficUser/honorByUser'))
 app.use('/undergradeReviews', require('./routes/reviewRoutes'))
-app.use('/undergradeReviews/user', require('./routes/reviewByUserRouts'))
+app.use('/undergradeReviews/user', require('./routes/bySpecficUser/reviewByUserRouts'))
 app.use('/activities', require('./routes/activityRoutes'))
+app.use('/activities/user', require('./routes/bySpecficUser/activityByUser'))
 app.use('/essays', require('./routes/essaysRoutes'))
+app.use('/essays/user', require('./routes/bySpecficUser/essayByUser'))
 app.use('/recommendations', require('./routes/recommendationsRoutes'))
+app.use('/recommendations/user', require('./routes/bySpecficUser/recommendationByUser'))
 app.use('/aids', require('./routes/aidsRoutes'))
+app.use('/aids/user', require('./routes/bySpecficUser/aidByUser'))
 
 
 

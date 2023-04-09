@@ -18,10 +18,10 @@ const addNewHonor = asyncHandler(async (req, res) => {
   // Confirm data
 
   const anyEmptyField =
-    !user || !status || !submitted || !Array.isArray(honors);
+    !user || !status || !typeof submitted == "boolean"  || !Array.isArray(honors);
 
   if (anyEmptyField) {
-    return res.status(400).json({ message: "All fields are required" });
+    return res.status(400).json({ message: "All fields are required before you can create honor" });
   }
 
   //Check if user exist
@@ -60,7 +60,7 @@ const addNewHonor = asyncHandler(async (req, res) => {
 const updateHonor = asyncHandler(async (req, res) => {
   const { id, status, submitted, honors } = req.body;
 
-  const anyEmptyField = !status || !submitted || !Array.isArray(honors);
+  const anyEmptyField = !status || !typeof submitted == "boolean" || !Array.isArray(honors);
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });

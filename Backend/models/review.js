@@ -9,8 +9,8 @@ const reviewSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      default: 'pending',
-      enum: ['pending', 'rejected', 'approved']
+      default: "pending",
+      enum: ["pending", "rejected", "approved"],
     },
     documentId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -27,13 +27,10 @@ const reviewSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-},
-
+  },
   {
-    timestamp: true,
+    timestamps: true,
   }
 );
-
-
 
 module.exports = mongoose.model("Review", reviewSchema);

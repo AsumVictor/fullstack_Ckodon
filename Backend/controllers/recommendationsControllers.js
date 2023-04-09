@@ -18,7 +18,7 @@ const addNewRecommendation = asyncHandler(async (req, res) => {
   // Confirm data
 
   const anyEmptyField =
-    !user || !status || !submitted || !Array.isArray(recommendations);
+    !user || !status || !typeof submitted == 'boolean' || !Array.isArray(recommendations);
 
   console.log(anyEmptyField);
 
@@ -62,7 +62,7 @@ const addNewRecommendation = asyncHandler(async (req, res) => {
 const updateRecommendation = asyncHandler(async (req, res) => {
   const { id, status, submitted, recommendations } = req.body;
 
-  const anyEmptyField = !status || !submitted || !Array.isArray(recommendations);
+  const anyEmptyField = !status || !typeof submitted == 'boolean' || !Array.isArray(recommendations);
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });

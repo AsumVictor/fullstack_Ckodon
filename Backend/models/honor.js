@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const AutoIncrement = require('mongoose-sequence')(mongoose)
 
 const honorSchema = new mongoose.Schema(
   {
@@ -23,7 +22,7 @@ const honorSchema = new mongoose.Schema(
       {
         honorTitle: {
           type: String,
-          required: true,
+          required: false,
         },
         didItInGrade9: {
           type: Boolean,

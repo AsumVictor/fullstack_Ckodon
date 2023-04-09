@@ -13,12 +13,12 @@ const getEssays = asyncHandler(async (req, res) => {
 });
 
 const addNewEssay = asyncHandler(async (req, res) => {
-  const { user, status, submitted, essays } = req.body;
+  const { user, status, submitted, essays, schoolName } = req.body;
 
   // Confirm data
 
   const anyEmptyField =
-    !user || !status || !submitted || !Array.isArray(essays);
+    !user || !status || !typeof submitted == "boolean" || !Array.isArray(essays) || !schoolName
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All fields are required" });
@@ -31,6 +31,14 @@ const addNewEssay = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "user not found" });
   }
   
+
+  //Check duplicat
+  const duplicate  = await Essay.findOne({user: user, schoolName: schoolName}).lean().exec()
+ if (duplicate) {
+  return res
+      .status(409)
+      .json({ message: "It seems you have already created an essay with same school Name" });
+ }
   // Create and store the new user
 
   const essay = await Essay.create({
@@ -38,6 +46,7 @@ const addNewEssay = asyncHandler(async (req, res) => {
     status,
     submitted,
     essays,
+    schoolName
   });
 
   if (essay) {
@@ -49,9 +58,9 @@ const addNewEssay = asyncHandler(async (req, res) => {
 });
 
 const updateEssay = asyncHandler(async (req, res) => {
-  const { id, status, submitted, essays } = req.body;
+  const { id, status, submitted, essays, schoolName } = req.body;
 
-  const anyEmptyField = !status || !submitted || !Array.isArray(essays);
+  const anyEmptyField = !status || !typeof submitted == "boolean" || !Array.isArray(essays) || !schoolName
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });
@@ -72,6 +81,7 @@ const updateEssay = asyncHandler(async (req, res) => {
   essay.status = status;
   essay.submitted = submitted;
   essay.essays = essays;
+  essay.schoolName = schoolName
 
   const updatedEssay = await essay.save();
   if (updatedEssay) {

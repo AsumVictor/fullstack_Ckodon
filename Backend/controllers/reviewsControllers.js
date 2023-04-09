@@ -2,6 +2,11 @@ const Review = require("../models/review");
 const Honor = require("../models/honor");
 const User = require("../models/user");
 const asyncHandler = require("express-async-handler");
+const Activity = require("../models/activity");
+const Aid = require("../models/aid");
+const Essay = require("../models/essay");
+const Recommendation = require("../models/recommendation");
+const review = require("../models/review");
 
 //get all users
 const getAllReviews = asyncHandler(async (req, res) => {
@@ -64,11 +69,40 @@ const addNewReview = asyncHandler(async (req, res) => {
   //Check if user exist
   const student = await User.findById(user).lean().exec();
   if (!student) {
-    return res.status(400).json({ message: "user not found" });
+    return res.status(400).json({ message: "User not found" });
   }
-  // Check for duplicate title
 
-  const duplicate = await Honor.findOne({ user: user, documentId: documentId })
+  // Check for duplicate title
+  let Document;
+  switch (onModel) {
+    case "Honor":
+      Document = Honor;
+      break;
+    case "Activity":
+      Document = Activity;
+      break;
+    case "Aid":
+      Document = Aid;
+      break;
+    case "Essay":
+      Document = Essay;
+      break;
+    case "Recommendation":
+      Document = Recommendation;
+      break;
+    default:
+      return res.status(400).json({ error: "Invalid document model" });
+  }
+
+//Check if the Activity and its ID exist
+
+
+const foundDocument = await Document.findOne({ user: user, _id: documentId })
+if (!foundDocument) {
+  return res.status(400).json({ message: "Invalid document or user not own this document" });
+}
+
+  const duplicate = await Review.findOne({ user: user, documentId: documentId })
     .lean()
     .exec();
 
@@ -77,6 +111,8 @@ const addNewReview = asyncHandler(async (req, res) => {
       message: "It seems you have have submitted this document before",
     });
   }
+
+
 
   // Create and store the new user
   const review = await Review.create({

@@ -1,5 +1,9 @@
 const Review = require("../../models/review");
 const Honor = require("../../models/honor");
+const Activity = require("../../models/activity");
+const Aid = require("../../models/aid");
+const Essay = require("../../models/essay");
+const Recommendation = require("../../models/recommendation")
 const User = require("../../models/user");
 const asyncHandler = require("express-async-handler");
 
@@ -15,15 +19,14 @@ const getReviewByUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "User not found" });
   }
 
-    const reviews = await Review.find().lean().sort({ createdAt: -1 });
+    const reviews = await Review.find({user: userId}).lean().sort({ createdAt: -1 });
     // If no undergradute Applicant
     if (!reviews?.length) {
-      return res.status(400).json({ message: "No Reviews found" });
+      return res.status(400).json({ message: "No Reviews of this student found" });
     }
   
     const reviewWithUserAndDoc = await Promise.all(
       reviews.map(async (review) => {
-        const user = await User.findById(review.user).select("-password").lean().exec();
         let Document;
         switch (review.onModel) {
           case "Honor":
@@ -51,7 +54,6 @@ const getReviewByUser = asyncHandler(async (req, res) => {
   
         return {
           ...review,
-          student:{...user },
          document,
         };
       })

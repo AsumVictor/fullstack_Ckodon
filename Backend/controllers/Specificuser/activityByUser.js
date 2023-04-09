@@ -1,10 +1,10 @@
-const Honor = require("../../models/honor");
+const Activity = require("../../models/activity");
 const User = require("../../models/user");
 const asyncHandler = require("express-async-handler");
 
-//get Honor by Id
+//get Activity by Id
 
-const getHonorOfUser = asyncHandler(async (req, res) => {
+const getActivityOfUser = asyncHandler(async (req, res) => {
   const { userId } = req.body;
 
   // Confirm data
@@ -20,17 +20,17 @@ const getHonorOfUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "User not found" });
   }
 
-  const honors = await Honor.find({ user: userId }).lean().exec();
-  if (!honors) {
-    return res.status(400).json({ message: "No honors found" });
+  const activities = await Activity.find({ user: userId }).lean().exec();
+  if (!activities) {
+    return res.status(400).json({ message: "No activities found" });
   }
 
 
-  res.json(honors);
+  res.json(activities);
 
   // Create and store the new user
 });
 
 module.exports = {
-  getHonorOfUser,
+  getActivityOfUser,
 };
