@@ -58,7 +58,7 @@ function AllApplicants() {
               <th scope="col" className="px-6 py-3 tabel-hide">
                 location
               </th>
-              <th scope="col" className="px-6 py-3 tabel-hide">
+              <th scope="col" className="px-6 py-3 ">
                 application status
               </th>
               <th scope="col" className="px-6 py-3"></th>

@@ -109,7 +109,7 @@ function SharedLayout() {
             {isDropdown3Open && (
               <div className="px-1">
                 <NavLink
-                  to="reviews/undergraduates"
+                  to="reviews-undergraduates"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
@@ -120,7 +120,7 @@ function SharedLayout() {
                   {isSideNavShow && <span> undergradute</span>}
                 </NavLink>
                 <NavLink
-                  to="reviews/gradutes"
+                  to="reviews-gradutes"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
@@ -159,7 +159,7 @@ function SharedLayout() {
                   {isSideNavShow && <span> undergradute</span>}
                 </NavLink>
                 <NavLink
-                  to="applicants/graduates"
+                  to="applicants-graduates"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"

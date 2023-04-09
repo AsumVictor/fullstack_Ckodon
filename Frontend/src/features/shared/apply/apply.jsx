@@ -84,6 +84,7 @@ export default function Apply() {
           level: "",
         });
         setSubmitted(true);
+
       } else {
         toast.error(`${error?.data?.message}`, {
           position: "bottom-right",

@@ -50,40 +50,40 @@ function StudentDetails() {
 
       <h2 className="text-center mt-10 text-2xl font-bold">{`${user?.firstName}'s Documents`}</h2>
 
-      <div class="relative mb-24 shadow-md rounded-md mt-5">
-        <table class="w-full rounded-md text-sm text-left text-gray-500 dark:text-gray-400">
-          <thead class="text-xs text-gray-700 uppercase bg-gray-200 ">
+      <div className="relative mb-24 shadow-md rounded-md mt-5">
+        <table className="w-full rounded-md text-sm text-left text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-200 ">
             <tr>
-              <th scope="col" class="px-6 py-3 tabel-hide">
+              <th scope="col" className="px-6 py-3 tabel-hide">
                 NO.
               </th>
-              <th scope="col" class="px-6 py-3">
+              <th scope="col" className="px-6 py-3">
                 Document type
               </th>
-              <th scope="col" class="px-6 py-3 ">
+              <th scope="col" className="px-6 py-3 ">
                 status
               </th>
-              <th scope="col" class="px-6 py-3 tabel-hide">
+              <th scope="col" className="px-6 py-3 tabel-hide">
                 deadline
               </th>
-              <th scope="col" class="px-6 py-3"></th>
+              <th scope="col" className="px-6 py-3"></th>
             </tr>
           </thead>
 
-          <tr class="bg-white cursor-pointer border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            <td class="px-6 py-4 tabel-hide">1</td>
+          <tr className="bg-white cursor-pointer border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <td className="px-6 py-4 tabel-hide">1</td>
             <th
               scope="row"
-              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
             >
               Honor
             </th>
-            <td class="px-6 py-4 ">Approved</td>
-            <td class="px-6 py-4 tabel-hide">2 mar 2023, 11:59pm</td>
-            <td class="px-6 py-4 text-right">
+            <td className="px-6 py-4 ">Approved</td>
+            <td className="px-6 py-4 tabel-hide">2 mar 2023, 11:59pm</td>
+            <td className="px-6 py-4 text-right">
               <Link
                 to="1"
-                class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
               >
                 Review Document
               </Link>
