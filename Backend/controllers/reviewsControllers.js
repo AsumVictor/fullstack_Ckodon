@@ -8,7 +8,7 @@ const Essay = require("../models/essay");
 const Recommendation = require("../models/recommendation");
 const review = require("../models/review");
 
-//get all users
+//get all reviews
 const getAllReviews = asyncHandler(async (req, res) => {
   const reviews = await Review.find().lean().sort({ createdAt: -1 });
   // If no undergradute Applicant

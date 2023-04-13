@@ -17,7 +17,30 @@ const activitySchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
+    voiceNOtes: [
+      {
+        voiceNote: {
+          type: String,
+          required: false,
+        },
+        timeDate: {
+          type: Date,
+          required: false,
+        },
+      },
+    ],
+    additionalDocs: [
+      {
+        doc: {
+          type: String,
+          required: false,
+        },
+        timeDate: {
+          type: Date,
+          required: false,
+        },
+      },
+    ],
     activities: [
       {
         type: {
@@ -76,10 +99,23 @@ const activitySchema = new mongoose.Schema(
           type: String,
           required: false,
         },
-        comment: {
+        comments: [
+          {
+            comment: {
+              type: String,
+              required: false,
+            },
+            timeDate: {
+              type: Date,
+              required: false,
+            },
+          },
+        ],
+        rate: {
           type: String,
-          required: false,
-        },
+          enum: ['bad', 'normal', 'good', 'notRated'],
+          default: 'notRated'
+        }
       },
     ],
   },

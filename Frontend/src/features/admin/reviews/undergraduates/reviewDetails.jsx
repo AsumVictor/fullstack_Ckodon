@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Page from "../../../components/shared/page";
+import Page from "../../../../components/shared/page";
 import { Link, useParams } from "react-router-dom";
 import { HiChevronDoubleLeft } from "react-icons/hi";
 import { useSelector } from "react-redux";
@@ -7,8 +7,8 @@ import {
   selectReviewById,
   useGetReviewsQuery,
   useUpdateReviewMutation,
-} from "../../../apiSlice/reviewsApiSlice";
-import { RefreshToolkit } from "../../../components/toolkits/tollkit";
+} from "../../../../apiSlice/reviewsApiSlice";
+import { RefreshToolkit } from "../../../../components/toolkits/tollkit";
 
 function ReviewDetails() {
   const params = useParams();

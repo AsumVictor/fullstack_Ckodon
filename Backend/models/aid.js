@@ -9,8 +9,8 @@ const aidSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
+      enum: ["finished", "notfinished"],
+      default: "notfinished",
     },
 
     submitted: {
@@ -24,10 +24,18 @@ const aidSchema = new mongoose.Schema(
           type: String,
           required: false,
         },
-        comment: {
-          type: String,
-          required: false,
-        },
+        comments: [
+          {
+            comment: {
+              type: String,
+              required: false,
+            },
+            timeDate: {
+              type: Date,
+              required: false,
+            },
+          },
+        ], 
         totalAnnualIncome: {
           type: String,
           required: false,
@@ -44,6 +52,36 @@ const aidSchema = new mongoose.Schema(
           type: String,
           required: false,
         },
+        voiceNOtes: [
+          {
+            voiceNote: {
+              type: String,
+              required: false,
+            },
+            timeDate: {
+              type: Date,
+              required: false,
+            },
+          },
+        ],
+        additionalDocs: [
+          {
+            doc: {
+              type: String,
+              required: false,
+            },
+            timeDate: {
+              type: Date,
+              required: false,
+            },
+          },
+        ],
+        rate: {
+          type: String,
+          enum: ['approved', 'rejected','notRated'],
+          default: 'notRated',
+          required: false,
+        }
       },
     ],
   },

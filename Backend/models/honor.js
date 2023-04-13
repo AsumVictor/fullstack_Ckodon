@@ -17,6 +17,31 @@ const honorSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    voiceNOtes: [
+      {
+        voiceNote: {
+          type: String,
+          required: false,
+        },
+        timeDate: {
+          type: Date,
+          required: false,
+        },
+      },
+    ],
+
+    additionalDocs: [
+      {
+        doc: {
+          type: String,
+          required: false,
+        },
+        timeDate: {
+          type: Date,
+          required: false,
+        },
+      },
+    ],
 
     honors: [
       {
@@ -60,8 +85,22 @@ const honorSchema = new mongoose.Schema(
           type: Boolean,
           default: false,
         },
-        comment: {
+        comments: [
+          {
+            comment: {
+              type: String,
+              required: false,
+            },
+            timeDate: {
+              type: Date,
+              required: false,
+            },
+          },
+        ],
+        rate: {
           type: String,
+          enum: ["bad", "normal", "good", "notRated"],
+          default: "notRated",
           required: false,
         },
       },

@@ -20,7 +20,7 @@ import StudentDetails from "./features/admin/currentStudents/undergraduate/stude
 import AllApplicants from "./features/admin/applicants/undergraduate/allApplicants";
 import ApplicantDetails from "./features/admin/applicants/undergraduate/applicantsDetails";
 import UndergraduateReviews from "./features/admin/reviews/undergraduates/reviews";
-import UndergraduateReviewDetails from "./features/admin/reviews/reviewDetails";
+import UndergraduateReviewDetails from "./features/admin/reviews/undergraduates/reviewDetails";
 
 function App() {
   return (
