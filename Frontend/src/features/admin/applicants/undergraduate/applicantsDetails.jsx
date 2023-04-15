@@ -38,6 +38,7 @@ function ApplicantDetails() {
   } = useGetUndergraduateApplicantsQuery();
 
   const [addNewUser] = useAddNewUserMutation();
+  
 
   const [updateApplicant] = useUpdateUndergraduateApplicantMutation();
 
@@ -285,6 +286,7 @@ function ApplicantDetails() {
     try {
       setLoading(true);
       let addingResponse = await addNewUser(applicantBasicInfo);
+      
       if (addingResponse.data) {
         let updatingResponse = await updateApplicant({
           ...applicant,

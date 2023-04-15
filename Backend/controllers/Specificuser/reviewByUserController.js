@@ -62,7 +62,46 @@ const getReviewByUser = asyncHandler(async (req, res) => {
     res.json(reviewWithUserAndDoc);
   });
   
+  const getReviewById = asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    const review = await Review.findById(id).lean()
+   
+    if (!review) {
+      return res.status(400).json({ message: "Invalid Id" });
+
+    }
+  
+        let Document;
+        switch (review.onModel) {
+          case "Honor":
+            Document = Honor;
+            break;
+          case "Activity":
+            Document = Activity;
+            break;
+          case "Aid":
+            Document = Aid;
+            break;
+          case "Essay":
+            Document = Essay;
+            break;
+          case "Recommendation":
+            Document = Recommendation;
+            break;
+          default:
+            return res.status(400).json({ error: "Invalid document model" });
+        }
+        
+  let document = await Document.findById(review.documentId).lean()
+
+  let user = await User.findById(review.user).lean()
+  
+  
+    res.json({...review, document, user})
+  });
 
   module.exports = {
     getReviewByUser,
+    getReviewById
   }; 

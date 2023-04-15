@@ -10,7 +10,7 @@ const review = require("../models/review");
 
 //get all reviews
 const getAllReviews = asyncHandler(async (req, res) => {
-  const reviews = await Review.find().lean().sort({ createdAt: -1 });
+  const reviews = await Review.find().lean().sort({ updatedAt: -1 });
   // If no undergradute Applicant
   if (!reviews?.length) {
     return res.status(400).json({ message: "No Reviews found" });

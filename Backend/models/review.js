@@ -9,8 +9,8 @@ const reviewSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      default: "pending",
-      enum: ["pending", "rejected", "approved"],
+      default: "unresolved",
+      enum: ["unresolved", "resolved"],
     },
     documentId: {
       type: mongoose.Schema.Types.ObjectId,

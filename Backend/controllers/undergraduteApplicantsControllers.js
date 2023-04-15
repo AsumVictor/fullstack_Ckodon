@@ -100,41 +100,9 @@ const addNewApplicant = asyncHandler(async (req, res) => {
 });
 
 const updateApplicant = asyncHandler(async (req, res) => {
-  const {
-    id,
-    firstName,
-    lastName,
-    email,
-    residence,
-    role,
-    recentSchool,
-    applicationStatus,
-    dateOfBirth,
-    currentUniversity,
-    yearOfCompletion,
-    wassceText,
-    essayQuestion,
-    essayAnswer,
-    phone,
-    gender,
-  } = req.body;
+  const { id, applicationStatus } = req.body;
 
-  const anyEmptyField =
-    !id ||
-    !firstName ||
-    !lastName ||
-    !email ||
-    !residence ||
-    !recentSchool ||
-    !gender ||
-    !role ||
-    !applicationStatus ||
-    !dateOfBirth ||
-    !currentUniversity ||
-    !yearOfCompletion ||
-    !wassceText ||
-    !essayQuestion ||
-    !essayAnswer;
+  const anyEmptyField = !id || !applicationStatus;
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });
@@ -146,32 +114,11 @@ const updateApplicant = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "applicant not found" });
   }
 
-  //check duplicate
-  const duplicate = await UndergraduteApplicant.findOne({ email })
-    .lean()
-    .exec();
-  //allow   original applicant
-  if (duplicate && duplicate?._id.toString() !== id) {
-    return res.status(409).json({ message: "Duplicate email" });
-  }
-
-  applicant.firstName = firstName;
-  applicant.lastName = lastName;
-  applicant.email = email;
-  applicant.residence = residence;
-  applicant.recentSchool = recentSchool;
   applicant.applicationStatus = applicationStatus;
-  applicant.role = role;
-  applicant.gender = gender;
-  applicant.phone = phone;
-  applicant.currentUniversity = currentUniversity;
-  applicant.yearOfCompletion = yearOfCompletion;
-  applicant.wassceText = wassceText;
-  applicant.essayQuestion = essayQuestion;
-  applicant.essayAnswer = essayAnswer;
+
 
   const updatedApplicant = await applicant.save();
-  res.json({ message: `${updatedApplicant.firstName} updated succesfully` });
+  res.json({ message: `${applicant.firstName} updated succesfully` });
 });
 
 module.exports = {
