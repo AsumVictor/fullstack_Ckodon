@@ -9,8 +9,8 @@ const activitySchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
+      enum: ["resolved", "unresolved", ],
+      default: "unresolved",
     },
 
     submitted: {
@@ -43,10 +43,7 @@ const activitySchema = new mongoose.Schema(
     ],
     activities: [
       {
-        type: {
-          type: String,
-          required: true,
-        },
+
         position: {
           type: String,
           required: false,
