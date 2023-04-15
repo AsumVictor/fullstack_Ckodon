@@ -10,8 +10,12 @@ import {
 } from "../../../../apiSlice/reviewsApiSlice";
 import { getASpecificReview } from "../../../../app/api/api";
 import { HiCheck } from "react-icons/hi";
-
+import axios from "axios";
 import { RefreshToolkit } from "../../../../components/toolkits/tollkit";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { HiBadgeCheck } from "react-icons/hi";
+import { CoverLoaderMedium } from "../../../../components/loaders/loader";
 
 function ReviewDetails() {
   const loaderData = useLoaderData();
@@ -26,18 +30,33 @@ function ReviewDetails() {
         >
           <HiChevronDoubleLeft /> Back to all review documents
         </Link>
-        <Suspense fallback={<h1>Loading..</h1>}>
+        <Suspense fallback={<CoverLoaderMedium />}>
           <Await resolve={loaderData.review}>
             {(review) => {
               //Declare global varaible
               const [updateReview] = useUpdateReviewMutation();
               const [reviewDoc, setReviewDoc] = useState(review.document);
-              //State to manage Comments
+              const [status, setStatus] = useState(review.status);
+              const [loading, setLoading] = useState(false);
 
-              console.log(review);
               let DocumentType = review.onModel;
               let content;
 
+              // ------------------General function------------ //
+              async function UpdateReview() {
+                try {
+                  let res = await updateReview({
+                    ...review,
+                    id: review._id,
+                    status: "resolved",
+                  });
+                } catch (error) {
+                  console.log(error);
+                }
+              }
+              // ------------------End of General function------------ //
+
+              // ------------------Honor functions------------ //
               //Update honor Rate
               function UpdateHonorRate(index, text) {
                 const updatedHonors = [...reviewDoc.honors];
@@ -63,26 +82,170 @@ function ReviewDetails() {
 
                 setReviewDoc({ ...reviewDoc, honors: updatedHonors });
               }
-
               // When Click on Done review for honors
               //Update review
               //Update document
               //Update state
               //Show notification
-               function DoneReview() {
-                let updateResponse = updateReview({
-                  ...review,
-                  id: review._id,
-                  status: "resolved",
+              async function DoneReviewHonor() {
+                setLoading(true);
+                const Honors = reviewDoc.honors.map((honor) => {
+                  return {
+                    ...honor,
+                    comments: [...honor.comments, { comment: "" }],
+                  };
                 });
 
+                try {
+                  let res = await updateReview({
+                    ...review,
+                    id: review._id,
+                    status: "resolved",
+                  });
+                  if (res.data) {
+                    await axios
+                      .patch("http://localhost:5000/honors", {
+                        ...reviewDoc,
+                        id: reviewDoc._id,
+                        honors: Honors,
+                        status: "resolved",
+                        submitted: false,
+                      })
+                      .then((res) => {
+                        if (!res.status == 200) {
+                          toast.error(`Error occured try again!!`, {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                          });
+                        }
+                        toast.success(`Review has been resolved`, {
+                          position: "bottom-right",
+                          autoClose: 5000,
+                          hideProgressBar: true,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "colored",
+                        });
+                      })
+                      .then(() => {
+                        setLoading(false);
+                        setStatus("resolved");
+                        setReviewDoc({
+                          ...reviewDoc,
+                          honors: Honors,
+                        });
+                      })
+                      .catch((error) => console.log("Error: ", error))
+                      .finally(() => {
+                        setLoading(false);
+                      });
+                  }
+                } catch (error) {
+                  toast.error(`${error.message}`, {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                  });
+                  setLoading(false);
+                }
               }
 
-              //Honor comment
+              //re-review Honor
+              async function reReviewHonor() {
+                setLoading(true);
+                try {
+                  let res = await updateReview({
+                    ...review,
+                    id: review._id,
+                    status: "unresolved",
+                  });
+                  if (res.data) {
+                    await axios
+                      .patch("http://localhost:5000/honors", {
+                        ...reviewDoc,
+                        id: reviewDoc._id,
+                        status: "unresolved",
+                        submitted: true,
+                      })
+                      .then((res) => {
+                        if (!res.status == 200) {
+                          toast.error(`Error occured try again!!`, {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                          });
+                        }
+
+                        toast.success(
+                          `You can review this ${review.onModel} again`,
+                          {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                          }
+                        );
+                      })
+                      .then(() => {
+                        setLoading(false);
+                        setStatus("unresolved");
+                        setReviewDoc({
+                          ...reviewDoc,
+                          id: reviewDoc._id,
+                          status: "unresolved",
+                          submitted: true,
+                        });
+                      })
+                      .catch((error) => console.log("Error: ", error))
+                      .finally(() => {
+                        setLoading(false);
+                      });
+                  }
+                } catch (error) {
+                  toast.error(`${error.message}`, {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                  });
+                  setLoading(false);
+                }
+              }
+              // ------------------Honor functions ends------------ //
 
               //Render according document type
-
               //Render Honors
+
+              if (loading) {
+                return <CoverLoaderMedium />;
+              }
+
               if (DocumentType == "Honor") {
                 content = (
                   <>
@@ -95,11 +258,27 @@ function ReviewDetails() {
                           {`from: ${review.user.school}`}
                         </span>
                       </h1>
-                      <button className="flex flex-row gap-x-1 items-center capitalize py-1 px-2 bg-MdBlue font-bold text-white rounded-md"
-                      onClick={()=>DoneReview()}
-                      >
-                        <HiCheck /> Done review
-                      </button>
+
+                      {status == "resolved" ? (
+                        <div className="flex flex-row items-center gap-x-3">
+                          <h2 className="flex flex-row gap-x-2 text-emerald-600 font-bold text-20 items-center">
+                            <HiBadgeCheck /> Resolved
+                          </h2>
+                          <button
+                            className="px-2 py-1 font-bold bg-MdBlue text-white rounded-md"
+                            onClick={() => reReviewHonor()}
+                          >
+                            Re-review
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          className="flex flex-row gap-x-1 items-center capitalize py-1 px-2 bg-MdBlue font-bold text-white rounded-md"
+                          onClick={() => DoneReviewHonor()}
+                        >
+                          <HiCheck /> Done review
+                        </button>
+                      )}
                     </div>
 
                     {reviewDoc.honors.map((honor, index) => (
@@ -157,19 +336,31 @@ function ReviewDetails() {
                             {/* Rate This honor */}
                             <div className="w-full flex flex-row px-2 gap-x-5 mt-5">
                               <span
-                                className="text-red-500 font-bold px-2 border-2 rounded-md border-red-500 cursor-pointer"
+                                className={`text-red-500  font-bold px-2 border-2 rounded-md border-red-500 cursor-pointer ${
+                                  honor.rate == "bad"
+                                    ? "bg-red-500 text-white"
+                                    : null
+                                }`}
                                 onClick={() => UpdateHonorRate(index, "bad")}
                               >
                                 Bad
                               </span>
                               <span
-                                className="text-blue-500 font-bold px-2 border-2 rounded-md border-blue-500 cursor-pointer"
+                                className={`text-blue-500  font-bold px-2 border-2 rounded-md border-blue-500 cursor-pointer ${
+                                  honor.rate == "normal"
+                                    ? "bg-blue-500 text-white"
+                                    : null
+                                }`}
                                 onClick={() => UpdateHonorRate(index, "normal")}
                               >
                                 Normal
                               </span>
                               <span
-                                className="text-emerald-500 font-bold px-2 border-2 rounded-md border-emerald-500 cursor-pointer"
+                                className={`text-emerald-500  font-bold px-2 border-2 rounded-md border-emerald-500 cursor-pointer ${
+                                  honor.rate == "good"
+                                    ? "bg-emerald-500 text-white"
+                                    : null
+                                }`}
                                 onClick={() => UpdateHonorRate(index, "good")}
                               >
                                 Good
@@ -183,6 +374,10 @@ function ReviewDetails() {
                               <textarea
                                 name="comment"
                                 id="comment"
+                                value={
+                                  honor.comments[honor.comments.length - 1]
+                                    .comment
+                                }
                                 className="w-full md:w-8/12 resize-none border-2 border-blue-400 p-3"
                                 rows="10"
                                 onChange={(e) => UpdateComment(e, index)}
@@ -193,21 +388,25 @@ function ReviewDetails() {
                         {/* Previous Comments here */}
                         <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-3">
                           <h2 className="self-center font-bold capitalize">
-                            comments
+                            Your Previous comments
                           </h2>
-                          <div className="w-full bg-slate-300 py-1 px-2 rounded-md flex flex-col">
-                            <h2>
-                              Lorem ipsum dolor sit amet consectetur adipisicing
-                              elit. Consectetur veritatis nam consequuntur
-                              ratione aut earum, eius dolorum molestias quia
-                              neque. Dolorum itaque ipsam iusto eveniet
-                              reiciendis consectetur dignissimos cumque nulla?
-                            </h2>
-
-                            <span className="self-end font-bold">
-                              20/12/2022
-                            </span>
-                          </div>
+                          {honor.comments.map((comment) => {
+                            if (comment.comment !== "" && comment.comment) {
+                              return (
+                                <div
+                                  className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
+                                  key={comment._id}
+                                >
+                                  {comment.comment && (
+                                    <h2>{comment.comment}</h2>
+                                  )}
+                                  {comment.date && (
+                                    <span className="self-end font-bold"></span>
+                                  )}
+                                </div>
+                              );
+                            }
+                          })}
                         </div>
                       </div>
                     ))}
@@ -215,11 +414,52 @@ function ReviewDetails() {
                 );
               }
 
+              if (DocumentType == "Activity") {
+                content = (
+                  <>
+                    <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2 md:justify-between justify-around items-center w-full flex-wrap gap-y-2 mt-5   sticky -top-5">
+                      <h1 className="capitalize flex-col flex">
+                        <span className="font-bold">
+                          {`submitted by: ${review.user.firstName} ${review.user.lastName}`}
+                        </span>
+                        <span className="text-gray-700 font-semibold">
+                          {`from: ${review.user.school}`}
+                        </span>
+                      </h1>
+
+                      {status == "resolved" ? (
+                        <div className="flex flex-row items-center gap-x-3">
+                          <h2 className="flex flex-row gap-x-2 text-emerald-600 font-bold text-20 items-center">
+                            <HiBadgeCheck /> Resolved
+                          </h2>
+                          <button
+                            className="px-2 py-1 font-bold bg-MdBlue text-white rounded-md"
+                            // onClick={() => reReviewHonor()}
+                          >
+                            Re-review
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          className="flex flex-row gap-x-1 items-center capitalize py-1 px-2 bg-MdBlue font-bold text-white rounded-md"
+                          // onClick={() => DoneReviewHonor()}
+                        >
+                          <HiCheck /> Done review
+                        </button>
+                      )}
+                    </div>
+                  </>
+                );
+              }
+
+              
+
               return content;
             }}
           </Await>
         </Suspense>
       </Page>
+      <ToastContainer />
     </>
   );
 }
