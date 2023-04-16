@@ -26,7 +26,7 @@ function ReviewDetails() {
         <Link
           to=".."
           relative="path"
-          className="text-MdBlue font-semibold flex items-center gap-1"
+          className="text-MdBlue font-semibold mt-10 flex items-center gap-1"
         >
           <HiChevronDoubleLeft /> Back to all review documents
         </Link>
@@ -38,17 +38,9 @@ function ReviewDetails() {
               const [reviewDoc, setReviewDoc] = useState(review.document);
               const [status, setStatus] = useState(review.status);
               const [loading, setLoading] = useState(false);
-              const [textareaValue, setTextareaValue] = useState("");
-              const [htmlString, setHtmlString] = useState("");
+
               // Convert textarea value to HTML elements
-              const htmlElements = () => {
-                const lines = textareaValue.split("\n");
-                const htmlString = lines.map((line, index) => (
-                  <p key={index}>{line}</p>
-                ));
-                console.log(textareaValue);
-                return htmlString;
-              };
+              
               let DocumentType = review.onModel;
               let content;
 
@@ -435,6 +427,200 @@ function ReviewDetails() {
 
               // ------------------Activity functions ends------------ //
 
+               // ------------------Essayas functions starts------------ //
+               function UpdateEssayRate(index, text) {
+                const updatedEssays = [...reviewDoc.essays];
+                updatedEssays[index] = {
+                  ...updatedEssays[index],
+                  rate: text,
+                };
+                setReviewDoc({ ...reviewDoc, essays: updatedEssays });
+              }
+
+              function UpdateEssayComment(e, index) {
+                const updatedEssays = [...reviewDoc.essays];
+                const updatedComment = [...updatedEssays[index].comments];
+                updatedComment[updatedComment.length - 1] = {
+                  ...updatedComment[updatedComment.length - 1],
+                  comment: e.target.value,
+                  timeDate: new Date(),
+                };
+                updatedEssays[index] = {
+                  ...updatedEssays[index],
+                  comments: updatedComment,
+                };
+
+                setReviewDoc({ ...reviewDoc, essays: updatedEssays });
+              }
+
+              async function DoneReviewEssay() {
+                setLoading(true);
+                const Essays = reviewDoc.essays.map((essay) => {
+                  return {
+                    ...essay,
+                    comments: [...essay.comments, { comment: "" }],
+                  };
+                });
+
+                try {
+                  let res = await updateReview({
+                    ...review,
+                    id: review._id,
+                    status: "resolved",
+                  });
+
+                  console.log(res);
+
+                  if (res.data) {
+                    await axios
+                      .patch("http://localhost:5000/essays", {
+                        ...reviewDoc,
+                        id: reviewDoc._id,
+                        status: "resolved",
+                        submitted: false,
+                        essays: Essays,
+                      })
+                      .then((res) => {
+                        if (!res.status == 200) {
+                          toast.error(`Error occured try again!!`, {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                          });
+                        }
+                        toast.success(`Review has been resolved`, {
+                          position: "bottom-right",
+                          autoClose: 5000,
+                          hideProgressBar: true,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "colored",
+                        });
+                      })
+                      .then(() => {
+                        setLoading(false);
+                        setStatus("resolved");
+                        setReviewDoc({
+                          ...reviewDoc,
+                          essays: Essays,
+                        });
+                      })
+                      .catch((error) => {
+                        console.log("Error: ", error);
+                        toast.error(`${error.response.data.message}`, {
+                          position: "bottom-right",
+                          autoClose: 5000,
+                          hideProgressBar: true,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "colored",
+                        });
+                      })
+                      .finally(() => {
+                        setLoading(false);
+                      });
+                  }
+                } catch (error) {
+                  console.log(error);
+                  toast.error(`${error.message}`, {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                  });
+                  setLoading(false);
+                }
+              }
+
+              async function reReviewEssay() {
+                setLoading(true);
+                try {
+                  let res = await updateReview({
+                    ...review,
+                    id: review._id,
+                    status: "unresolved",
+                  });
+                  if (res.data) {
+                    await axios
+                      .patch("http://localhost:5000/essays", {
+                        ...reviewDoc,
+                        id: reviewDoc._id,
+                        status: "unresolved",
+                        submitted: true,
+                      })
+                      .then((res) => {
+                        if (!res.status == 200) {
+                          toast.error(`Error occured try again!!`, {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                          });
+                        }
+
+                        toast.success(
+                          `You can review this ${review.onModel} again`,
+                          {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                          }
+                        );
+                      })
+                      .then(() => {
+                        setLoading(false);
+                        setStatus("unresolved");
+                        setReviewDoc({
+                          ...reviewDoc,
+                          id: reviewDoc._id,
+                          status: "unresolved",
+                          submitted: true,
+                        });
+                      })
+                      .catch((error) => console.log("Error: ", error))
+                      .finally(() => {
+                        setLoading(false);
+                      });
+                  }
+                } catch (error) {
+                  toast.error(`${error.message}`, {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                  });
+                  setLoading(false);
+                }
+              }
+
+                // ------------------Essayas functions ends------------ //
+
               //Render according document type
               //Render Honors
 
@@ -582,35 +768,36 @@ function ReviewDetails() {
                           </div>
                         </div>
                         {/* Previous Comments here */}
-                        <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-3">
+                        <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-3 overflow-x-hidden">
                           <h2 className="self-center font-bold capitalize">
                             Your Previous comments
                           </h2>
                           {honor.comments.map((comment) => {
-                            if (comment.comment !== "" && comment.comment) {
-                              const lines = comment.comment.split("\n");
-                              const commentParagraphs = lines.map(
-                                (line, index) => (
-                                  <p className="mt-2" key={index}>
-                                    {line}
-                                  </p>
-                                )
-                              );
-                              return (
-                                <div
-                                  className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
-                                  key={comment._id}
-                                >
-                                  {comment.comment && (
-                                    <h2>{commentParagraphs}</h2>
-                                  )}
-                                  {comment.date && (
-                                    <span className="self-end font-bold"></span>
-                                  )}
-                                </div>
-                              );
-                            }
-                          })}
+                              if (comment.comment !== "" && comment.comment) {
+                                const lines = comment.comment.split("\n");
+                                const commentParagraphs = lines.map(
+                                  (line, index) => (
+                                    <span className="mt-1 w-full overflow-x-hidden" key={index}>
+                                      {line}
+                                    </span>
+                                  )
+                                );
+                                
+                                return (
+                                  <div
+                                    className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
+                                    key={comment._id}
+                                  >
+                                    {comment.comment && (
+                                      <div className="w-full flex flex-col">{commentParagraphs}</div>
+                                    )}
+                                    {comment.timeDate && (
+                                      <span className="self-end font-bold"></span>
+                                    )}
+                                  </div>
+                                );
+                              }
+                            })}
                         </div>
                       </div>
                     ))}
@@ -714,7 +901,7 @@ function ReviewDetails() {
                                   ? "bg-red-500 text-white"
                                   : null
                               }`}
-                              onClick={() => UpdateActivityRate(index, "bad")}
+                              // onClick={() => UpdateActivityRate(index, "bad")}
                             >
                               Bad
                             </span>
@@ -736,7 +923,7 @@ function ReviewDetails() {
                                   ? "bg-emerald-500 text-white"
                                   : null
                               }`}
-                              onClick={() => UpdateActivityRate(index, "good")}
+                              // onClick={() => UpdateActivityRate(index, "good")}
                             >
                               Good
                             </span>
@@ -764,30 +951,31 @@ function ReviewDetails() {
                           </h2>
 
                           {activity.comments.map((comment) => {
-                            if (comment.comment !== "" && comment.comment) {
-                              const lines = comment.comment.split("\n");
-                              const commentParagraphs = lines.map(
-                                (line, index) => (
-                                  <p className="mt-2" key={index}>
-                                    {line}
-                                  </p>
-                                )
-                              )
-                              return (
-                                <div
-                                  className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
-                                  key={comment._id}
-                                >
-                                  {comment.comment && (
-                                    <h2>{commentParagraphs}</h2>
-                                  )}
-                                  {comment.timeDate && (
-                                    <span className="self-end font-bold"></span>
-                                  )}
-                                </div>
-                              );
-                            }
-                          })}
+                              if (comment.comment !== "" && comment.comment) {
+                                const lines = comment.comment.split("\n");
+                                const commentParagraphs = lines.map(
+                                  (line, index) => (
+                                    <p className="mt-1" key={index}>
+                                      {line}
+                                    </p>
+                                  )
+                                );
+                                
+                                return (
+                                  <div
+                                    className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
+                                    key={comment._id}
+                                  >
+                                    {comment.comment && (
+                                      <div className="w-full flex flex-col">{commentParagraphs}</div>
+                                    )}
+                                    {comment.timeDate && (
+                                      <span className="self-end font-bold"></span>
+                                    )}
+                                  </div>
+                                );
+                              }
+                            })}
                         </div>
                       </div>
                     ))}
@@ -816,15 +1004,16 @@ function ReviewDetails() {
                           </h2>
                           <button
                             className="px-2 py-1 font-bold bg-MdBlue text-white rounded-md"
-                            // onClick={() => reReviewActivity()}
+                             onClick={() => reReviewEssay()}
                           >
                             Re-review
+                            
                           </button>
                         </div>
                       ) : (
                         <button
                           className="flex flex-row gap-x-1 items-center capitalize py-1 px-2 bg-MdBlue font-bold text-white rounded-md"
-                          // onClick={() => DoneReviewActivity()}
+                           onClick={() => DoneReviewEssay()}
                         >
                           <HiCheck /> Done review
                         </button>
@@ -832,39 +1021,132 @@ function ReviewDetails() {
                     </div>
 
                     <h2 className="self-center text-2xl text-MdBlue font-bold mt-5">
-                      Princeton University Essays
+                      {`${reviewDoc.schoolName} Essays`}
                     </h2>
-
-                    <div className="w-full mt-10 py-2 flex flex-row flex-wrap rounded-md bg-slate-100">
-                      <div className="w-full md:w-8/12 py-1 flex flex-col">
-                        <h2 className="font-bold">
-                          Describe why you are interested in studying
-                          engineering at Princeton. Include any of your
-                          experiences in, or exposure to engineering, and how
-                          you think the programs offered at the University suit
-                          your particular interests.
-                        </h2>
-
-                        <p>
-                          {/* Growing up, I always took things apart to see how they worked and then focused my energy on reassembling them. This curiosity has stayed with me. During high school, I channeled this curiosity and explored my interest in engineering by joining the robotics club to learn more about artificial intelligence and design. This experience was enriching and further heightened my passion for engineering. My experience at the Hour of Code program in high school, where I was taught to code from scratch, also sparked my interest in computer science. Hence, the computer science in Bachelor of Science in Engineering (BSE) at Princeton is the right fit for me, given its interdisciplinary nature.
-
- As I embark on my journey to improve my understanding of artificial intelligence through the Machine Learning and Artificial Intelligence course (COS402) with Professor David M. Blei, I am also excited to dive deeper into the world of food production and consumption through Princeton's CPREE program. Coming from a low-income farming background, I am eager to use this knowledge to create innovative tech solutions for more efficient, organic farming practices. In addition, the independent work seminar will allow me to work with diverse groups and approach problems creatively while developing valuable teamwork skills. I am thrilled about joining the Princeton Entrepreneurship Club, where I can learn the ins and outs of entrepreneurship and work towards turning my passion for technology and agriculture into a profitable and scalable venture.
- 
-  Given the above, studying at Princeton is the immediate next step toward my vision of thriving personally, academically, and professionally. */}
+                    {reviewDoc.essays.map((essay, index) => {
+                      const lines = essay.answer.split("\n");
+                      const essayParagraphs = lines.map((line, index) => (
+                        <p className="mt-3" key={index}>
+                          {line}
                         </p>
-                        {textareaValue}
+                      ));
+                      return (
+                        <div className="w-full mt-10 py-2 flex flex-row flex-wrap rounded-md bg-slate-100">
+                          <div className="w-full md:w-8/12 py-1 flex flex-col px-2 md:px-5">
 
-                        <div>
-                          <textarea
-                            value={textareaValue}
-                            onChange={(e) => setTextareaValue(e.target.value)}
-                          />
-                          <div>{htmlElements()}</div>
+
+                          <h2 className="font-bold flex items-center flex-row gap-x-2">
+                            <span className="text-MdBlue text-20">
+                              Essay {index + 1}
+                            </span>
+                            <span
+                              className={`capitalize no-underline  ${
+                                essay.rate == "bad"
+                                  ? "text-red-500"
+                                  : essay.rate == "good"
+                                  ? "text-emerald-600"
+                                  : essay.rate == "normal"
+                                  ? "text-blue-500"
+                                  : null
+                              }`}
+                            >
+                              {essay.rate == "notRated"
+                                ? "Not rated"
+                                : essay.rate}
+                            </span>
+                          </h2>
+
+                            <h2 className="font-bold mt-2">{essay.question}</h2>
+
+                            <div className="w-full mt-4">
+                              {essayParagraphs}
+                            </div>
+
+                            <div className="w-full flex flex-row px-2 gap-x-5 mt-5">
+                              <span
+                                className={`text-red-500  font-bold px-2 border-2 rounded-md border-red-500 cursor-pointer ${
+                                  essay.rate == "bad"
+                                    ? "bg-red-500 text-white"
+                                    : null
+                                }`}
+                                 onClick={() => UpdateEssayRate(index, "bad")}
+                              >
+                                Bad
+                              </span>
+                              <span
+                                className={`text-blue-500  font-bold px-2 border-2 rounded-md border-blue-500 cursor-pointer ${
+                                  essay.rate == "normal"
+                                    ? "bg-blue-500 text-white"
+                                    : null
+                                }`}
+                                onClick={() => UpdateEssayRate(index, "normal")}
+                              >
+                                Normal
+                              </span>
+                              <span
+                                className={`text-emerald-500  font-bold px-2 border-2 rounded-md border-emerald-500 cursor-pointer ${
+                                  essay.rate == "good"
+                                    ? "bg-emerald-500 text-white"
+                                    : null
+                                }`}
+                                onClick={() => UpdateEssayRate(index, "good")}
+                              >
+                                Good
+                              </span>
+                            </div>
+
+                            <div className="w-full flex flex-col px-2">
+                              <h2 className="mt-10">Add comment here</h2>
+
+                              <textarea
+                                name="comment"
+                                id="comment"
+                                value={
+                                  essay.comments[essay.comments.length - 1]
+                                    .comment
+                                }
+                                className="w-full md:w-8/12 resize-none border-2 border-blue-400 p-3"
+                                rows="10"
+                                onChange={(e) => UpdateEssayComment(e, index)}
+                              ></textarea>
+                            </div>
+                          </div>
+
+                          <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-5 overflow-x-hidden">
+                            <h2 className="self-center font-bold capitalize">
+                              Your Previous comments
+                            </h2>
+
+                            {essay.comments.map((comment) => {
+                              if (comment.comment !== "" && comment.comment) {
+                                const lines = comment.comment.split("\n");
+                                const commentParagraphs = lines.map(
+                                  (line, index) => (
+                                    <p className="mt-1" key={index}>
+                                      {line}
+                                    </p>
+                                  )
+                                );
+                                
+                                return (
+                                  <div
+                                    className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
+                                    key={comment._id}
+                                  >
+                                    {comment.comment && (
+                                      <div className="w-full flex flex-col">{commentParagraphs}</div>
+                                    )}
+                                    {comment.timeDate && (
+                                      <span className="self-end font-bold"></span>
+                                    )}
+                                  </div>
+                                );
+                              }
+                            })}
+                          </div>
                         </div>
-                      </div>
-
-                      <div className="w-full md:w-4/12 py-1 bg-blue-400"></div>
-                    </div>
+                      );
+                    })}
                   </>
                 );
               }
