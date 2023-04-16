@@ -9,8 +9,8 @@ const recommendationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["finished", "notFinished", "pending"],
-      default: "pending",
+      enum: ["resolved", "unresolved"],
+      default: "unresolved",
     },
 
     submitted: {
@@ -57,6 +57,7 @@ const recommendationSchema = new mongoose.Schema(
               default: "notRated",
               required: false,
             },
+            
             comments: [
               {
                 comment: {
