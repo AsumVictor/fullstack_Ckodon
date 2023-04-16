@@ -38,7 +38,17 @@ function ReviewDetails() {
               const [reviewDoc, setReviewDoc] = useState(review.document);
               const [status, setStatus] = useState(review.status);
               const [loading, setLoading] = useState(false);
-
+              const [textareaValue, setTextareaValue] = useState("");
+              const [htmlString, setHtmlString] = useState("");
+              // Convert textarea value to HTML elements
+              const htmlElements = () => {
+                const lines = textareaValue.split("\n");
+                const htmlString = lines.map((line, index) => (
+                  <p key={index}>{line}</p>
+                ));
+                console.log(textareaValue);
+                return htmlString;
+              };
               let DocumentType = review.onModel;
               let content;
 
@@ -271,14 +281,17 @@ function ReviewDetails() {
                     id: review._id,
                     status: "resolved",
                   });
+
+                  console.log(res);
+
                   if (res.data) {
                     await axios
                       .patch("http://localhost:5000/activities", {
                         ...reviewDoc,
                         id: reviewDoc._id,
-                        activities: Activities,
                         status: "resolved",
                         submitted: false,
+                        activities: Activities,
                       })
                       .then((res) => {
                         if (!res.status == 200) {
@@ -314,7 +327,7 @@ function ReviewDetails() {
                       })
                       .catch((error) => {
                         console.log("Error: ", error);
-                        toast.error(`${error.message}`, {
+                        toast.error(`${error.response.data.message}`, {
                           position: "bottom-right",
                           autoClose: 5000,
                           hideProgressBar: true,
@@ -330,6 +343,7 @@ function ReviewDetails() {
                       });
                   }
                 } catch (error) {
+                  console.log(error);
                   toast.error(`${error.message}`, {
                     position: "bottom-right",
                     autoClose: 5000,
@@ -574,13 +588,21 @@ function ReviewDetails() {
                           </h2>
                           {honor.comments.map((comment) => {
                             if (comment.comment !== "" && comment.comment) {
+                              const lines = comment.comment.split("\n");
+                              const commentParagraphs = lines.map(
+                                (line, index) => (
+                                  <p className="mt-2" key={index}>
+                                    {line}
+                                  </p>
+                                )
+                              );
                               return (
                                 <div
                                   className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
                                   key={comment._id}
                                 >
                                   {comment.comment && (
-                                    <h2>{comment.comment}</h2>
+                                    <h2>{commentParagraphs}</h2>
                                   )}
                                   {comment.date && (
                                     <span className="self-end font-bold"></span>
@@ -597,7 +619,6 @@ function ReviewDetails() {
               }
 
               if (DocumentType == "Activity") {
-                console.log(reviewDoc);
                 content = (
                   <>
                     <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2 md:justify-between justify-around items-center w-full flex-wrap gap-y-2 mt-5   sticky -top-5">
@@ -617,7 +638,7 @@ function ReviewDetails() {
                           </h2>
                           <button
                             className="px-2 py-1 font-bold bg-MdBlue text-white rounded-md"
-                            // onClick={() => reReviewHonor()}
+                            onClick={() => reReviewActivity()}
                           >
                             Re-review
                           </button>
@@ -625,7 +646,7 @@ function ReviewDetails() {
                       ) : (
                         <button
                           className="flex flex-row gap-x-1 items-center capitalize py-1 px-2 bg-MdBlue font-bold text-white rounded-md"
-                           onClick={() => DoneReviewActivity()}
+                          onClick={() => DoneReviewActivity()}
                         >
                           <HiCheck /> Done review
                         </button>
@@ -744,13 +765,21 @@ function ReviewDetails() {
 
                           {activity.comments.map((comment) => {
                             if (comment.comment !== "" && comment.comment) {
+                              const lines = comment.comment.split("\n");
+                              const commentParagraphs = lines.map(
+                                (line, index) => (
+                                  <p className="mt-2" key={index}>
+                                    {line}
+                                  </p>
+                                )
+                              )
                               return (
                                 <div
                                   className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
                                   key={comment._id}
                                 >
                                   {comment.comment && (
-                                    <h2>{comment.comment}</h2>
+                                    <h2>{commentParagraphs}</h2>
                                   )}
                                   {comment.timeDate && (
                                     <span className="self-end font-bold"></span>
@@ -762,6 +791,80 @@ function ReviewDetails() {
                         </div>
                       </div>
                     ))}
+                  </>
+                );
+              }
+
+              if (DocumentType == "Essay") {
+                console.log(reviewDoc);
+                content = (
+                  <>
+                    <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2 md:justify-between justify-around items-center w-full flex-wrap gap-y-2 mt-5   sticky -top-5">
+                      <h1 className="capitalize flex-col flex">
+                        <span className="font-bold">
+                          {`submitted by: ${review.user.firstName} ${review.user.lastName}`}
+                        </span>
+                        <span className="text-gray-700 font-semibold">
+                          {`from: ${review.user.school}`}
+                        </span>
+                      </h1>
+
+                      {status == "resolved" ? (
+                        <div className="flex flex-row items-center gap-x-3">
+                          <h2 className="flex flex-row gap-x-2 text-emerald-600 font-bold text-20 items-center">
+                            <HiBadgeCheck /> Resolved
+                          </h2>
+                          <button
+                            className="px-2 py-1 font-bold bg-MdBlue text-white rounded-md"
+                            // onClick={() => reReviewActivity()}
+                          >
+                            Re-review
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          className="flex flex-row gap-x-1 items-center capitalize py-1 px-2 bg-MdBlue font-bold text-white rounded-md"
+                          // onClick={() => DoneReviewActivity()}
+                        >
+                          <HiCheck /> Done review
+                        </button>
+                      )}
+                    </div>
+
+                    <h2 className="self-center text-2xl text-MdBlue font-bold mt-5">
+                      Princeton University Essays
+                    </h2>
+
+                    <div className="w-full mt-10 py-2 flex flex-row flex-wrap rounded-md bg-slate-100">
+                      <div className="w-full md:w-8/12 py-1 flex flex-col">
+                        <h2 className="font-bold">
+                          Describe why you are interested in studying
+                          engineering at Princeton. Include any of your
+                          experiences in, or exposure to engineering, and how
+                          you think the programs offered at the University suit
+                          your particular interests.
+                        </h2>
+
+                        <p>
+                          {/* Growing up, I always took things apart to see how they worked and then focused my energy on reassembling them. This curiosity has stayed with me. During high school, I channeled this curiosity and explored my interest in engineering by joining the robotics club to learn more about artificial intelligence and design. This experience was enriching and further heightened my passion for engineering. My experience at the Hour of Code program in high school, where I was taught to code from scratch, also sparked my interest in computer science. Hence, the computer science in Bachelor of Science in Engineering (BSE) at Princeton is the right fit for me, given its interdisciplinary nature.
+
+ As I embark on my journey to improve my understanding of artificial intelligence through the Machine Learning and Artificial Intelligence course (COS402) with Professor David M. Blei, I am also excited to dive deeper into the world of food production and consumption through Princeton's CPREE program. Coming from a low-income farming background, I am eager to use this knowledge to create innovative tech solutions for more efficient, organic farming practices. In addition, the independent work seminar will allow me to work with diverse groups and approach problems creatively while developing valuable teamwork skills. I am thrilled about joining the Princeton Entrepreneurship Club, where I can learn the ins and outs of entrepreneurship and work towards turning my passion for technology and agriculture into a profitable and scalable venture.
+ 
+  Given the above, studying at Princeton is the immediate next step toward my vision of thriving personally, academically, and professionally. */}
+                        </p>
+                        {textareaValue}
+
+                        <div>
+                          <textarea
+                            value={textareaValue}
+                            onChange={(e) => setTextareaValue(e.target.value)}
+                          />
+                          <div>{htmlElements()}</div>
+                        </div>
+                      </div>
+
+                      <div className="w-full md:w-4/12 py-1 bg-blue-400"></div>
+                    </div>
                   </>
                 );
               }

@@ -2,12 +2,14 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { selectReviewById } from "../../../../apiSlice/reviewsApiSlice";
 import { Link } from "react-router-dom";
+import { HiBadgeCheck } from "react-icons/hi";
+
 
 const Review = ({ reviewId, index }) => {
   const review = useSelector((state) => selectReviewById(state, reviewId))
   if (review) {
     const reviewTrContent = (
-        <tr className="bg-white cursor-pointer border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+        <tr className="bg-white cursor-pointer border-2 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
         <td className="px-6 py-4 tabel-hide">{index}</td>
         <th
           scope="row"
@@ -16,16 +18,23 @@ const Review = ({ reviewId, index }) => {
           {review.onModel}
         </th>
         <td
-          className={`px-6 py-4 capitalize ${
-            review.status == "pending"
-              ? "text-blue-600"
-              : review.status == "approved"
-              ? "text-emerald-500"
-              : review.status == "approved"
-              ? "text-pink-500"
-              : null
+          className={`px-6 py-4 capitalize flex flex-row gap-x-1 items-center ${
+            review.status == "unresolved"
+              ? "text-blue-600 font-bold"
+              : review.status == "resolved"
+              ? "text-emerald-500 font-bold"
+                           : null
           }`}
-        >{review.status}</td>
+        >{
+          review.status == "unresolved"
+            ? "pending"
+            : review.status == "resolved"
+            ?( <>
+            <HiBadgeCheck />
+            <span>resolved</span>
+            </>  )
+                         : null
+        }</td>
         <td className="px-6 py-4 tabel-hide">{review.deadline}</td>
         <td className="px-6 py-4 ">{`${review.student.firstName} ${review.student.lastName}`}</td>
         <td className="px-6 py-4 text-right">

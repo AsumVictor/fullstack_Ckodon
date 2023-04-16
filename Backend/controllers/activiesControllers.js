@@ -61,7 +61,7 @@ const addNewActivity = asyncHandler(async (req, res) => {
 const updateActivity = asyncHandler(async (req, res) => {
   const { id, status, submitted, activities } = req.body;
 
-  const anyEmptyField = !status || !submitted || !Array.isArray(activities);
+  const anyEmptyField = !id || !status || !typeof submitted == 'boolean' || !Array.isArray(activities);
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });

@@ -3,10 +3,10 @@ import { apiSlice } from "../app/api/apiSlice";
 
 const reviewsAdapter = createEntityAdapter({
   sortComparer: (a, b) => {
-    if (a.status === "pending" && b.status !== "pending") {
+    if (a.status === "unresolved" && b.status !== "unresolved") {
       return -1; // a comes first
     }
-    if (a.status !== "pending" && b.status === "pending") {
+    if (a.status !== "unresolved" && b.status === "unresolved") {
       return 1; // b comes first
     }
     return 0; // no change in order
