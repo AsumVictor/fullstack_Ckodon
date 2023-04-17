@@ -17,13 +17,14 @@ import UnderConstruction from "./components/indications/underConstruction";
 //PAges FOR ADMIN
 import SharedLayout from "./features/admin/layouts/shareLayout";
 import AllStudent from "./features/admin/currentStudents/undergraduate/allStudent";
-import StudentDetails from "./features/admin/currentStudents/undergraduate/studentDetails";
+import StudentDetails, {ReviewFromUserLoader} from "./features/admin/currentStudents/undergraduate/studentDetails";
 import AllApplicants from "./features/admin/applicants/undergraduate/allApplicants";
 import ApplicantDetails from "./features/admin/applicants/undergraduate/applicantsDetails";
 import UndergraduateReviews from "./features/admin/reviews/undergraduates/reviews";
 import UndergraduateReviewDetails, {
   SpecficReviewLoader,
 } from "./features/admin/reviews/undergraduates/reviewDetails";
+import StudentDocDetails_ug  from "./features/admin/currentStudents/undergraduate/studentDocDetails";
 
 //Pages for studentsudent
 import Student_SharedLayout from "./features/undergrad_students/layout/student_layout";
@@ -45,9 +46,9 @@ const router = createBrowserRouter(
         <Route path="undergraduate-students">
           <Route index element={<AllStudent />}></Route>
 
-          <Route path=":id" element={<StudentDetails />} />
+          <Route path=":id" element={<StudentDetails />} loader={ReviewFromUserLoader}/>
 
-          <Route path=":id/:id" element={<h1>Document</h1>} />
+          <Route path=":id/:id" element={<StudentDocDetails_ug/>} />
         </Route>
 
         {/* Layouts */}

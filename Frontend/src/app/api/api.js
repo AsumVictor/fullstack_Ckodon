@@ -17,3 +17,18 @@ import axios from 'axios';
   return data
 }
 
+export async function getAUserReview(id) {
+  let response = await axios.get(`http://localhost:5000/undergradeReviews/user/${id}`)
+  if(!response.status == 200){
+    throw {
+      message: "Failed to fetch Review", 
+      statusText: response.statusText,
+      status: response.status
+  }
+  }
+
+  let data = await response.data
+ 
+  return data
+}
+

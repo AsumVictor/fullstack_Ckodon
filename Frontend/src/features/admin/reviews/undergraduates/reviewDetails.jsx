@@ -425,7 +425,7 @@ function ReviewDetails() {
 
               // ------------------Activity functions ends------------ //
 
-              // ------------------Essayas functions starts------------ //
+              // ------------------Aidas functions starts------------ //
               function UpdateEssayRate(index, text) {
                 const updatedEssays = [...reviewDoc.essays];
                 updatedEssays[index] = {
@@ -651,50 +651,64 @@ function ReviewDetails() {
               function UpdateLetterComment(
                 e,
                 recommendationIndex,
-                letterIndex,
+                letterIndex
               ) {
                 let updatedRecommendations = [...reviewDoc.recommendations];
                 let updatedRecommendation = {
                   ...updatedRecommendations[recommendationIndex],
                 };
-                 let updatedLetters = [...updatedRecommendation.letters]
-                 let updatedLetter = {...updatedLetters[letterIndex]}
+                let updatedLetters = [...updatedRecommendation.letters];
+                let updatedLetter = { ...updatedLetters[letterIndex] };
 
-                 let updatedComments = [...updatedLetter.comments]
-                 let updatedComment = {...updatedComments[updatedComments.length -1]}
-                 updatedComment = {
+                let updatedComments = [...updatedLetter.comments];
+                let updatedComment = {
+                  ...updatedComments[updatedComments.length - 1],
+                };
+                updatedComment = {
                   ...updatedComment,
-                  comment: e.target.value
-                 }
+                  comment: e.target.value,
+                };
 
-                 updatedComments[updatedComments.length -1] = updatedComment
-                 updatedLetter = {
-                   ...updatedLetter,
-                   comments: updatedComments
-                 }
+                updatedComments[updatedComments.length - 1] = updatedComment;
+                updatedLetter = {
+                  ...updatedLetter,
+                  comments: updatedComments,
+                };
 
-                 updatedLetters[letterIndex] = updatedLetter
-                 updatedRecommendation = {
+                updatedLetters[letterIndex] = updatedLetter;
+                updatedRecommendation = {
                   ...updatedRecommendation,
-                  letters: updatedLetters
-                 }
+                  letters: updatedLetters,
+                };
 
-                 updatedRecommendations[recommendationIndex] = updatedRecommendation
-               
+                updatedRecommendations[recommendationIndex] =
+                  updatedRecommendation;
+
                 setReviewDoc({
                   ...reviewDoc,
                   recommendations: updatedRecommendations,
                 });
               }
 
-              async function DoneReviewEssay() {
+              async function DoneReviewRecommendation() {
                 setLoading(true);
-                const Essays = reviewDoc.essays.map((essay) => {
-                  return {
-                    ...essay,
-                    comments: [...essay.comments, { comment: "" }],
-                  };
-                });
+                const Recommendations = reviewDoc.recommendations.map(
+                  (recommendation) => {
+                    let letters = recommendation.letters.map(
+                      (letter, index) => {
+                        return {
+                          ...letter,
+                          comments: [...letter.comments, { comment: "" }],
+                        };
+                      }
+                    );
+
+                    return {
+                      ...recommendation,
+                      letters: letters,
+                    };
+                  }
+                );
 
                 try {
                   let res = await updateReview({
@@ -705,12 +719,12 @@ function ReviewDetails() {
 
                   if (res.data) {
                     await axios
-                      .patch("http://localhost:5000/essays", {
+                      .patch("http://localhost:5000/recommendations", {
                         ...reviewDoc,
                         id: reviewDoc._id,
                         status: "resolved",
                         submitted: false,
-                        essays: Essays,
+                        recommendations: Recommendations,
                       })
                       .then((res) => {
                         if (!res.status == 200) {
@@ -741,7 +755,7 @@ function ReviewDetails() {
                         setStatus("resolved");
                         setReviewDoc({
                           ...reviewDoc,
-                          essays: Essays,
+                          recommendations: Recommendations,
                         });
                       })
                       .catch((error) => {
@@ -777,7 +791,7 @@ function ReviewDetails() {
                 }
               }
 
-              async function reReviewEssay() {
+              async function reReviewRecommendation() {
                 setLoading(true);
                 try {
                   let res = await updateReview({
@@ -787,7 +801,7 @@ function ReviewDetails() {
                   });
                   if (res.data) {
                     await axios
-                      .patch("http://localhost:5000/essays", {
+                      .patch("http://localhost:5000/recommendations", {
                         ...reviewDoc,
                         id: reviewDoc._id,
                         status: "unresolved",
@@ -852,6 +866,196 @@ function ReviewDetails() {
               }
 
               // ------------------Recommendations functions ends------------ //
+
+              // ------------------Essayas functions starts------------ //
+              function UpdateAidRate(index, text) {
+                const updatedAids = [...reviewDoc.aids];
+                updatedAids[index] = {
+                  ...updatedAids[index],
+                  rate: text,
+                };
+                setReviewDoc({ ...reviewDoc, aids: updatedAids });
+              }
+
+              function UpdateAidComment(e, index) {
+                const updatedAids = [...reviewDoc.aids];
+                const updatedComment = [...updatedAids[index].comments];
+                updatedComment[updatedComment.length - 1] = {
+                  ...updatedComment[updatedComment.length - 1],
+                  comment: e.target.value,
+                  timeDate: new Date(),
+                };
+                updatedAids[index] = {
+                  ...updatedAids[index],
+                  comments: updatedComment,
+                };
+
+                setReviewDoc({ ...reviewDoc, aids: updatedAids });
+              }
+
+              async function DoneReviewAid() {
+                setLoading(true);
+                const Aids = reviewDoc.aids.map((aid) => {
+                  return {
+                    ...aid,
+                    comments: [...aid.comments, { comment: "" }],
+                  };
+                });
+
+                try {
+                  let res = await updateReview({
+                    ...review,
+                    id: review._id,
+                    status: "resolved",
+                  });
+
+                  if (res.data) {
+                    await axios
+                      .patch("http://localhost:5000/aids", {
+                        ...reviewDoc,
+                        id: reviewDoc._id,
+                        status: "resolved",
+                        submitted: false,
+                        aids: Aids,
+                      })
+                      .then((res) => {
+                        if (!res.status == 200) {
+                          toast.error(`Error occured try again!!`, {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                          });
+                        }
+                        toast.success(`Review has been resolved`, {
+                          position: "bottom-right",
+                          autoClose: 5000,
+                          hideProgressBar: true,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "colored",
+                        });
+                      })
+                      .then(() => {
+                        setLoading(false);
+                        setStatus("resolved");
+                        setReviewDoc({
+                          ...reviewDoc,
+                          aids: Aids,
+                        });
+                      })
+                      .catch((error) => {
+                        console.log("Error: ", error);
+                        toast.error(`${error.response.data.message}`, {
+                          position: "bottom-right",
+                          autoClose: 5000,
+                          hideProgressBar: true,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "colored",
+                        });
+                      })
+                      .finally(() => {
+                        setLoading(false);
+                      });
+                  }
+                } catch (error) {
+                  console.log(error);
+                  toast.error(`${error.message}`, {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                  });
+                  setLoading(false);
+                }
+              }
+
+              async function reReviewAid() {
+                setLoading(true);
+                try {
+                  let res = await updateReview({
+                    ...review,
+                    id: review._id,
+                    status: "unresolved",
+                  });
+                  if (res.data) {
+                    await axios
+                      .patch("http://localhost:5000/aids", {
+                        ...reviewDoc,
+                        id: reviewDoc._id,
+                        status: "unresolved",
+                        submitted: true,
+                      })
+                      .then((res) => {
+                        if (!res.status == 200) {
+                          toast.error(`Error occured try again!!`, {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                          });
+                        }
+
+                        toast.success(
+                          `You can review this ${review.onModel} again`,
+                          {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: true,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "light",
+                          }
+                        );
+                      })
+                      .then(() => {
+                        setLoading(false);
+                        setStatus("unresolved");
+                        setReviewDoc({
+                          ...reviewDoc,
+                          id: reviewDoc._id,
+                          status: "unresolved",
+                          submitted: true,
+                        });
+                      })
+                      .catch((error) => console.log("Error: ", error))
+                      .finally(() => {
+                        setLoading(false);
+                      });
+                  }
+                } catch (error) {
+                  toast.error(`${error.message}`, {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                  });
+                  setLoading(false);
+                }
+              }
 
               //Render according document type
               //Render Honors
@@ -1387,7 +1591,6 @@ function ReviewDetails() {
               }
 
               if (DocumentType == "Recommendation") {
-                console.log(reviewDoc);
                 content = (
                   <>
                     <h1 className="self-center text-2xl font-bold text-MdBlue">
@@ -1410,7 +1613,7 @@ function ReviewDetails() {
                           </h2>
                           <button
                             className="px-2 py-1 font-bold bg-MdBlue text-white rounded-md"
-                            onClick={() => reReviewEssay()}
+                            onClick={() => reReviewRecommendation()}
                           >
                             Re-review
                           </button>
@@ -1418,7 +1621,7 @@ function ReviewDetails() {
                       ) : (
                         <button
                           className="flex flex-row gap-x-1 items-center capitalize py-1 px-2 bg-MdBlue font-bold text-white rounded-md"
-                          onClick={() => DoneReviewEssay()}
+                          onClick={() => DoneReviewRecommendation()}
                         >
                           <HiCheck /> Done review
                         </button>
@@ -1445,7 +1648,10 @@ function ReviewDetails() {
                                   )
                                 );
                                 return (
-                                <div className="w-full mt-10 py-2 flex flex-row flex-wrap rounded-md bg-slate-200" key={letter._id}>
+                                  <div
+                                    className="w-full mt-10 py-2 flex flex-row flex-wrap rounded-md bg-slate-200"
+                                    key={letter._id}
+                                  >
                                     <div className="w-full md:w-8/12 py-1 flex flex-col px-2 md:px-5">
                                       <h2 className="font-bold flex items-center flex-row gap-x-2">
                                         <span className="text-MdBlue text-20 capitalize">
@@ -1538,7 +1744,11 @@ function ReviewDetails() {
                                           className="w-full md:w-8/12 resize-none border-2 border-blue-400 p-3"
                                           rows="10"
                                           onChange={(e) =>
-                                            UpdateLetterComment(e, recoIndex, letterIndex)
+                                            UpdateLetterComment(
+                                              e,
+                                              recoIndex,
+                                              letterIndex
+                                            )
                                           }
                                         ></textarea>
                                       </div>
@@ -1590,6 +1800,197 @@ function ReviewDetails() {
                         );
                       }
                     )}
+                  </>
+                );
+              }
+
+              if (DocumentType == "Aid") {
+                content = (
+                  <>
+                    <h1 className="self-center text-2xl font-bold text-MdBlue">
+                      All Financial Aids Documents
+                    </h1>
+                    <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2 md:justify-between justify-around items-center w-full flex-wrap gap-y-2 mt-5   sticky -top-5">
+                      <h1 className="capitalize flex-col flex">
+                        <span className="font-bold">
+                          {`submitted by: ${review.user.firstName} ${review.user.lastName}`}
+                        </span>
+                        <span className="text-gray-700 font-semibold">
+                          {`from: ${review.user.school}`}
+                        </span>
+                      </h1>
+
+                      {status == "resolved" ? (
+                        <div className="flex flex-row items-center gap-x-3">
+                          <h2 className="flex flex-row gap-x-2 text-emerald-600 font-bold text-20 items-center">
+                            <HiBadgeCheck /> Resolved
+                          </h2>
+                          <button
+                            className="px-2 py-1 font-bold bg-MdBlue text-white rounded-md"
+                            onClick={() => reReviewAid()}
+                          >
+                            Re-review
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          className="flex flex-row gap-x-1 items-center capitalize py-1 px-2 bg-MdBlue font-bold text-white rounded-md"
+                          onClick={() => DoneReviewAid()}
+                        >
+                          <HiCheck /> Done review
+                        </button>
+                      )}
+                    </div>
+
+                    {reviewDoc.aids.map((aid, index) => {
+                      return (
+                        <div
+                          className="w-full mt-10 py-2 flex flex-row flex-wrap rounded-md bg-slate-200"
+                          key={aid._id}
+                        >
+                          <div className="w-full md:w-8/12 py-1 flex flex-col px-2 md:px-5">
+                            <h2 className="font-bold flex items-center flex-row gap-x-2">
+                              <span className="text-MdBlue text-20">
+                                {`${aid.SchoolName} Financial Aid`}
+                              </span>
+                              <span
+                                className={`capitalize no-underline  ${
+                                  aid.rate == "bad"
+                                    ? "text-red-500"
+                                    : aid.rate == "good"
+                                    ? "text-emerald-600"
+                                    : aid.rate == "normal"
+                                    ? "text-blue-500"
+                                    : null
+                                }`}
+                              >
+                                {aid.rate == "notRated"
+                                  ? "Not rated"
+                                  : aid.rate}
+                              </span>
+                            </h2>
+
+                            <h2 className="mt-5 flex flex-row flex-wrap gap-x-2">
+                              <span className="text-gray-500 font-bold capitalize">
+                                Total Family annual Income:
+                              </span>
+                              <span className="text-black font-bold">
+                                {`$${aid.totalAnnualIncome}`}
+                              </span>
+                            </h2>
+
+                            <h2 className="mt-5 flex flex-row flex-wrap gap-x-2">
+                              <span className="text-gray-500 font-bold capitalize">
+                                Total Family saving:
+                              </span>
+                              <span className="text-black font-bold">
+                                {`$${aid.familySaving}`}
+                              </span>
+                            </h2>
+
+                            <h2 className="mt-5 flex flex-row flex-wrap gap-x-2">
+                              <span className="text-gray-500 font-bold capitalize">
+                                Total Family annual expenses:
+                              </span>
+                              <span className="text-black font-bold">
+                                {`$${aid.totalExpensePerYear}`}
+                              </span>
+                            </h2>
+
+                            <h2 className="mt-5 flex flex-row flex-wrap gap-x-2">
+                              <span className="text-emerald-500 font-bold capitalize">
+                                Total Family annual contribution:
+                              </span>
+                              <span className="text-emerald-600 font-bold">
+                                {`$${aid.EFC}`}
+                              </span>
+                            </h2>
+
+                            <div className="w-full flex flex-row px-2 gap-x-5 mt-10">
+                              <span
+                                className={`text-red-500 font-bold px-2 border-2 rounded-md border-red-500 cursor-pointer ${
+                                  aid.rate == "bad"
+                                    ? "bg-red-500 text-white"
+                                    : null
+                                }`}
+                                onClick={() => UpdateAidRate(index, "bad")}
+                              >
+                                Bad
+                              </span>
+                              <span
+                                className={`text-blue-500  font-bold px-2 border-2 rounded-md border-blue-500 cursor-pointer ${
+                                  aid.rate == "normal"
+                                    ? "bg-blue-500 text-white"
+                                    : null
+                                }`}
+                                onClick={() => UpdateAidRate(index, "normal")}
+                              >
+                                Normal
+                              </span>
+                              <span
+                                className={`text-emerald-500  font-bold px-2 border-2 rounded-md border-emerald-500 cursor-pointer ${
+                                  aid.rate == "good"
+                                    ? "bg-emerald-500 text-white"
+                                    : null
+                                }`}
+                                onClick={() => UpdateAidRate(index, "good")}
+                              >
+                                Good
+                              </span>
+                            </div>
+
+                            <div className="w-full flex flex-col px-2">
+                              <h2 className="mt-10">Add comment here</h2>
+
+                              <textarea
+                                name="comment"
+                                id="comment"
+                                value={
+                                  aid.comments[aid.comments.length - 1].comment
+                                }
+                                className="w-full md:w-8/12 resize-none border-2 border-blue-400 p-3"
+                                rows="10"
+                                onChange={(e) => UpdateAidComment(e, index)}
+                              ></textarea>
+                            </div>
+                          </div>
+
+                          <div className="w-full md:w-4/12 py-2 bg-slate-300 flex flex-col px-2 h-96 overflow-y-auto mt-10 overflow-x-hidden">
+                            <h2 className="self-center font-bold capitalize">
+                              Your Previous comments
+                            </h2>
+                          {aid.comments.map((comment) => {
+                            if (comment.comment !== "" && comment.comment) {
+                              const lines = comment.comment.split("\n");
+                              const commentParagraphs = lines.map(
+                                (line, index) => (
+                                  <p className="mt-1" key={index}>
+                                    {line}
+                                  </p>
+                                )
+                              );
+
+                              return (
+                                <div
+                                  className="w-full bg-slate-400 py-1 px-2 mt-3 rounded-md flex flex-col"
+                                  key={comment._id}
+                                >
+                                  {comment.comment && (
+                                    <div className="w-full flex flex-col">
+                                      {commentParagraphs}
+                                    </div>
+                                  )}
+                                  {comment.timeDate && (
+                                    <span className="self-end font-bold"></span>
+                                  )}
+                                </div>
+                              );
+                            }
+                          })}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </>
                 );
               }

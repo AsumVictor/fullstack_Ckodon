@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Page from "../../../../components/shared/page";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams,defer, useLoaderData, Await } from "react-router-dom";
 import { HiChevronDoubleLeft } from "react-icons/hi";
 import Logo from "../../../../assets/images/studentLogo.png";
 import { HiChevronDown, HiChevronUp } from "react-icons/hi";
@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 import { selectUserById } from "../../../../apiSlice/usersApiSlice";
 import { useGetUsersQuery } from "../../../../apiSlice/usersApiSlice";
 import "./style.css";
+import { getAUserReview } from "../../../../app/api/api";
+import { HiBadgeCheck } from "react-icons/hi";
 
 function StudentDetails() {
   const {
@@ -21,10 +23,12 @@ function StudentDetails() {
   const params = useParams();
   const studentId = params.id;
   const user = useSelector((state) => selectUserById(state, studentId));
+  const loadedData = useLoaderData()
 
   if (isLoading) {
     profile = <h1>Loading...</h1>;
   }
+
 
   if (isSuccess) {
     profile = (
@@ -48,6 +52,15 @@ function StudentDetails() {
 
       {profile}
 
+
+<Suspense fallback={<h1>Loading Review Documents</h1>}>
+ <Await resolve={loadedData.reviews}>
+{(reviews)=>{
+console.log(reviews);
+
+return(
+  <>
+  
       <h2 className="text-center mt-10 text-2xl font-bold">{`${user?.firstName}'s Documents`}</h2>
 
       <div className="relative mb-24 shadow-md rounded-md mt-5">
@@ -69,28 +82,55 @@ function StudentDetails() {
               <th scope="col" className="px-6 py-3"></th>
             </tr>
           </thead>
-
-          <tr className="bg-white cursor-pointer border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            <td className="px-6 py-4 tabel-hide">1</td>
+{reviews.map((review,index)=>{
+  return(
+<tr className="bg-white cursor-pointer border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <td className="px-6 py-4 tabel-hide">{index + 1}</td>
             <th
               scope="row"
               className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
             >
-              Honor
+             {review.onModel}
             </th>
-            <td className="px-6 py-4 ">Approved</td>
-            <td className="px-6 py-4 tabel-hide">2 mar 2023, 11:59pm</td>
+            <td
+          className={`px-6 py-4 capitalize flex flex-row gap-x-1 items-center ${
+            review.status == "unresolved"
+              ? "text-blue-600 font-bold"
+              : review.status == "resolved"
+              ? "text-emerald-500 font-bold"
+                           : null
+          }`}
+        >{
+          review.status == "unresolved"
+            ? "pending"
+            : review.status == "resolved"
+            ?( <>
+            <HiBadgeCheck />
+            <span>resolved</span>
+            </>  )
+                         : null
+        }</td>
+            <td className="px-6 py-4 tabel-hide">{review.deadline}</td>
             <td className="px-6 py-4 text-right">
               <Link
-                to="1"
+                to={`${review._id}`}
                 className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
               >
                 Review Document
               </Link>
             </td>
           </tr>
+  )
+})}
+          
         </table>
       </div>
+  </>
+)
+}}
+ </Await>
+</Suspense>
+
     </Page>
   );
 }
@@ -131,4 +171,8 @@ export function StudentProfile(props) {
       )}
     </>
   );
+}
+
+export function ReviewFromUserLoader({params}){
+  return defer({reviews: getAUserReview(params.id)})
 }

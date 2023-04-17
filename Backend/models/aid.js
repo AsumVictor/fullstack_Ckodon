@@ -9,8 +9,8 @@ const aidSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["finished", "notfinished"],
-      default: "notfinished",
+      enum: ["resolved", "unresolved"],
+      default: "unresolved",
     },
 
     submitted: {

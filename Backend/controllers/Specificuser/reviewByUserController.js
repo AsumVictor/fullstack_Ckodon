@@ -8,7 +8,7 @@ const User = require("../../models/user");
 const asyncHandler = require("express-async-handler");
 
 const getReviewByUser = asyncHandler(async (req, res) => {
-    const { userId} = req.body;
+    const { userId } = req.params;
 
     if (!userId ) {
         return res.status(400).json({ message: "All fields are required" });
