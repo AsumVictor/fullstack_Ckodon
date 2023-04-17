@@ -56,7 +56,17 @@ function StudentDetails() {
 <Suspense fallback={<h1>Loading Review Documents</h1>}>
  <Await resolve={loadedData.reviews}>
 {(reviews)=>{
-console.log(reviews);
+
+ reviews.sort((a, b) => {
+  if (a.status === "unresolved" && b.status !== "unresolved") {
+    return -1; // a comes first
+  }
+  if (a.status !== "unresolved" && b.status === "unresolved") {
+    return 1; // b comes first
+  }
+  return 0; // no change in order
+},)
+
 
 return(
   <>
@@ -83,6 +93,9 @@ return(
             </tr>
           </thead>
 {reviews.map((review,index)=>{
+
+
+
   return(
 <tr className="bg-white cursor-pointer border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
             <td className="px-6 py-4 tabel-hide">{index + 1}</td>

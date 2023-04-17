@@ -2,9 +2,7 @@ import React, { useEffect, useState, Suspense } from "react";
 import Page from "../../../../components/shared/page";
 import { Link, useParams, useLoaderData, defer, Await } from "react-router-dom";
 import { HiChevronDoubleLeft } from "react-icons/hi";
-import {
-  useUpdateReviewMutation,
-} from "../../../../apiSlice/reviewsApiSlice";
+import { useUpdateReviewMutation } from "../../../../apiSlice/reviewsApiSlice";
 import { getASpecificReview } from "../../../../app/api/api";
 import { HiCheck } from "react-icons/hi";
 import axios from "axios";
@@ -16,11 +14,10 @@ import { CoverLoaderMedium } from "../../../../components/loaders/loader";
 
 function StudentDocDetails_ug() {
   const loaderData = useLoaderData();
-console.log(loaderData);
+  console.log(loaderData);
   return (
     <>
       <Page>
-       
         <Suspense fallback={<CoverLoaderMedium />}>
           <Await resolve={loaderData.review}>
             {(review) => {
@@ -1058,13 +1055,7 @@ console.log(loaderData);
               if (DocumentType == "Honor") {
                 content = (
                   <>
-                   <Link
-          to=".."
-          relative="path"
-          className="text-MdBlue font-semibold mt-10 flex items-center gap-1"
-        >
-          <HiChevronDoubleLeft /> {`Back to ${review.user.firstName}'s review documents`}
-        </Link>
+                    
                     <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2 md:justify-between justify-around items-center w-full flex-wrap gap-y-2 mt-5   sticky -top-5">
                       <h1 className="capitalize flex-col flex">
                         <span className="font-bold">
@@ -1957,34 +1948,34 @@ console.log(loaderData);
                             <h2 className="self-center font-bold capitalize">
                               Your Previous comments
                             </h2>
-                          {aid.comments.map((comment) => {
-                            if (comment.comment !== "" && comment.comment) {
-                              const lines = comment.comment.split("\n");
-                              const commentParagraphs = lines.map(
-                                (line, index) => (
-                                  <p className="mt-1" key={index}>
-                                    {line}
-                                  </p>
-                                )
-                              );
+                            {aid.comments.map((comment) => {
+                              if (comment.comment !== "" && comment.comment) {
+                                const lines = comment.comment.split("\n");
+                                const commentParagraphs = lines.map(
+                                  (line, index) => (
+                                    <p className="mt-1" key={index}>
+                                      {line}
+                                    </p>
+                                  )
+                                );
 
-                              return (
-                                <div
-                                  className="w-full bg-slate-400 py-1 px-2 mt-3 rounded-md flex flex-col"
-                                  key={comment._id}
-                                >
-                                  {comment.comment && (
-                                    <div className="w-full flex flex-col">
-                                      {commentParagraphs}
-                                    </div>
-                                  )}
-                                  {comment.timeDate && (
-                                    <span className="self-end font-bold"></span>
-                                  )}
-                                </div>
-                              );
-                            }
-                          })}
+                                return (
+                                  <div
+                                    className="w-full bg-slate-400 py-1 px-2 mt-3 rounded-md flex flex-col"
+                                    key={comment._id}
+                                  >
+                                    {comment.comment && (
+                                      <div className="w-full flex flex-col">
+                                        {commentParagraphs}
+                                      </div>
+                                    )}
+                                    {comment.timeDate && (
+                                      <span className="self-end font-bold"></span>
+                                    )}
+                                  </div>
+                                );
+                              }
+                            })}
                           </div>
                         </div>
                       );
@@ -1993,7 +1984,19 @@ console.log(loaderData);
                 );
               }
 
-              return content;
+              return (
+                <>
+                <Link
+                      to=".."
+                      relative="path"
+                      className="text-MdBlue font-semibold mt-5 flex items-center gap-1"
+                    >
+                      <HiChevronDoubleLeft />
+                      {`Back to ${review.user.firstName}'s review documents`}
+                    </Link>
+                {content}
+                </>
+                )
             }}
           </Await>
         </Suspense>

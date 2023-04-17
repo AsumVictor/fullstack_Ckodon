@@ -28,10 +28,10 @@ section {
   background-color: var(--first-color);
   width: 0;
   padding: 0px;
-  overflow-x: hidden;
+  overflow-x: visible;
   overflow-y: auto;
   padding-bottom: 25px;
-  z-index: 99;
+  z-index: 80;
 }
 
 /*-----------Main-------------*/
