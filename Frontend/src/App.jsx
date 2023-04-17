@@ -48,7 +48,7 @@ const router = createBrowserRouter(
 
           <Route path=":id" element={<StudentDetails />} loader={ReviewFromUserLoader}/>
 
-          <Route path=":id/:id" element={<StudentDocDetails_ug/>} />
+          <Route path=":id/:id" element={<StudentDocDetails_ug/>} loader={SpecficReviewLoader} />
         </Route>
 
         {/* Layouts */}
