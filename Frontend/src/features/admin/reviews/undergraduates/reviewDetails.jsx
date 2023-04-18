@@ -91,7 +91,7 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    status: "unresolved",
+                    status: "resolved",
                     document: reviewDoc._id,
                     user: reviewDoc.user,
                     model: DocumentType,
@@ -274,7 +274,7 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    status: "unresolved",
+                    status: "resolved",
                     document: reviewDoc._id,
                     user: reviewDoc.user,
                     model: DocumentType,
@@ -471,7 +471,7 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    status: "unresolved",
+                    status: "resolved",
                     document: reviewDoc._id,
                     user: reviewDoc.user,
                     model: DocumentType,
@@ -723,7 +723,7 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    status: "unresolved",
+                    status: "resolved",
                     document: reviewDoc._id,
                     user: reviewDoc.user,
                     model: DocumentType,
@@ -917,7 +917,7 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    status: "unresolved",
+                    status: "resolved",
                     document: reviewDoc._id,
                     user: reviewDoc.user,
                     model: DocumentType,

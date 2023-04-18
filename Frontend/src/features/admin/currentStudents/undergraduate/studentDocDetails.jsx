@@ -79,8 +79,10 @@ function StudentDocDetails_ug() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "resolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
                   if (res.data) {
                     await axios
@@ -149,8 +151,10 @@ function StudentDocDetails_ug() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
                   if (res.data) {
                     await axios
@@ -258,8 +262,10 @@ function StudentDocDetails_ug() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "resolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
 
                   if (res.data) {
@@ -342,8 +348,10 @@ function StudentDocDetails_ug() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
                   if (res.data) {
                     await axios
@@ -451,8 +459,10 @@ function StudentDocDetails_ug() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "resolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
 
                   if (res.data) {
@@ -534,8 +544,10 @@ function StudentDocDetails_ug() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
                   if (res.data) {
                     await axios
@@ -701,8 +713,10 @@ function StudentDocDetails_ug() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "resolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
 
                   if (res.data) {
@@ -784,8 +798,10 @@ function StudentDocDetails_ug() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
                   if (res.data) {
                     await axios
@@ -893,8 +909,10 @@ function StudentDocDetails_ug() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "resolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
 
                   if (res.data) {
@@ -988,8 +1006,10 @@ function StudentDocDetails_ug() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
                   if (res.data) {
                     await axios

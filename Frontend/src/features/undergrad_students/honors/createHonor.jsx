@@ -151,6 +151,121 @@ function CreateHonor() {
                 </>
               );
             }
+
+            //When honor is submitted
+
+            async function withdraw() {
+              setloading(true);
+              try {
+                await axios.delete(`http://localhost:5000/undergradeReviews?document=${Honors._id}&model=Honor&user=${Honors.user}`)
+                  .then((res) => {
+                    axios
+                    .patch("http://localhost:5000/honors", {
+                      ...Honors,
+                      id: Honors._id,
+                      submitted: false,
+                      submittedBefore: false,
+                    })
+                    .then(() => {
+                      setHonors((prev) => {
+                        return {
+                          ...prev,
+                          submitted: false,
+                          submittedBefore: false,
+                        };
+                        
+                      });
+                      toast.warn(
+                          `You have withdraw you honor`,
+                          {
+                            position: "bottom-right",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                          }
+                        );
+                    })
+                    .catch((err) => {
+                      console.log(err);
+                      toast.error(`${err.message}`, {
+                        position: "bottom-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                      });
+                      toast.error(
+                        `could'nt update honor but it has been submitted `,
+                        {
+                          position: "bottom-right",
+                          autoClose: 20000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "colored",
+                        }
+                      );
+                    });
+                
+                   
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                    toast.error(`${err.message}`, {
+                      position: "bottom-right",
+                      autoClose: 5000,
+                      hideProgressBar: false,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "colored",
+                    });
+                  })
+                  .finally(() => {
+                    setloading(false);
+                  });
+              } catch (error) {
+                toast.success(`${error.message}`, {
+                  position: "bottom-right",
+                  autoClose: 5000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+                });
+              }
+            }
+
+            if (Honors.submitted) {
+              return (
+                <>
+                <div className="flex flex-col">
+                 <h1 className="mt-10 text-center px-3 font-bold text-2xl md:px-10">You have submitted your honor and it's under-review by Selorm</h1>
+                 <button className="mt-10 py-2 px-4 bg-red-900 active:scale-105 hover:bg-red-700 text-white rounded-md self-center font-bold"
+                 onClick={withdraw}
+                 >Withdraw</button>
+                </div>
+                <ToastContainer />
+                  {loading && (
+                    <CoverLoaderMedium
+                      styles={{ backgroundColor: "rgba(255,255,255,0.5)" }}
+                    />
+                  )}
+                </>
+              );
+            }
             //Honor changes managemnt
             const handleHonorChange = (e, index) => {
               const { name, value, type, checked } = e.target;
@@ -508,6 +623,7 @@ function CreateHonor() {
                               theme: "colored",
                             }
                           );
+                          setloading(false);
                       })
                       .catch((err) => {
                         toast.error(`${err.message}`, {
@@ -565,6 +681,7 @@ function CreateHonor() {
                   });
                 }
               }
+
 
             return (
               <>
