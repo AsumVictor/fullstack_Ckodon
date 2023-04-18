@@ -56,6 +56,13 @@ function StudentDetails() {
 <Suspense fallback={<h1>Loading Review Documents</h1>}>
  <Await resolve={loadedData.reviews}>
 {(reviews)=>{
+ 
+ if(!reviews.length){
+  return (
+    <h2 className="mt-10 self-center font-bold text-20 ">No review Submitted by {`${user?.firstName} ${user?.lastName}`}</h2>
+  )
+ }
+ 
 
  reviews.sort((a, b) => {
   if (a.status === "unresolved" && b.status !== "unresolved") {

@@ -20,11 +20,7 @@ const getReviewByUser = asyncHandler(async (req, res) => {
   }
 
     const reviews = await Review.find({user: userId}).lean().sort({ createdAt: -1 });
-    // If no undergradute Applicant
-    if (!reviews?.length) {
-      return res.status(400).json({ message: "No Reviews of this student found" });
-    }
-  
+
     const reviewWithUserAndDoc = await Promise.all(
       reviews.map(async (review) => {
         let Document;

@@ -21,9 +21,7 @@ const getEssayOfUser = asyncHandler(async (req, res) => {
   }
 
   const essays = await Essay.find({ user: userId }).lean().exec();
-  if (!essays) {
-    return res.status(400).json({ message: "No essays found" });
-  }
+ 
 
 
   res.json(essays);

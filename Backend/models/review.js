@@ -4,7 +4,6 @@ const reviewSchema = new mongoose.Schema(
   {
     deadline: {
       type: Date,
-      required: true,
     },
     status: {
       type: String,

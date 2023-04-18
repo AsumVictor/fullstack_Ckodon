@@ -28,7 +28,9 @@ import StudentDocDetails_ug  from "./features/admin/currentStudents/undergraduat
 
 //Pages for studentsudent
 import Student_SharedLayout from "./features/undergrad_students/layout/student_layout";
-
+import HonorLayout from "./features/undergrad_students/layout/honorLayout";
+import HonorQuickView from "./features/undergrad_students/honors/quickView";
+import CreateHonor, {getHonorsLoader} from "./features/undergrad_students/honors/createHonor";
 //Router Elements
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -84,7 +86,22 @@ const router = createBrowserRouter(
       </Route>
 
       {/* ROUTES FOR UNDERGRAD STUDENTS */}
-      <Route path="undergrad" element={<Student_SharedLayout />}></Route>
+      <Route path="undergrad" element={<Student_SharedLayout />}>
+       <Route index element={<UnderConstruction/>} />
+
+       <Route path='honors' element={<HonorLayout/>} > 
+        <Route index element={<HonorQuickView />} />
+        <Route path='create' element={<CreateHonor />} loader={getHonorsLoader} />
+       </Route>
+
+       <Route path='activities' element={<UnderConstruction/>} />
+       <Route path='essays' element={<UnderConstruction/>} />
+       <Route path='recommendation' element={<UnderConstruction/>} />
+       <Route path='financial-aid' element={<UnderConstruction/>} />
+       <Route path='reviews' element={<UnderConstruction/>} />
+       <Route path='interview-prep' element={<UnderConstruction/>} />
+       <Route path='chat' element={<UnderConstruction/>} />
+       </Route>
     </Route>
   )
 );

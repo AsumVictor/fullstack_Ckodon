@@ -20,9 +20,11 @@ export function CoverLoaderBig() {
   );
 }
 
-export function CoverLoaderMedium() {
+export function CoverLoaderMedium(props) {
   return (
-    <div className="justify-center bg-white opacity-100 items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+    <div className={` ${props.styleExtend} justify-center bg-white opacity-100 items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none`}
+    style={props.styles}
+    >
       <MediumLoader />
     </div>
   );

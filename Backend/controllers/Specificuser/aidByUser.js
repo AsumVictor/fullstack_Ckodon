@@ -20,10 +20,8 @@ const getAidOfUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "User not found" });
   }
 
-  const aids = await Aid.find({ user: userId }).lean().exec();
-  if (!aids) {
-    return res.status(400).json({ message: "No aids found" });
-  }
+  const aids = await Aid.findOne({ user: userId }).lean().exec();
+ 
 
 
   res.json(aids);
