@@ -17,6 +17,10 @@ const honorSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    submittedBefore: {
+      type: Boolean,
+      default: false,
+    },
     voiceNOtes: [
       {
         voiceNote: {

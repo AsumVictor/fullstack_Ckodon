@@ -91,8 +91,10 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
-                    status: "resolved",
+                    status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
                   if (res.data) {
                     await axios
@@ -161,8 +163,10 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
                   if (res.data) {
                     await axios
@@ -270,8 +274,10 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
-                    status: "resolved",
+                    status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
 
                   if (res.data) {
@@ -354,8 +360,10 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
                   if (res.data) {
                     await axios
@@ -463,8 +471,10 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
-                    status: "resolved",
+                    status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
 
                   if (res.data) {
@@ -713,8 +723,10 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
-                    status: "resolved",
+                    status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
 
                   if (res.data) {
@@ -905,8 +917,10 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
-                    status: "resolved",
+                    status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
 
                   if (res.data) {
@@ -988,8 +1002,10 @@ function ReviewDetails() {
                 try {
                   let res = await updateReview({
                     ...review,
-                    id: review._id,
                     status: "unresolved",
+                    document: reviewDoc._id,
+                    user: reviewDoc.user,
+                    model: DocumentType,
                   });
                   if (res.data) {
                     await axios
@@ -1043,6 +1059,7 @@ function ReviewDetails() {
                       });
                   }
                 } catch (error) {
+                  setLoading(false);
                   toast.error(`${error.message}`, {
                     position: "bottom-right",
                     autoClose: 5000,
@@ -1053,7 +1070,6 @@ function ReviewDetails() {
                     progress: undefined,
                     theme: "colored",
                   });
-                  setLoading(false);
                 }
               }
 
@@ -1959,34 +1975,34 @@ function ReviewDetails() {
                             <h2 className="self-center font-bold capitalize">
                               Your Previous comments
                             </h2>
-                          {aid.comments.map((comment) => {
-                            if (comment.comment !== "" && comment.comment) {
-                              const lines = comment.comment.split("\n");
-                              const commentParagraphs = lines.map(
-                                (line, index) => (
-                                  <p className="mt-1" key={index}>
-                                    {line}
-                                  </p>
-                                )
-                              );
+                            {aid.comments.map((comment) => {
+                              if (comment.comment !== "" && comment.comment) {
+                                const lines = comment.comment.split("\n");
+                                const commentParagraphs = lines.map(
+                                  (line, index) => (
+                                    <p className="mt-1" key={index}>
+                                      {line}
+                                    </p>
+                                  )
+                                );
 
-                              return (
-                                <div
-                                  className="w-full bg-slate-400 py-1 px-2 mt-3 rounded-md flex flex-col"
-                                  key={comment._id}
-                                >
-                                  {comment.comment && (
-                                    <div className="w-full flex flex-col">
-                                      {commentParagraphs}
-                                    </div>
-                                  )}
-                                  {comment.timeDate && (
-                                    <span className="self-end font-bold"></span>
-                                  )}
-                                </div>
-                              );
-                            }
-                          })}
+                                return (
+                                  <div
+                                    className="w-full bg-slate-400 py-1 px-2 mt-3 rounded-md flex flex-col"
+                                    key={comment._id}
+                                  >
+                                    {comment.comment && (
+                                      <div className="w-full flex flex-col">
+                                        {commentParagraphs}
+                                      </div>
+                                    )}
+                                    {comment.timeDate && (
+                                      <span className="self-end font-bold"></span>
+                                    )}
+                                  </div>
+                                );
+                              }
+                            })}
                           </div>
                         </div>
                       );

@@ -385,13 +385,14 @@ function CreateHonor() {
                       ...Honors,
                       id: Honors._id,
                       submitted: true,
+                      submittedBefore: true,
                     })
                     .then((res2) => {
-                      console.log(res2);
                       setHonors((prev) => {
                         return {
                           ...prev,
                           submitted: true,
+                          submittedBefore: true,
                         };
                         
                       });
@@ -465,6 +466,105 @@ function CreateHonor() {
                 });
               }
             }
+
+            async function submitToReviewAnother(e) {
+                e.preventDefault();
+                
+                setloading(true);
+                try {
+                  await axios
+                    .patch("http://localhost:5000/undergradeReviews", {
+                      deadline: null,
+                      status: "unresolved",
+                      document: Honors._id,
+                      model: "Honor",
+                      user: Honors.user,
+                    })
+                    .then((res) => {
+                    
+                      axios
+                      .patch("http://localhost:5000/honors", {
+                        ...Honors,
+                        id: Honors._id,
+                      })
+                      .then((res2) => {
+                        setHonors((prev) => {
+                          return {
+                            ...prev,
+                            submitted: true,
+                          };
+                          
+                        });
+                        toast.success(
+                            `Your honor has been submitted successfully `,
+                            {
+                              position: "bottom-right",
+                              autoClose: 5000,
+                              hideProgressBar: false,
+                              closeOnClick: true,
+                              pauseOnHover: true,
+                              draggable: true,
+                              progress: undefined,
+                              theme: "colored",
+                            }
+                          );
+                      })
+                      .catch((err) => {
+                        toast.error(`${err.message}`, {
+                          position: "bottom-right",
+                          autoClose: 5000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                          theme: "colored",
+                        });
+                        toast.error(
+                          `could'nt update honor but it has been submitted `,
+                          {
+                            position: "bottom-right",
+                            autoClose: 20000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                            theme: "colored",
+                          }
+                        );
+                      });
+                    
+                     
+                    })
+                    .catch((err) => {
+                      toast.error(`${err.message}`, {
+                        position: "bottom-right",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored",
+                      });
+                    })
+                    .finally(() => {
+                      setloading(false);
+                    });
+                } catch (error) {
+                  toast.success(`${error.message}`, {
+                    position: "bottom-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                  });
+                }
+              }
 
             return (
               <>
@@ -774,15 +874,22 @@ function CreateHonor() {
                   </div>
 
                   {/* Submit when Honor is 5 or more and Activity is 10 or more */}
-                  {Honors.honors.length >= 5 && (
-                    <button
-                      className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-gray-400 py-2 bg-MdBlue rounded-md text-white font-bold mt-20"
-                      type="submit"
-                      onClick={submitToReview}
-                    >
-                      {loading ? <>Submitting...</> : <>Submit for review</>}
-                    </button>
-                  )}
+                   {(Honors.honors.length >= 5 && !Honors.submittedBefore) && (<button
+    className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-gray-400 py-2 bg-MdBlue rounded-md text-white font-bold mt-20"
+    type="submit"
+    onClick={submitToReview}
+  >
+    {loading ? <>Submitting...</> : <>Submit for review </>}
+  </button>)}
+
+  {(Honors.honors.length >= 5 && Honors.submittedBefore) && (<button
+    className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-red-400 py-2 bg-MdBlue rounded-md text-white font-bold mt-20"
+    type="submit"
+    onClick={submitToReviewAnother}
+  >
+    {loading ? <>Submitting...</> : <>Submit for review </>}
+  </button>)}
+
                 </form>
                 <ToastContainer />
                 {loading && (

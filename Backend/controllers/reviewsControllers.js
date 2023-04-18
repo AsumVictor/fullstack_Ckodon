@@ -132,15 +132,15 @@ if (!foundDocument) {
 });
 
 const updateReview = asyncHandler(async (req, res) => {
-  const { id, deadline, status } = req.body;
+  const { deadline, status, document, model, user } = req.body;
 
-  const anyEmptyField = !id || !deadline || !status;
+  const anyEmptyField = !document  || !status || !model;
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });
   }
 
-  const review = await Review.findById(id).exec();
+  const review = await Review.findOne({user: user, documentId: document, onModel: model }).exec();
 
   if (!review) {
     return res.status(400).json({ message: "Reviewed document not found" });

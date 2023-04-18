@@ -954,9 +954,21 @@ function StudentDocDetails_ug() {
                       .finally(() => {
                         setLoading(false);
                       });
+                  }else{
+                    setLoading(false);
+                    toast.error(`Processing Failed`, {
+                      position: "bottom-right",
+                      autoClose: 5000,
+                      hideProgressBar: true,
+                      closeOnClick: true,
+                      pauseOnHover: true,
+                      draggable: true,
+                      progress: undefined,
+                      theme: "colored",
+                    });
                   }
                 } catch (error) {
-                  console.log(error);
+                  setLoading(false);
                   toast.error(`${error.message}`, {
                     position: "bottom-right",
                     autoClose: 5000,
@@ -967,7 +979,7 @@ function StudentDocDetails_ug() {
                     progress: undefined,
                     theme: "colored",
                   });
-                  setLoading(false);
+                  
                 }
               }
 
