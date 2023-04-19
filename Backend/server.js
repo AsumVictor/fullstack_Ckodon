@@ -25,7 +25,7 @@ connectDB();
 app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use("/", require("./routes/root"));
-
+app.use('/auth', require('./routes/authRoute'))
 app.use('/users', require('./routes/userRoutes'))
 app.use('/undergraduteApplicants', require('./routes/undergraduteApplicantRoutes'))
 app.use('/honors', require('./routes/honorRoutes'))
