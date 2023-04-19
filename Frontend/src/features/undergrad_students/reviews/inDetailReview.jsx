@@ -1,16 +1,16 @@
 import React, { useEffect, useState, Suspense } from "react";
-import Page from "../../../../components/shared/page";
+import Page from '../../../components/shared/page'
 import { Link, useParams, useLoaderData, defer, Await } from "react-router-dom";
 import { HiChevronDoubleLeft } from "react-icons/hi";
-import { useUpdateReviewMutation } from "../../../../apiSlice/reviewsApiSlice";
-import { getASpecificReview } from "../../../../app/api/api";
+import {useUpdateReviewMutation} from '../../../apiSlice/reviewsApiSlice'
+import { getASpecificReview } from "../../../app/api/api";
 import { HiCheck } from "react-icons/hi";
 import axios from "axios";
-import { RefreshToolkit } from "../../../../components/toolkits/tollkit";
+import { RefreshToolkit } from "../../../components/toolkits/tollkit";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { HiBadgeCheck } from "react-icons/hi";
-import { CoverLoaderMedium } from "../../../../components/loaders/loader";
+import { CoverLoaderMedium } from "../../../components/loaders/loader";
 
 function StudentDocDetails_ug() {
   const loaderData = useLoaderData();
