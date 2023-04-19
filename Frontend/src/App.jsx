@@ -17,20 +17,28 @@ import UnderConstruction from "./components/indications/underConstruction";
 //PAges FOR ADMIN
 import SharedLayout from "./features/admin/layouts/shareLayout";
 import AllStudent from "./features/admin/currentStudents/undergraduate/allStudent";
-import StudentDetails, {ReviewFromUserLoader} from "./features/admin/currentStudents/undergraduate/studentDetails";
+import StudentDetails, {
+  ReviewFromUserLoader,
+} from "./features/admin/currentStudents/undergraduate/studentDetails";
 import AllApplicants from "./features/admin/applicants/undergraduate/allApplicants";
 import ApplicantDetails from "./features/admin/applicants/undergraduate/applicantsDetails";
 import UndergraduateReviews from "./features/admin/reviews/undergraduates/reviews";
 import UndergraduateReviewDetails, {
   SpecficReviewLoader,
 } from "./features/admin/reviews/undergraduates/reviewDetails";
-import StudentDocDetails_ug  from "./features/admin/currentStudents/undergraduate/studentDocDetails";
+import StudentDocDetails_ug from "./features/admin/currentStudents/undergraduate/studentDocDetails";
 
 //Pages for studentsudent
 import Student_SharedLayout from "./features/undergrad_students/layout/student_layout";
 import HonorLayout from "./features/undergrad_students/layout/honorLayout";
 import HonorQuickView from "./features/undergrad_students/honors/quickView";
-import CreateHonor, {getHonorsLoader} from "./features/undergrad_students/honors/createHonor";
+import CreateHonor, {
+  getHonorsLoader,
+} from "./features/undergrad_students/honors/createHonor";
+import InDetailReview, {GetSpecficReviewLoader} from "./features/undergrad_students/reviews/inDetailReview";
+import Student_reviews, {
+  GetReviewFromUserLoader,
+} from "./features/undergrad_students/reviews/reviews";
 //Router Elements
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -48,9 +56,17 @@ const router = createBrowserRouter(
         <Route path="undergraduate-students">
           <Route index element={<AllStudent />}></Route>
 
-          <Route path=":id" element={<StudentDetails />} loader={ReviewFromUserLoader}/>
+          <Route
+            path=":id"
+            element={<StudentDetails />}
+            loader={ReviewFromUserLoader}
+          />
 
-          <Route path=":id/:id" element={<StudentDocDetails_ug/>} loader={SpecficReviewLoader} />
+          <Route
+            path=":id/:id"
+            element={<StudentDocDetails_ug />}
+            loader={SpecficReviewLoader}
+          />
         </Route>
 
         {/* Layouts */}
@@ -87,21 +103,30 @@ const router = createBrowserRouter(
 
       {/* ROUTES FOR UNDERGRAD STUDENTS */}
       <Route path="undergrad" element={<Student_SharedLayout />}>
-       <Route index element={<UnderConstruction/>} />
+        <Route index element={<UnderConstruction />} />
 
-       <Route path='honors' element={<HonorLayout/>} > 
-        <Route index element={<HonorQuickView />} />
-        <Route path='create' element={<CreateHonor />} loader={getHonorsLoader} />
-       </Route>
+        <Route path="honors" element={<HonorLayout />}>
+          <Route index element={<HonorQuickView />} />
+          <Route
+            path="create"
+            element={<CreateHonor />}
+            loader={getHonorsLoader}
+          />
+        </Route>
+        <Route
+          path="reviews"
+          element={<Student_reviews />}
+          loader={GetReviewFromUserLoader}
+        />
+        <Route path="reviews/:id" element={<InDetailReview />} loader={GetSpecficReviewLoader} />
 
-       <Route path='activities' element={<UnderConstruction/>} />
-       <Route path='essays' element={<UnderConstruction/>} />
-       <Route path='recommendation' element={<UnderConstruction/>} />
-       <Route path='financial-aid' element={<UnderConstruction/>} />
-       <Route path='reviews' element={<UnderConstruction/>} />
-       <Route path='interview-prep' element={<UnderConstruction/>} />
-       <Route path='chat' element={<UnderConstruction/>} />
-       </Route>
+        <Route path="activities" element={<UnderConstruction />} />
+        <Route path="essays" element={<UnderConstruction />} />
+        <Route path="recommendation" element={<UnderConstruction />} />
+        <Route path="financial-aid" element={<UnderConstruction />} />
+        <Route path="interview-prep" element={<UnderConstruction />} />
+        <Route path="chat" element={<UnderConstruction />} />
+      </Route>
     </Route>
   )
 );

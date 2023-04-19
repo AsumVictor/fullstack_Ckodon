@@ -30,7 +30,6 @@ export async function getAUserReview(id) {
   }
 
   let data = await response.data
- 
   return data
 }
 
@@ -49,3 +48,64 @@ export async function getAUserHonor(id) {
  
   return data
 }
+
+export async function getAUserActivity(id) {
+  let response = await axios.get(`http://localhost:5000/activities/user/643e93e228fe348dc275fe37`)
+  if(!response.status == 200){
+    throw {
+      message: "Failed to fetch Activity", 
+      statusText: response.statusText,
+      status: response.status
+  }
+  }
+
+  let data = await response.data
+ 
+  return data
+}
+
+export async function getAUserAid(id) {
+  let response = await axios.get(`http://localhost:5000/aids/user/643e93e228fe348dc275fe37`)
+  if(!response.status == 200){
+    throw {
+      message: "Failed to fetch Aid", 
+      statusText: response.statusText,
+      status: response.status
+  }
+  }
+
+  let data = await response.data
+ 
+  return data
+}
+
+export async function getAUserEssay(id) {
+  let response = await axios.get(`http://localhost:5000/essays/user/643e93e228fe348dc275fe37`)
+  if(!response.status == 200){
+    throw {
+      message: "Failed to fetch Essay", 
+      statusText: response.statusText,
+      status: response.status
+  }
+  }
+
+  let data = await response.data
+ 
+  return data
+}
+
+export async function getAUserRecommendation(id) {
+  let response = await axios.get(`http://localhost:5000/recommendations/user/643e93e228fe348dc275fe37`)
+  if(!response.status == 200){
+    throw {
+      message: "Failed to fetch Recommendation", 
+      statusText: response.statusText,
+      status: response.status
+  }
+  }
+
+  let data = await response.data
+ 
+  return data
+}
+

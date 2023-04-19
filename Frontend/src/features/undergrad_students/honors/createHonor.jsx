@@ -601,6 +601,7 @@ function CreateHonor() {
                       .patch("http://localhost:5000/honors", {
                         ...Honors,
                         id: Honors._id,
+                        submitted: true,
                       })
                       .then((res2) => {
                         setHonors((prev) => {
