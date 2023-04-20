@@ -12,10 +12,19 @@ import { ButtonDefault } from "../../../components/buttons";
 import { useAddNewUndergraduateApplicantMutation } from "../../../apiSlice/undergrauteApplicantsApiSlice";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { CoverLoaderMedium } from "../../../components/loaders/loader";
 
 import Lottie from "lottie-react";
 import SubmitCheack from "../../../assets/animations/submitCheckmark.json";
 import { Link, useLocation } from "react-router-dom";
+import { Worker } from "@react-pdf-viewer/core";
+// Import the main component
+import { Viewer } from "@react-pdf-viewer/core";
+
+// Import the styles
+import "@react-pdf-viewer/core/lib/styles/index.css";
+
+// Your render function
 
 export default function Apply() {
   const [addNewApplicant, { isLoading, isSuccess, isError, error }] =
@@ -41,10 +50,20 @@ export default function Apply() {
     level: "",
   });
   const [submitted, setSubmitted] = useState(false);
+  const [wassceResult, setWassceResult] = useState(null);
+  const [essayPdf, setEssayPdf] = useState(null);
 
   function handleRoleData(e) {
     setRoles(e.target.value);
   }
+
+  const handleWassceResult = (event) => {
+    setWassceResult(event.target.files[0]);
+  };
+
+  const handleEssayPdf = (event) => {
+    setEssayPdf(event.target.files[0]);
+  };
 
   function HandleFormData(e) {
     const { name, value } = e.target;
@@ -63,7 +82,6 @@ export default function Apply() {
       let sendingResponse = await addNewApplicant({ ...formData, role: roles });
 
       if (sendingResponse.data) {
-        console.log(sendingResponse);
         setRoles("undergraduate");
         setformData({
           firstName: "",
@@ -84,7 +102,6 @@ export default function Apply() {
           level: "",
         });
         setSubmitted(true);
-
       } else {
         toast.error(`${error?.data?.message}`, {
           position: "bottom-right",
@@ -151,7 +168,7 @@ export default function Apply() {
   }
 
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return <CoverLoaderMedium />;
   }
 
   return (
@@ -203,7 +220,6 @@ export default function Apply() {
                   disabled={false}
                   value={formData.firstName}
                 />
-
                 <TextInputs
                   required={true}
                   type="text"
@@ -214,7 +230,6 @@ export default function Apply() {
                   disabled={false}
                   value={formData.lastName}
                 />
-
                 <TextInputs
                   required={true}
                   type="email"
@@ -225,7 +240,6 @@ export default function Apply() {
                   disabled={false}
                   value={formData.email}
                 />
-
                 <div className="mt-10">
                   <strong>Gender *</strong>
                 </div>
@@ -276,7 +290,6 @@ export default function Apply() {
                     </div>
                   </label>
                 </div>
-
                 <TextInputs
                   required={true}
                   type="text"
@@ -287,7 +300,6 @@ export default function Apply() {
                   disabled={false}
                   value={formData.residence}
                 />
-
                 <div className="mt-10">
                   <strong>Date of Birth *</strong>
                 </div>
@@ -302,7 +314,6 @@ export default function Apply() {
                   disabled={false}
                   value={formData.dateOfBirth}
                 />
-
                 <TextInputs
                   required={false}
                   type="tel"
@@ -313,7 +324,6 @@ export default function Apply() {
                   disabled={false}
                   value={formData.phone}
                 />
-
                 <TextInputs
                   required={false}
                   type="tel"
@@ -324,7 +334,6 @@ export default function Apply() {
                   disabled={false}
                   value={formData.whatsappNumber}
                 />
-
                 <TextInputs
                   required={true}
                   type="text"
@@ -339,7 +348,6 @@ export default function Apply() {
                   <strong>NB: </strong> if you are not in school, state the last
                   school you attended
                 </div>
-
                 <TextInputs
                   required={false}
                   type="text"
@@ -354,7 +362,6 @@ export default function Apply() {
                   <strong>NB: </strong> if you are not in university, you can
                   leave it blank
                 </div>
-
                 <div className="mt-10">
                   <strong>{` Year of Completion (High school) `}</strong>
                 </div>
@@ -371,7 +378,6 @@ export default function Apply() {
                   completed. If you are still in high school, state the expected
                   gradution date.
                 </div>
-
                 <TextInputs
                   required={false}
                   type="tel"
@@ -382,20 +388,47 @@ export default function Apply() {
                   disabled={false}
                   value={formData.level}
                 />
-
                 <div>
                   <strong>NB: </strong> Provide only if you are in university
                 </div>
 
-                <div className="mt-10">
+                <label
+                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                  htmlfor="file_wassce"
+                >
+                  <div className="mt-10">
+                    <strong> Upload your WASSCE result here </strong>
+                  </div>
+                </label>
+                <input
+                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  aria-describedby="file_wassce_help"
+                  id="file_wassce"
+                  type="file"
+                  onChange={(event) => handleWassceResult(event)}
+                  name="wassceResult"
+                  accept=".pdf"
+                />
+                <p
+                  className="mt-1 text-sm text-red-500 font-bold dark:text-gray-300 "
+                  id="file_input_help"
+                >
+                  PDF only
+                </p>
+
+                {wassceResult && (
+                  <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                    <Viewer fileUrl={`${wassceResult}`} />;
+                  </Worker>
+                )}
+                <div className="mt-2">
                   <strong>NB: </strong>
                   If you dont have a copy of your WASSCE results, type the
                   subjects and the subjects and the grade obtaibed in each of
                   them in the sapce below
                 </div>
-
                 <textarea
-                  className="w-full md:w-10/12 border-2 border-slate-300 rounded-md  focus:outline-MdBlue transition-all"
+                  className="w-full mt-5 md:w-10/12 border-2 border-slate-300 rounded-md  focus:outline-MdBlue transition-all"
                   name="wassceText"
                   rows={7}
                   value={formData.wassceText}
@@ -405,9 +438,7 @@ export default function Apply() {
                   <strong>Example: </strong>
                   English A1, Social Studies A1, etc..
                 </div>
-
                 <h2 className="text-center font-bold mt-10 text-20">ESSAYS</h2>
-
                 <div className="mt-10">
                   <strong className="text-red-600">NB: </strong> The purpose of
                   this essay is not to assess your ability to write. We hope to
@@ -415,14 +446,12 @@ export default function Apply() {
                   in providing the assistance you require during the college
                   application process.
                 </div>
-
                 <div className="mt-10">
                   <strong>
                     Write an essay of 300-400 words or more on one of the topics
                     listed below.
                   </strong>
                 </div>
-
                 <label
                   htmlFor="prompt1"
                   className="w-full mt-5 flex flex-row  py-1 essayLabel"
@@ -445,7 +474,6 @@ export default function Apply() {
                     <span>1. Tell us about yourself</span>
                   </div>
                 </label>
-
                 <label
                   htmlFor="prompt2"
                   className="w-full flex flex-row  py-1 essayLabel"
@@ -472,7 +500,6 @@ export default function Apply() {
                     </span>
                   </div>
                 </label>
-
                 <label
                   htmlFor="prompt3"
                   className="w-full flex flex-row  py-1 essayLabel"
@@ -501,7 +528,6 @@ export default function Apply() {
                     </span>
                   </div>
                 </label>
-
                 <label
                   htmlFor="prompt4"
                   className="w-full flex flex-row  py-1 essayLabel"
@@ -528,14 +554,12 @@ export default function Apply() {
                     </span>
                   </div>
                 </label>
-
                 <div className="mt-10">
                   <strong>
                     Click to select one of the options above and Paste your
                     essay here
                   </strong>
                 </div>
-
                 <textarea
                   className="w-full md:w-full border-2 border-slate-300 rounded-md  focus:outline-MdBlue transition-all p-2"
                   rows={10}
@@ -545,7 +569,51 @@ export default function Apply() {
                   placeholder="Type/Paste your essay here"
                   onChange={(e) => HandleFormData(e)}
                 />
-
+                <div className="mt-10">
+                  <strong>
+                    Or you can upload PDF form of your essay here{" "}
+                  </strong>
+                </div>
+                <div class="flex items-center justify-center w-full mb-10">
+                  <label
+                    for="dropzone-file"
+                    class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                  >
+                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                      <svg
+                        aria-hidden="true"
+                        class="w-10 h-10 mb-3 text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        ></path>
+                      </svg>
+                      <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                        <span class="font-semibold">Click to upload</span> or
+                        drag and drop
+                      </p>
+                      <p class="text-xs text-red-500 font-bold dark:text-gray-400">
+                        PDF only
+                      </p>
+                    </div>
+                    <input
+                      id="dropzone-file"
+                      type="file"
+                      class="hidden"
+                      accept=".pdf"
+                      name="essayPdf"
+                      value={essayPdf}
+                      onChange={(event) => handleEssayPdf(event)}
+                    />
+                  </label>
+                </div>
                 <ButtonDefault>Submit Application</ButtonDefault>
               </div>
             )}

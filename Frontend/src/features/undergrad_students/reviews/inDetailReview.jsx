@@ -1089,36 +1089,12 @@ function StudentDocDetails_ug() {
                   <>
                     
                     <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2 md:justify-between justify-around items-center w-full flex-wrap gap-y-2 mt-5   sticky -top-5">
-                      <h1 className="capitalize flex-col flex">
-                        <span className="font-bold">
-                          {`submitted by: ${review.user.firstName} ${review.user.lastName}`}
-                        </span>
-                        <span className="text-gray-700 font-semibold">
-                          {`from: ${review.user.school}`}
-                        </span>
-                      </h1>
+                      <h1 className={`capitalize flex-col flex font-bold text-2xl`}>
+                      
+                      {` ${reviewDoc.status == 'unresolved'? ' Honor is under review': ' Honor has been resolved'}`}
 
-                      {status == "resolved" ? (
-                        <div className="flex flex-row items-center gap-x-3">
-                          <h2 className="flex flex-row gap-x-2 text-emerald-600 font-bold text-20 items-center">
-                            <HiBadgeCheck /> Resolved
-                          </h2>
-                          <button
-                            className="px-2 py-1 font-bold bg-MdBlue text-white rounded-md"
-                            onClick={() => reReviewHonor()}
-                          >
-                            Re-review
-                          </button>
-                        </div>
-                      ) : (
-                        <button
-                          className="flex flex-row gap-x-1 items-center capitalize py-1 px-2 bg-MdBlue font-bold text-white rounded-md"
-                          onClick={() => DoneReviewHonor()}
-                        >
-                          <HiCheck /> Done review
-                        </button>
-                      )}
-                    </div>
+                      </h1>
+                                         </div>
 
                     {reviewDoc.honors.map((honor, index) => (
                       <div
@@ -1172,60 +1148,11 @@ function StudentDocDetails_ug() {
                                 <span> post graduate</span>
                               )}
                             </div>
-                            {/* Rate This honor */}
-                            <div className="w-full flex flex-row px-2 gap-x-5 mt-5">
-                              <span
-                                className={`text-red-500  font-bold px-2 border-2 rounded-md border-red-500 cursor-pointer ${
-                                  honor.rate == "bad"
-                                    ? "bg-red-500 text-white"
-                                    : null
-                                }`}
-                                onClick={() => UpdateHonorRate(index, "bad")}
-                              >
-                                Bad
-                              </span>
-                              <span
-                                className={`text-blue-500  font-bold px-2 border-2 rounded-md border-blue-500 cursor-pointer ${
-                                  honor.rate == "normal"
-                                    ? "bg-blue-500 text-white"
-                                    : null
-                                }`}
-                                onClick={() => UpdateHonorRate(index, "normal")}
-                              >
-                                Normal
-                              </span>
-                              <span
-                                className={`text-emerald-500  font-bold px-2 border-2 rounded-md border-emerald-500 cursor-pointer ${
-                                  honor.rate == "good"
-                                    ? "bg-emerald-500 text-white"
-                                    : null
-                                }`}
-                                onClick={() => UpdateHonorRate(index, "good")}
-                              >
-                                Good
-                              </span>
-                            </div>
 
-                            {/* add comment here */}
-                            <div className="w-full flex flex-col px-2">
-                              <h2 className="mt-10">Add comment here</h2>
-
-                              <textarea
-                                name="comment"
-                                id="comment"
-                                value={
-                                  honor.comments[honor.comments.length - 1]
-                                    .comment
-                                }
-                                className="w-full md:w-8/12 resize-none border-2 border-blue-400 p-3"
-                                rows="10"
-                                onChange={(e) => UpdateHonorComment(e, index)}
-                              ></textarea>
-                            </div>
                           </div>
                         </div>
                         {/* Previous Comments here */}
-                        <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-3 overflow-x-hidden">
+                        <div className="w-full md:w-8/12 py-2 bg-slate-200 flex flex-col px-2 overflow-y-auto mt-3 overflow-x-hidden">
                           <h2 className="self-center font-bold capitalize">
                             Your Previous comments
                           </h2>
