@@ -26,7 +26,8 @@ app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use("/", require("./routes/root"));
 
-app.use('/users', require('./routes/userRoutes'))
+app.use('/admin', require('./routes/adminRoute'))
+app.use('/undergrads', require('./routes/undergrad_studentRoutes'))
 app.use('/undergraduteApplicants', require('./routes/undergraduteApplicantRoutes'))
 app.use('/honors', require('./routes/honorRoutes'))
 app.use('/honors/user', require('./routes/bySpecficUser/honorByUser'))

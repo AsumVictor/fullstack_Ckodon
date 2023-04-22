@@ -4,7 +4,7 @@ const Activity = require("../../models/activity");
 const Aid = require("../../models/aid");
 const Essay = require("../../models/essay");
 const Recommendation = require("../../models/recommendation")
-const User = require("../../models/user");
+const User = require("../../models/undergrad_student");
 const asyncHandler = require("express-async-handler");
 
 const getReviewByUser = asyncHandler(async (req, res) => {
@@ -19,7 +19,7 @@ const getReviewByUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "User not found" });
   }
 
-    const reviews = await Review.find({user: userId}).lean().sort({ createdAt: -1 });
+    const reviews = await Review.find({user: userId}).lean().sort({ updatedAt: -1 });
 
     const reviewWithUserAndDoc = await Promise.all(
       reviews.map(async (review) => {

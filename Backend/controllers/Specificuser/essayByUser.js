@@ -1,5 +1,5 @@
 const Essay = require("../../models/essay");
-const User = require("../../models/user");
+const User = require("../../models/undergrad_student");
 const asyncHandler = require("express-async-handler");
 
 //get Essay by Id
