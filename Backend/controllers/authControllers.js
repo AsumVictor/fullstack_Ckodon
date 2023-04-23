@@ -45,13 +45,18 @@ const login = asyncHandler(async (req, res) => {
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "1m" }
+    { expiresIn: "10s" }
   );
 
   const refreshToken = jwt.sign(
-    { email: foundUser.email, role: foundUser.role },
+    {
+      UserInfo: {
+        email: foundUser.email,
+        role: foundUser.role,
+      },
+    },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "1m" }
+    { expiresIn: "15s" }
   );
 
   // Create secure cookie with refresh token
@@ -71,6 +76,7 @@ const login = asyncHandler(async (req, res) => {
 // @access Public - because access token has expired
 const refresh = (req, res) => {
   const cookies = req.cookies;
+ console.log(cookies.jwt);
 
   if (!cookies?.jwt) return res.status(401).json({ message: "Unauthorized" });
 
@@ -105,7 +111,7 @@ const refresh = (req, res) => {
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "1m" }
+        { expiresIn: "10s" }
       );
 
       res.json({ accessToken });

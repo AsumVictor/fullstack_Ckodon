@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink, Outlet, Navigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { HiSun, HiChartPie, HiChevronDown, HiUsers } from "react-icons/hi";
 import {
   HiAcademicCap,
@@ -17,9 +17,11 @@ import "../../../components/shared/style.css";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import './style.css'
+import { useSendLogoutMutation } from '../../auth/authApiSlice'
+
 
 function SharedLayout() {
-  
+  const navigate = useNavigate()
   const [isSideNavShow, setIsSideNavShow] = useState(false);
   const [showProfileSettings, setShowProfileSettings] = useState(false);
   const [isDropdown1Open, setIsDropdown1Open] = useState(false);
@@ -34,6 +36,19 @@ function SharedLayout() {
     color: "#2455FE",
     backgroundColor: "white",
   };
+
+  const [sendLogout, {
+    isLoading,
+    isSuccess,
+    isError,
+    error
+}] = useSendLogoutMutation()
+
+useEffect(() => {
+    if (isSuccess) navigate('/')
+}, [isSuccess, navigate])
+
+if (isLoading) return <p>Logging Out...</p>
 
   return (
     <section className={`${isSideNavShow ? "toggle-space" : null}`}>
@@ -330,7 +345,9 @@ function SharedLayout() {
               <ul>
                 <li className="mt-3 whitespace-nowrap">My profile</li>
                 <li className="mt-3 whitespace-nowrap">Setting</li>
-                <li className="mt-3 whitespace-nowrap">Logout</li>
+                <li className="mt-3 whitespace-nowrap"  onClick={sendLogout}>
+                  Logout
+                  </li>
               </ul>
             </div>
           </div>
