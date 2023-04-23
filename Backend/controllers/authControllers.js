@@ -17,10 +17,10 @@ const login = asyncHandler(async (req, res) => {
   let Collection;
   switch (role) {
     case "admin":
-      Collection = "Admin";
+      Collection = Admin;
       break;
     case "undergraduate":
-      Collection = "Undergrad_student";
+      Collection = Undergrad_student;
       break;
     default:
       return res.status(401).json({ message: "Invalid role" });
@@ -45,13 +45,13 @@ const login = asyncHandler(async (req, res) => {
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "10s" }
+    { expiresIn: "1m" }
   );
 
   const refreshToken = jwt.sign(
     { email: foundUser.email, role: foundUser.role },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "20s" }
+    { expiresIn: "1m" }
   );
 
   // Create secure cookie with refresh token
@@ -81,13 +81,14 @@ const refresh = (req, res) => {
     process.env.REFRESH_TOKEN_SECRET,
     asyncHandler(async (err, decoded) => {
       if (err) return res.status(403).json({ message: "Forbidden" });
+
       let Collection;
-      switch (role) {
+      switch (decoded.role) {
         case "admin":
-          Collection = "Admin";
+          Collection = Admin;
           break;
         case "undergraduate":
-          Collection = "Undergrad_student";
+          Collection = Undergrad_student;
           break;
         default:
           return res.status(401).json({ message: "Invalid role" });
@@ -104,7 +105,7 @@ const refresh = (req, res) => {
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "10s" }
+        { expiresIn: "1m" }
       );
 
       res.json({ accessToken });
