@@ -1126,9 +1126,9 @@ function StudentDocDetails_ug() {
             relative="path"
             className="text-20 text-MdBlue flex flex-row items-center"
           >
-            <HiChevronDoubleLeft />{" "}
+            <HiChevronDoubleLeft />
             <span>
-              {`Back to ${data.user.firstName} ${data.user.lastName}`}{" "}
+              {`Back to ${data.user.firstName} ${data.user.lastName}`}
             </span>
           </Link>
 
@@ -1302,9 +1302,9 @@ function StudentDocDetails_ug() {
             relative="path"
             className="text-20 text-MdBlue flex flex-row items-center"
           >
-            <HiChevronDoubleLeft />{" "}
+            <HiChevronDoubleLeft />
             <span>
-              {`Back to ${data.user.firstName} ${data.user.lastName}`}{" "}
+              {`Back to ${data.user.firstName} ${data.user.lastName}`}
             </span>
           </Link>
           <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2 md:justify-between justify-around items-center w-full flex-wrap gap-y-2 mt-5   sticky -top-5">
@@ -1481,9 +1481,9 @@ function StudentDocDetails_ug() {
             relative="path"
             className="text-20 text-MdBlue flex flex-row items-center"
           >
-            <HiChevronDoubleLeft />{" "}
+            <HiChevronDoubleLeft />
             <span>
-              {`Back to ${data.user.firstName} ${data.user.lastName}`}{" "}
+              {`Back to ${data.user.firstName} ${data.user.lastName}`}
             </span>
           </Link>
 
@@ -1645,9 +1645,9 @@ function StudentDocDetails_ug() {
             relative="path"
             className="text-20 text-MdBlue flex flex-row items-center"
           >
-            <HiChevronDoubleLeft />{" "}
+            <HiChevronDoubleLeft />
             <span>
-              {`Back to ${data.user.firstName} ${data.user.lastName}`}{" "}
+              {`Back to ${data.user.firstName} ${data.user.lastName}`}
             </span>
           </Link>
           <h1 className="self-center text-2xl font-bold text-MdBlue">
@@ -1838,9 +1838,9 @@ function StudentDocDetails_ug() {
             relative="path"
             className="text-20 text-MdBlue flex flex-row items-center"
           >
-            <HiChevronDoubleLeft />{" "}
+            <HiChevronDoubleLeft />
             <span>
-              {`Back to ${data.user.firstName} ${data.user.lastName}`}{" "}
+              {`Back to ${data.user.firstName} ${data.user.lastName}`}
             </span>
           </Link>
 

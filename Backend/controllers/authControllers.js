@@ -56,14 +56,14 @@ const login = asyncHandler(async (req, res) => {
       },
     },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "15s" }
+    { expiresIn: "30m" }
   );
 
   // Create secure cookie with refresh token
   res.cookie("jwt", refreshToken, {
     httpOnly: true, //accessible only by web server
     // secure: true, //https
-    sameSite: "None", //cross-site cookie
+    sameSite: "Lax", //cross-site cookie
     maxAge: 3 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
   });
 
@@ -76,7 +76,6 @@ const login = asyncHandler(async (req, res) => {
 // @access Public - because access token has expired
 const refresh = (req, res) => {
   const cookies = req.cookies;
- console.log(cookies.jwt);
 
   if (!cookies?.jwt) return res.status(401).json({ message: "Unauthorized" });
 
@@ -89,7 +88,7 @@ const refresh = (req, res) => {
       if (err) return res.status(403).json({ message: "Forbidden" });
 
       let Collection;
-      switch (decoded.role) {
+      switch (decoded.UserInfo.role) {
         case "admin":
           Collection = Admin;
           break;
@@ -99,7 +98,7 @@ const refresh = (req, res) => {
         default:
           return res.status(401).json({ message: "Invalid role" });
       }
-      const foundUser = await Collection.findOne({ email: decoded.email }).exec();
+      const foundUser = await Collection.findOne({ email: decoded.UserInfo.email }).exec();
 
       if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
 

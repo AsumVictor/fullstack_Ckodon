@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { HiSun, HiChartPie, HiChevronDown, HiUsers } from "react-icons/hi";
+import {
+  HiSun,
+  HiChartPie,
+  HiChevronDown,
+  HiUsers,
+  HiUserCircle,
+  HiCog,
+  HiLogout,
+} from "react-icons/hi";
 import {
   HiAcademicCap,
   HiChatBubbleBottomCenterText,
@@ -16,12 +24,11 @@ import Navbar from "../../../components/shared/navbar";
 import "../../../components/shared/style.css";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip as ReactTooltip } from "react-tooltip";
-import './style.css'
-import { useSendLogoutMutation } from '../../auth/authApiSlice'
-
+import "./style.css";
+import { useSendLogoutMutation } from "../../auth/authApiSlice";
 
 function SharedLayout() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [isSideNavShow, setIsSideNavShow] = useState(false);
   const [showProfileSettings, setShowProfileSettings] = useState(false);
   const [isDropdown1Open, setIsDropdown1Open] = useState(false);
@@ -37,18 +44,14 @@ function SharedLayout() {
     backgroundColor: "white",
   };
 
-  const [sendLogout, {
-    isLoading,
-    isSuccess,
-    isError,
-    error
-}] = useSendLogoutMutation()
+  const [sendLogout, { isLoading, isSuccess, isError, error }] =
+    useSendLogoutMutation();
 
-useEffect(() => {
-    if (isSuccess) navigate('/')
-}, [isSuccess, navigate])
+  useEffect(() => {
+    if (isSuccess) navigate("/");
+  }, [isSuccess, navigate]);
 
-if (isLoading) return <p>Logging Out...</p>
+  if (isLoading) return <p>Logging Out...</p>;
 
   return (
     <section className={`${isSideNavShow ? "toggle-space" : null}`}>
@@ -63,27 +66,27 @@ if (isLoading) return <p>Logging Out...</p>
           {isSideNavShow && <span> Ckodon</span>}
         </div>
         <div className="">
-
           <NavLink
-          end
+            end
             to="dashboard"
-            id='dashboard'
+            id="dashboard"
             onClick={() => setIsSideNavShow(false)}
             className={`flex capitalize flex-row items-center gap-3 ${
               !isSideNavShow ? "justify-center" : "justify-start"
             } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-            style={({isActive}) => ( isActive ? activeStyle : null)}
+            style={({ isActive }) => (isActive ? activeStyle : null)}
           >
             <HiChartPie /> {isSideNavShow && <span> Dashboard</span>}
           </NavLink>
-
 
           {/* Students dropdown to select between grauduates and undergraduates */}
           <div className="dropdown1 rounded-md bg-blue-400 pb-2">
             <div
               className={`flex cursor-pointer capitalize flex-row items-center gap-3 ${
                 !isSideNavShow ? "justify-center" : "justify-start"
-              } text-white font-semibold text-18 py-1 px-2 mt-5 rounded-md ${isDropdown1Open? 'text-white bg-blue-800': null}`}
+              } text-white font-semibold text-18 py-1 px-2 mt-5 rounded-md ${
+                isDropdown1Open ? "text-white bg-blue-800" : null
+              }`}
               onClick={() => setIsDropdown1Open((prev) => !prev)}
             >
               <HiUsers />
@@ -94,24 +97,24 @@ if (isLoading) return <p>Logging Out...</p>
               <div className="px-1">
                 <NavLink
                   to="undergraduate-students"
-                  id='undergraduate-students'
+                  id="undergraduate-students"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
                   } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-                  style={({isActive}) => (isActive ? activeStyle : null)}
+                  style={({ isActive }) => (isActive ? activeStyle : null)}
                 >
                   <HiAcademicCap />
                   {isSideNavShow && <span> undergradute</span>}
                 </NavLink>
                 <NavLink
                   to="graduate-students"
-                  id='graduate-students'
+                  id="graduate-students"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
                   } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-                  style={({isActive}) => (isActive ? activeStyle : null)}
+                  style={({ isActive }) => (isActive ? activeStyle : null)}
                 >
                   <ImUserTie /> {isSideNavShow && <span> Gradutes</span>}
                 </NavLink>
@@ -123,7 +126,9 @@ if (isLoading) return <p>Logging Out...</p>
             <div
               className={`flex cursor-pointer capitalize flex-row items-center gap-3 ${
                 !isSideNavShow ? "justify-center" : "justify-start"
-              } text-white font-semibold text-18 py-1 px-2 mt-5 rounded-md ${isDropdown3Open? 'text-white bg-blue-800': null}`}
+              } text-white font-semibold text-18 py-1 px-2 mt-5 rounded-md ${
+                isDropdown3Open ? "text-white bg-blue-800" : null
+              }`}
               onClick={() => setIsDropdown3Open((prev) => !prev)}
             >
               <MdAssignment />
@@ -134,24 +139,25 @@ if (isLoading) return <p>Logging Out...</p>
               <div className="px-1">
                 <NavLink
                   to="reviews-undergraduates"
-                  id='reviews-undergraduates'
+                  id="reviews-undergraduates"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
                   } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-                  style={({isActive}) => (isActive ? activeStyle : null)}
+                  style={({ isActive }) => (isActive ? activeStyle : null)}
                 >
-                  <HiAcademicCap />{" "}
+                  <HiAcademicCap />
+                  <button className="flex flex-row items-center gap-x-2"></button>
                   {isSideNavShow && <span> undergradute</span>}
                 </NavLink>
                 <NavLink
                   to="reviews-gradutes"
-                  id='reviews-gradutes'
+                  id="reviews-gradutes"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
                   } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-                  style={({isActive}) => (isActive ? activeStyle : null)}
+                  style={({ isActive }) => (isActive ? activeStyle : null)}
                 >
                   <ImUserTie /> {isSideNavShow && <span> Gradutes</span>}
                 </NavLink>
@@ -164,7 +170,9 @@ if (isLoading) return <p>Logging Out...</p>
             <div
               className={`flex cursor-pointer capitalize flex-row items-center gap-3 ${
                 !isSideNavShow ? "justify-center" : "justify-start"
-              } text-white font-semibold text-18 py-1 px-2 mt-5 rounded-md ${isDropdown2Open? 'text-white bg-blue-800': null} `}
+              } text-white font-semibold text-18 py-1 px-2 mt-5 rounded-md ${
+                isDropdown2Open ? "text-white bg-blue-800" : null
+              } `}
               onClick={() => setIsDropdown2Open((prev) => !prev)}
             >
               <HiUsers />
@@ -175,24 +183,25 @@ if (isLoading) return <p>Logging Out...</p>
               <div className="px-1">
                 <NavLink
                   to="undergraduate-applicants"
-                  id='undergraduate-applicants'
+                  id="undergraduate-applicants"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
                   } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-                  style={({isActive}) => (isActive ? activeStyle : null)}
+                  style={({ isActive }) => (isActive ? activeStyle : null)}
                 >
-                  <HiAcademicCap />{" "}
+                  <HiAcademicCap />
+                  <button className="flex flex-row items-center gap-x-2"></button>
                   {isSideNavShow && <span> undergradute</span>}
                 </NavLink>
                 <NavLink
                   to="applicants-graduates"
-                  id='applicants-graduates'
+                  id="applicants-graduates"
                   onClick={() => setIsSideNavShow(false)}
                   className={`flex capitalize flex-row items-center gap-3 mt-2 ${
                     !isSideNavShow ? "justify-center" : "justify-start"
                   } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-                  style={({isActive}) => (isActive ? activeStyle : null)}
+                  style={({ isActive }) => (isActive ? activeStyle : null)}
                 >
                   <ImUserTie /> {isSideNavShow && <span> Gradutes</span>}
                 </NavLink>
@@ -202,53 +211,53 @@ if (isLoading) return <p>Logging Out...</p>
 
           <NavLink
             to="sat-students"
-            id='sat-students'
+            id="sat-students"
             onClick={() => setIsSideNavShow(false)}
             className={`flex capitalize flex-row items-center gap-3 mt-2 ${
               !isSideNavShow ? "justify-center" : "justify-start"
             } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-            style={({isActive}) => (isActive ? activeStyle : null)}
+            style={({ isActive }) => (isActive ? activeStyle : null)}
           >
             <HiBookOpen /> {isSideNavShow && <span> SAT students</span>}
           </NavLink>
 
           <NavLink
             to="broadcast"
-            id='broadcast'
+            id="broadcast"
             onClick={() => setIsSideNavShow(false)}
             className={`flex capitalize flex-row items-center gap-3 mt-2 ${
               !isSideNavShow ? "justify-center" : "justify-start"
             } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-            style={({isActive}) => (isActive ? activeStyle : null)}
+            style={({ isActive }) => (isActive ? activeStyle : null)}
           >
             <HiMegaphone /> {isSideNavShow && <span> broadcast</span>}
           </NavLink>
 
           <NavLink
             to="chat"
-            id='chat'
+            id="chat"
             onClick={() => setIsSideNavShow(false)}
             className={`flex capitalize flex-row items-center gap-3 mt-2 ${
               !isSideNavShow ? "justify-center" : "justify-start"
             } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-            style={({isActive}) => (isActive ? activeStyle : null)}
+            style={({ isActive }) => (isActive ? activeStyle : null)}
           >
-            <HiChatBubbleBottomCenterText />{" "}
+            <HiChatBubbleBottomCenterText />
+            <button className="flex flex-row items-center gap-x-2"></button>
             {isSideNavShow && <span> chat</span>}
           </NavLink>
 
           <NavLink
             to="chat-room"
-            id='chat-room'
+            id="chat-room"
             onClick={() => setIsSideNavShow(false)}
             className={`flex capitalize flex-row items-center gap-3 mt-2 ${
               !isSideNavShow ? "justify-center" : "justify-start"
             } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-            style={({isActive}) => (isActive ? activeStyle : null)}
+            style={({ isActive }) => (isActive ? activeStyle : null)}
           >
             <HiBookOpen /> {isSideNavShow && <span> Community</span>}
           </NavLink>
-
         </div>
       </SideNav>
       <ReactTooltip
@@ -269,7 +278,7 @@ if (isLoading) return <p>Logging Out...</p>
           isSideNavShow ? "hidden" : "flex"
         } opacity-100 text-MdBlue font-bold tooltip`}
       />
-       <ReactTooltip
+      <ReactTooltip
         anchorId="graduate-students"
         place="right"
         variant="info"
@@ -314,8 +323,7 @@ if (isLoading) return <p>Logging Out...</p>
           isSideNavShow ? "hidden" : "flex"
         } opacity-100 text-MdBlue font-bold tooltip`}
       />
-     
-      
+
       <div className={`main ${isSideNavShow ? "toggle-space" : null}`}>
         <Navbar toggleSidenav={toogleSideNav} isShow={isSideNavShow}>
           {/* Ckodon or admin text */}
@@ -345,15 +353,38 @@ if (isLoading) return <p>Logging Out...</p>
               <ul>
                 <li className="mt-3 whitespace-nowrap">My profile</li>
                 <li className="mt-3 whitespace-nowrap">Setting</li>
-                <li className="mt-3 whitespace-nowrap"  onClick={sendLogout}>
+                <li className="mt-3 whitespace-nowrap" onClick={sendLogout}>
                   Logout
-                  </li>
+                </li>
+              </ul>
+            </div>
+            <div
+              className={`userSetting absolute cursor-pointer rounded-md ${
+                showProfileSettings ? "flex" : "hidden"
+              }  right-0 justify-end py-2 bg-white shadow-md mt-7`}
+            >
+              <ul className="w-full px-3">
+                <li className=" w-full px-4 font-semibold rounded-md py-1 whitespace-nowrap hover:bg-MdBlue hover:text-white flex flex-row gap-x-2 flex-nowrap items-center">
+                  <button className="flex flex-row items-center gap-x-2">
+                    <HiUserCircle /> <span>My profile</span>
+                  </button>
+                </li>
+                <li className="mt-3 w-full px-4 font-semibold rounded-md py-1 whitespace-nowrap hover:bg-MdBlue hover:text-white flex flex-row gap-x-2 flex-nowrap items-center">
+                  <button className="flex flex-row items-center gap-x-2">
+                    <HiCog /> <span> Setting</span>
+                  </button>
+                </li>
+                <li className="mt-3 w-full px-4 font-semibold rounded-md py-1 whitespace-nowrap hover:bg-MdBlue hover:text-white flex flex-row gap-x-2 flex-nowrap items-center">
+                  <button className="flex flex-row items-center gap-x-2">
+                    <HiLogout /> <span> Logout</span>
+                  </button>
+                </li>
               </ul>
             </div>
           </div>
         </Navbar>
         <div className="content">
-        <Outlet />
+          <Outlet />
         </div>
       </div>
     </section>
