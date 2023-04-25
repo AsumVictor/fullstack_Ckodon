@@ -1,5 +1,5 @@
 const Aid = require("../models/aid");
-const User = require("../models/user");
+const User = require("../models/undergrad_student");
 const asyncHandler = require("express-async-handler");
 
 //get all users

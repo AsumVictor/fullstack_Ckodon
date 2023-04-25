@@ -1,5 +1,5 @@
 const Honor = require("../models/honor");
-const User = require("../models/user");
+const User = require("../models/undergrad_student");
 const asyncHandler = require("express-async-handler");
 
 //get all users
@@ -13,12 +13,12 @@ const getHonors = asyncHandler(async (req, res) => {
 });
 
 const addNewHonor = asyncHandler(async (req, res) => {
-  const { user, status, submitted, honors } = req.body;
+  const { user, status, submitted, honors, voiceNOtes, additionalDocs, submittedBefore } = req.body;
 
   // Confirm data
 
   const anyEmptyField =
-    !user || !status || !typeof submitted == "boolean"  || !Array.isArray(honors);
+    !user || !status || !typeof submitted == "boolean"  || !Array.isArray(honors)  || !Array.isArray(voiceNOtes)  || !Array.isArray(additionalDocs);
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All fields are required before you can create honor" });
@@ -47,6 +47,9 @@ const addNewHonor = asyncHandler(async (req, res) => {
     status,
     submitted,
     honors,
+    voiceNOtes, 
+    additionalDocs, 
+    submittedBefore
   });
 
   if (honor) {
@@ -58,9 +61,9 @@ const addNewHonor = asyncHandler(async (req, res) => {
 });
 
 const updateHonor = asyncHandler(async (req, res) => {
-  const { id, status, submitted, honors } = req.body;
+  const { id, status, submitted, honors,  voiceNOtes, additionalDocs, submittedBefore } = req.body;
 
-  const anyEmptyField = !status || !typeof submitted == "boolean" || !Array.isArray(honors);
+  const anyEmptyField = !status || !typeof submitted == "boolean" || !Array.isArray(honors) || !typeof submittedBefore == "boolean"
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });
@@ -81,6 +84,10 @@ const updateHonor = asyncHandler(async (req, res) => {
   honor.status = status;
   honor.submitted = submitted;
   honor.honors = honors;
+  honor.submittedBefore =submittedBefore;
+  honor.voiceNOtes =voiceNOtes, 
+  honor.additionalDocs =additionalDocs 
+
 
   const updatedHonor = await honor.save();
   if (updatedHonor) {

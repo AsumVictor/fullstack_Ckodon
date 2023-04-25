@@ -1,5 +1,5 @@
 const Essay = require("../../models/essay");
-const User = require("../../models/user");
+const User = require("../../models/undergrad_student");
 const asyncHandler = require("express-async-handler");
 
 //get Essay by Id
@@ -21,9 +21,7 @@ const getEssayOfUser = asyncHandler(async (req, res) => {
   }
 
   const essays = await Essay.find({ user: userId }).lean().exec();
-  if (!essays) {
-    return res.status(400).json({ message: "No essays found" });
-  }
+ 
 
 
   res.json(essays);

@@ -4,13 +4,12 @@ const reviewSchema = new mongoose.Schema(
   {
     deadline: {
       type: Date,
-      required: true,
     },
     status: {
       type: String,
       required: true,
-      default: "pending",
-      enum: ["pending", "rejected", "approved"],
+      default: "unresolved",
+      enum: ["unresolved", "resolved"],
     },
     documentId: {
       type: mongoose.Schema.Types.ObjectId,

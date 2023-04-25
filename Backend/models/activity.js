@@ -9,21 +9,41 @@ const activitySchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
+      enum: ["resolved", "unresolved", ],
+      default: "unresolved",
     },
 
     submitted: {
       type: Boolean,
       default: false,
     },
-
+    voiceNOtes: [
+      {
+        voiceNote: {
+          type: String,
+          required: false,
+        },
+        timeDate: {
+          type: Date,
+          required: false,
+        },
+      },
+    ],
+    additionalDocs: [
+      {
+        doc: {
+          type: String,
+          required: false,
+        },
+        timeDate: {
+          type: Date,
+          required: false,
+        },
+      },
+    ],
     activities: [
       {
-        type: {
-          type: String,
-          required: true,
-        },
+
         position: {
           type: String,
           required: false,
@@ -76,10 +96,23 @@ const activitySchema = new mongoose.Schema(
           type: String,
           required: false,
         },
-        comment: {
+        comments: [
+          {
+            comment: {
+              type: String,
+              required: false,
+            },
+            timeDate: {
+              type: Date,
+              required: false,
+            },
+          },
+        ],
+        rate: {
           type: String,
-          required: false,
-        },
+          enum: ['bad', 'normal', 'good', 'notRated'],
+          default: 'notRated'
+        }
       },
     ],
   },

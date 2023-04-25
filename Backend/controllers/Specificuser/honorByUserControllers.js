@@ -1,11 +1,11 @@
 const Honor = require("../../models/honor");
-const User = require("../../models/user");
+const User = require("../../models/undergrad_student");
 const asyncHandler = require("express-async-handler");
 
 //get Honor by Id
 
 const getHonorOfUser = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
 
   // Confirm data
 
@@ -20,10 +20,8 @@ const getHonorOfUser = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "User not found" });
   }
 
-  const honors = await Honor.find({ user: userId }).lean().exec();
-  if (!honors) {
-    return res.status(400).json({ message: "No honors found" });
-  }
+  const honors = await Honor.findOne({ user: userId }).lean().exec();
+ 
 
 
   res.json(honors);

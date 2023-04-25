@@ -1,6 +1,6 @@
 const Review = require("../models/review");
 const Honor = require("../models/honor");
-const User = require("../models/user");
+const User = require("../models/undergrad_student");
 const asyncHandler = require("express-async-handler");
 const Activity = require("../models/activity");
 const Aid = require("../models/aid");
@@ -8,9 +8,9 @@ const Essay = require("../models/essay");
 const Recommendation = require("../models/recommendation");
 const review = require("../models/review");
 
-//get all users
+//get all reviews
 const getAllReviews = asyncHandler(async (req, res) => {
-  const reviews = await Review.find().lean().sort({ createdAt: -1 });
+  const reviews = await Review.find().lean().sort({ updatedAt: -1 });
   // If no undergradute Applicant
   if (!reviews?.length) {
     return res.status(400).json({ message: "No Reviews found" });
@@ -18,7 +18,10 @@ const getAllReviews = asyncHandler(async (req, res) => {
 
   const reviewWithUserAndDoc = await Promise.all(
     reviews.map(async (review) => {
-      const user = await User.findById(review.user).select("-password").lean().exec();
+      const user = await User.findById(review.user)
+        .select("-password")
+        .lean()
+        .exec();
       let Document;
       switch (review.onModel) {
         case "Honor":
@@ -46,8 +49,8 @@ const getAllReviews = asyncHandler(async (req, res) => {
 
       return {
         ...review,
-        student:{...user },
-       document,
+        student: { ...user },
+        document,
       };
     })
   );
@@ -94,13 +97,14 @@ const addNewReview = asyncHandler(async (req, res) => {
       return res.status(400).json({ error: "Invalid document model" });
   }
 
-//Check if the Activity and its ID exist
+  //Check if the Activity and its ID exist
 
-
-const foundDocument = await Document.findOne({ user: user, _id: documentId })
-if (!foundDocument) {
-  return res.status(400).json({ message: "Invalid document or user not own this document" });
-}
+  const foundDocument = await Document.findOne({ user: user, _id: documentId });
+  if (!foundDocument) {
+    return res
+      .status(400)
+      .json({ message: "Invalid document or user not own this document" });
+  }
 
   const duplicate = await Review.findOne({ user: user, documentId: documentId })
     .lean()
@@ -111,8 +115,6 @@ if (!foundDocument) {
       message: "It seems you have have submitted this document before",
     });
   }
-
-
 
   // Create and store the new user
   const review = await Review.create({
@@ -132,15 +134,19 @@ if (!foundDocument) {
 });
 
 const updateReview = asyncHandler(async (req, res) => {
-  const { id, deadline, status } = req.body;
+  const { deadline, status, document, model, user } = req.body;
 
-  const anyEmptyField = !id || !deadline || !status;
+  const anyEmptyField = !document || !status || !model;
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });
   }
 
-  const review = await Review.findById(id).exec();
+  const review = await Review.findOne({
+    user: user,
+    documentId: document,
+    onModel: model,
+  }).exec();
 
   if (!review) {
     return res.status(400).json({ message: "Reviewed document not found" });
@@ -158,20 +164,26 @@ const updateReview = asyncHandler(async (req, res) => {
 });
 
 const deleteReview = asyncHandler(async (req, res) => {
-  const { id } = req.body;
-  if (!id) {
-    res.status(400).json({ message: "review ID required" });
+  const { document, model, user } = req.query;
+  if (!document || !model || !user) {
+    res.status(400).json({ message: "All fields required" });
   }
 
-  const review = await Review.findById(id).exec();
+  const review = await Review.findOne({
+    user: user,
+    documentId: document,
+    onModel: model,
+  }).exec();
+
   if (!review) {
     return res.status(400).json({ message: "Review not found" });
   }
 
   const result = await review.deleteOne();
-  const reply = `Honor has been deleted`;
+  if(result){
+    return res.status(200).json({ message: "Deleted " });
+  }
 
-  res.json(reply);
 });
 
 module.exports = {

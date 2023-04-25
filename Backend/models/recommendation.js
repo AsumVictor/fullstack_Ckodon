@@ -9,8 +9,8 @@ const recommendationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
+      enum: ["resolved", "unresolved"],
+      default: "unresolved",
     },
 
     submitted: {
@@ -24,13 +24,52 @@ const recommendationSchema = new mongoose.Schema(
           type: String,
           required: false,
         },
-        comment: {
-          type: String,
-          required: false,
-        },
+        voiceNOtes: [
+          {
+            voiceNote: {
+              type: String,
+              required: false,
+            },
+            timeDate: {
+              type: Date,
+              required: false,
+            },
+          },
+        ],
+        additionalDocs: [
+          {
+            doc: {
+              type: String,
+              required: false,
+            },
+            timeDate: {
+              type: Date,
+              required: false,
+            },
+          },
+        ],
         letters: [
           {
             letter: { type: String, required: false },
+            rate: {
+              type: String,
+              enum: ["bad", "normal", "good", "notRated"],
+              default: "notRated",
+              required: false,
+            },
+            
+            comments: [
+              {
+                comment: {
+                  type: String,
+                  required: false,
+                },
+                timeDate: {
+                  type: Date,
+                  required: false,
+                },
+              },
+            ],
           },
         ],
       },

@@ -1,4 +1,5 @@
 require("dotenv").config();
+require('express-async-errors')
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,12 +27,15 @@ app.use("/", express.static(path.join(__dirname, "public")));
 
 app.use("/", require("./routes/root"));
 
-app.use('/users', require('./routes/userRoutes'))
+app.use('/admins', require('./routes/adminRoute'))
+app.use('/undergrads', require('./routes/undergrad_studentRoutes'))
+app.use('/auth', require('./routes/authRoute'))
 app.use('/undergraduteApplicants', require('./routes/undergraduteApplicantRoutes'))
 app.use('/honors', require('./routes/honorRoutes'))
 app.use('/honors/user', require('./routes/bySpecficUser/honorByUser'))
 app.use('/undergradeReviews', require('./routes/reviewRoutes'))
 app.use('/undergradeReviews/user', require('./routes/bySpecficUser/reviewByUserRouts'))
+app.use('/undergradeReviews/id', require('./routes/bySpecficUser/reviewById_undergrad'))
 app.use('/activities', require('./routes/activityRoutes'))
 app.use('/activities/user', require('./routes/bySpecficUser/activityByUser'))
 app.use('/essays', require('./routes/essaysRoutes'))

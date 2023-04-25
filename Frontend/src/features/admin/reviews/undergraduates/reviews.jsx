@@ -34,10 +34,8 @@ function UndergraduateReviews() {
     }
   }
 
-
-
   if (isSuccess) {
-      const { ids } = reviews;
+    const { ids } = reviews;
 
     const tableContent = ids?.length
       ? ids.map((reviewsId, index) => (
@@ -186,17 +184,12 @@ function UndergraduateReviews() {
         >
           <StatusFilterButton
             handleFilter={FilterSearch}
-            type="pending"
+            type="unresolved"
             typeFilter={statusFilter}
           />
           <StatusFilterButton
             handleFilter={FilterSearch}
-            type="approved"
-            typeFilter={statusFilter}
-          />
-          <StatusFilterButton
-            handleFilter={FilterSearch}
-            type="rejected"
+            type="resolved"
             typeFilter={statusFilter}
           />
 
@@ -241,21 +234,17 @@ export function StatusFilterButton(props) {
     <button
       onClick={() => props.handleFilter("status", `${props.type}`)}
       className={`py-1 mt-2 px-3 ${
-        props.typeFilter == "pending" && props.typeFilter == props.type
+        props.typeFilter == "unresolved" && props.typeFilter == props.type
           ? "bg-blue-600 text-white"
-          : props.typeFilter == "approved" && props.typeFilter == props.type
+          : props.typeFilter == "resolved" && props.typeFilter == props.type
           ? "bg-emerald-600 text-white"
-          : props.typeFilter == "rejected" && props.typeFilter == props.type
-          ? "bg-pink-600 text-white"
           : null
       } capitalize rounded-md font-semibold border-2
       ${
-        props.type == "pending"
+        props.type == "unresolved"
           ? "border-blue-600"
-          : props.type == "approved"
+          : props.type == "resolved"
           ? "border-emerald-600"
-          : props.type == "rejected"
-          ? "border-pink-600"
           : null
       } `}
     >
