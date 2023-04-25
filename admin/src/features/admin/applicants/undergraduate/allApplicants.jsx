@@ -24,6 +24,8 @@ function AllApplicants() {
     isError,
     error,
   } = useGetUndergraduateApplicantsQuery();
+  useTitle(`Undergraduate Applicants`)
+
   let content;
   if (isLoading) content = <CoverLoaderMedium/>;
 

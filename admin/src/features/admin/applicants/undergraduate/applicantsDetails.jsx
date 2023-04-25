@@ -24,7 +24,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SmallLoader } from "../../../../components/loaders/loader";
-
+import useTitle from "../../../../hooks/useTitle";
 
 function ApplicantDetails() {
   const [loading, setLoading] = useState(false);
@@ -68,6 +68,7 @@ function ApplicantDetails() {
       gender: applicant.gender,
       isActive: true,
     };
+
 
     content = (
       <div className="flex flex-col items-center">
@@ -221,6 +222,7 @@ function ApplicantDetails() {
       </div>
     );
   }
+  useTitle(`${firstName} ${lastName} Application`)
 
   //Modal and reject accept logics
   const [showModal, setShowModal] = useState({
