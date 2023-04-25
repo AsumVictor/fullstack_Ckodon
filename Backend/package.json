@@ -4,8 +4,7 @@
   "description": "Ckodon Fullstack projects",
   "main": "server.js",
   "scripts": {
-    "start": "node dist/server.js",
-    "build": "webpack --mode production",
+    "start": "node server",
     "dev": "nodemon server"
   },
   "keywords": [],
