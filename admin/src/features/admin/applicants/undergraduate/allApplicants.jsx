@@ -15,7 +15,7 @@ import { Link } from "react-router-dom";
 import Applicant from "./applicant";
 import { useGetUndergraduateApplicantsQuery } from "../../../../apiSlice/undergrauteApplicantsApiSlice";
 import NoContent from "../../../../components/indications/noContent";
-
+import { CoverLoaderMedium } from "../../../../components/loaders/loader";
 function AllApplicants() {
   const {
     data: applicants,
@@ -25,7 +25,7 @@ function AllApplicants() {
     error,
   } = useGetUndergraduateApplicantsQuery();
   let content;
-  if (isLoading) content = <p>Loading...</p>;
+  if (isLoading) content = <CoverLoaderMedium/>;
 
   if (isError) {
      if(error?.status == 400){

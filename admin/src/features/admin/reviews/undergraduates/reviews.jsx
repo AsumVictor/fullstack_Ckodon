@@ -14,6 +14,7 @@ import { Tooltip as ReactTooltip } from "react-tooltip";
 import { useGetReviewsQuery } from "../../../../apiSlice/reviewsApiSlice";
 import NoContent from "../../../../components/indications/noContent";
 import Review from "./review";
+import { CoverLoaderMedium } from "../../../../components/loaders/loader";
 
 function UndergraduateReviews() {
   //LOADING REVIEWS
@@ -26,7 +27,7 @@ function UndergraduateReviews() {
   } = useGetReviewsQuery();
 
   let content;
-  if (isLoading) content = <p>Loading...</p>;
+  if (isLoading) content = <CoverLoaderMedium/>;
 
   if (isError) {
     if (error?.status == 400) {

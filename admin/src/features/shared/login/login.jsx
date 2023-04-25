@@ -5,6 +5,7 @@ import { TextInputs } from "../../../components/customHTML/textInputs";
 import { useDispatch } from 'react-redux'
 import { setCredentials } from '../../auth/authSlice'
 import { useLoginMutation } from '../../auth/authApiSlice'
+import usePersist from '../../../hooks/usePersist';
 
 function Login() {
 
@@ -14,11 +15,12 @@ function Login() {
       const [email, setEmail] = useState('');
       const [password, setPassword] = useState('');
       const [errMsg, setErrMsg] = useState('')
-  
+      const [persist, setPersist] = usePersist()
+      const [login, { isLoading }] = useLoginMutation()
+
       const navigate = useNavigate()
       const dispatch = useDispatch()
   
-      const [login, { isLoading }] = useLoginMutation()
   
 
   
@@ -36,7 +38,7 @@ function Login() {
                 dispatch(setCredentials({ accessToken }))
                 setEmail('')
                 setPassword('')
-                navigate('/dashboard')
+                navigate('/dashboard', {replace: true,})
               }
           } catch (err) {
               if (!err.status) {
@@ -51,7 +53,7 @@ function Login() {
               errRef.current.focus();
           }
       }
-
+      const handleToggle = () => setPersist(prev => !prev)
   
       if (isLoading) return <p>Loading...</p>
 
@@ -105,7 +107,16 @@ function Login() {
         <a href="#" className="text-MdBlue underline mt-2 self-start">
           Forgot Password
         </a>
-
+        <label htmlFor="persist" className="form__persist">
+                        <input
+                            type="checkbox"
+                            className="form__checkbox"
+                            id="persist"
+                            onChange={handleToggle}
+                            checked={persist}
+                        />
+                        Trust This Device
+                    </label>
         <button
           id="submit"
           className="w-full bg-MdBlue mt-4 text-xl flex justify-center items-center 

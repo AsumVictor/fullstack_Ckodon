@@ -15,6 +15,7 @@ import { Link } from "react-router-dom";
 import User from "./user";
 import { useGetUsersQuery } from "../../../../apiSlice/usersApiSlice";
 import NoContent from "../../../../components/indications/noContent";
+import { CoverLoaderMedium } from "../../../../components/loaders/loader";
 
 function AllStudent() {
   const {
@@ -25,11 +26,11 @@ function AllStudent() {
     error,
   } = useGetUsersQuery();
   let content;
-  if (isLoading) content = <p>Loading...</p>;
+  if (isLoading) content = < CoverLoaderMedium />
 
   if (isError) {
      if(error?.status == 400){
-       content = <NoContent message={error?.data?.message} />
+       content = <NoContent message={'No undergradute student found'} />
      }
 
     // throw new Error("oops")

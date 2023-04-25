@@ -26,9 +26,11 @@ import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "./style.css";
 import { useSendLogoutMutation } from "../../auth/authApiSlice";
+import useAuth from '../../../hooks/useAuth'
 
 function SharedLayout() {
   const navigate = useNavigate();
+  const { firstName, lastName, avatar} = useAuth()
   const [isSideNavShow, setIsSideNavShow] = useState(false);
   const [showProfileSettings, setShowProfileSettings] = useState(false);
   const [isDropdown1Open, setIsDropdown1Open] = useState(false);
@@ -327,7 +329,10 @@ function SharedLayout() {
       <div className={`main ${isSideNavShow ? "toggle-space" : null}`}>
         <Navbar toggleSidenav={toogleSideNav} isShow={isSideNavShow}>
           {/* Ckodon or admin text */}
-          <span className="hidden md:block">Admin</span>
+        <div className="hidden md:flex flex-row capitalize items-center gap-x-1">
+          <span className="text-emerald-700 font-bold">Admin:</span>
+          <span>{`${firstName} ${lastName}`}</span>
+        </div>
           {/* Theme and User profile */}
           <div className="flex flex-row relative justify-center items-center gap-4">
             {/* Theme toggler */}
@@ -341,7 +346,7 @@ function SharedLayout() {
               } profileIcon cursor-pointer overflow-hidden`}
               onClick={() => setShowProfileSettings((prevState) => !prevState)}
             >
-              <img src={StudentLogo} alt="user avater" />
+              <img src={`${avatar}`} alt="user avater" />
             </div>
 
             {/* user setting */}
@@ -375,7 +380,7 @@ function SharedLayout() {
                   </button>
                 </li>
                 <li className="mt-3 w-full px-4 font-semibold rounded-md py-1 whitespace-nowrap hover:bg-MdBlue hover:text-white flex flex-row gap-x-2 flex-nowrap items-center">
-                  <button className="flex flex-row items-center gap-x-2">
+                  <button className="flex flex-row items-center gap-x-2" onClick={sendLogout}>
                     <HiLogout /> <span> Logout</span>
                   </button>
                 </li>

@@ -80,7 +80,6 @@ const sortedReviews = useMemo(()=>{
   }
 
   if (reviewFinishLoading) {
-    console.log(!sortedReviews.length);
     if (!sortedReviews.length) {
       content =  (
         <h2 className="mt-10 self-center font-bold text-20 ">

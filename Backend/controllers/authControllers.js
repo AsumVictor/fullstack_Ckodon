@@ -40,23 +40,21 @@ const login = asyncHandler(async (req, res) => {
   const accessToken = jwt.sign(
     {
       UserInfo: {
-        email: foundUser.email,
-        role: foundUser.role,
+       ...foundUser
       },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "10s" }
+    { expiresIn: "15m" }
   );
 
   const refreshToken = jwt.sign(
     {
       UserInfo: {
-        email: foundUser.email,
-        role: foundUser.role,
+        ...foundUser
       },
     },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "30m" }
+    { expiresIn: "2d" }
   );
 
   // Create secure cookie with refresh token
@@ -64,7 +62,7 @@ const login = asyncHandler(async (req, res) => {
     httpOnly: true, //accessible only by web server
     // secure: true, //https
     sameSite: "Lax", //cross-site cookie
-    maxAge: 3 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
+    maxAge: 2 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
   });
 
   // Send accessToken containing email and roles
@@ -86,9 +84,9 @@ const refresh = (req, res) => {
     process.env.REFRESH_TOKEN_SECRET,
     asyncHandler(async (err, decoded) => {
       if (err) return res.status(403).json({ message: "Forbidden" });
-
+console.log(decoded);
       let Collection;
-      switch (decoded.UserInfo.role) {
+      switch (decoded.UserInfo._doc.role) {
         case "admin":
           Collection = Admin;
           break;
@@ -98,19 +96,18 @@ const refresh = (req, res) => {
         default:
           return res.status(401).json({ message: "Invalid role" });
       }
-      const foundUser = await Collection.findOne({ email: decoded.UserInfo.email }).exec();
+      const foundUser = await Collection.findOne({ email: decoded.UserInfo._doc.email }).exec();
 
       if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
 
       const accessToken = jwt.sign(
         {
           UserInfo: {
-            email: foundUser.email,
-            role: foundUser.role,
+            ...foundUser
           },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: "10s" }
+        { expiresIn: "15m" }
       );
 
       res.json({ accessToken });
