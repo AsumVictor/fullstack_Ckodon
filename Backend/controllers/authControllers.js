@@ -28,12 +28,13 @@ const login = asyncHandler(async (req, res) => {
   }
 
   const foundUser = await Collection.findOne({ email }).exec();
-
   if (!foundUser || !foundUser.isActive) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
   const match = await bcrypt.compare(password, foundUser.password);
+  console.log(password);
+  console.log(foundUser.password);
 
   if (!match) return res.status(401).json({ message: "Unauthorized" });
 
@@ -84,7 +85,6 @@ const refresh = (req, res) => {
     process.env.REFRESH_TOKEN_SECRET,
     asyncHandler(async (err, decoded) => {
       if (err) return res.status(403).json({ message: "Forbidden" });
-console.log(decoded);
       let Collection;
       switch (decoded.UserInfo._doc.role) {
         case "admin":

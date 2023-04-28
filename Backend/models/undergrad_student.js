@@ -19,11 +19,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    role: [{
+    role: {
       type: String,
-      enum: ["undergraduate", "mentor"],
       default: "undergraduate",
-    }],
+    },
     school: {
       type: String,
       required: true,
@@ -46,9 +45,30 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      trim: true,
-      default: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png',
+      default:
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
       required: false,
+    },
+
+    keyInterest: [
+      {
+        interest: { type: String, required: false },
+      },
+    ],
+    bio: {
+      type: String,
+      required: false,
+    },
+    intendedMajor: [
+      {
+        major: { type: String, required: false },
+      },
+    ],
+
+    updatedStatus: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   {

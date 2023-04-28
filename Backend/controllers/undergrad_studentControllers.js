@@ -31,6 +31,10 @@ const addNewUser = asyncHandler(async (req, res) => {
     phone,
     gender,
     avatar,
+    keyInterest,
+    bio,
+    intendedMajor,
+    updatedStatus,
   } = req.body;
 
   const anyEmptyField =
@@ -42,6 +46,7 @@ const addNewUser = asyncHandler(async (req, res) => {
     !school ||
     !password ||
     !gender ||
+    updatedStatus ||
     typeof isActive !== "boolean";
 
   if (anyEmptyField) {
@@ -69,6 +74,10 @@ const addNewUser = asyncHandler(async (req, res) => {
     gender,
     phone,
     avatar,
+    keyInterest,
+    bio,
+    intendedMajor,
+    updatedStatus,
   };
 
   //create and store new user
@@ -97,6 +106,10 @@ const updateUser = asyncHandler(async (req, res) => {
     gender,
     phone,
     avatar,
+    keyInterest,
+    bio,
+    intendedMajor,
+    updatedStatus,
   } = req.body;
 
   const anyEmptyField =
@@ -106,7 +119,8 @@ const updateUser = asyncHandler(async (req, res) => {
     !email ||
     !residence ||
     !school ||
-    !isActive;
+    !isActive ||
+    typeof updatedStatus !== 'Boolean';
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "You must filled the form" });
@@ -135,6 +149,10 @@ const updateUser = asyncHandler(async (req, res) => {
   user.gender = gender;
   user.phone = phone;
   user.avatar = avatar;
+  user.keyInterest = keyInterest;
+  user.bio = bio;
+  user.intendedMajor = intendedMajor;
+  user.updatedStatus = updatedStatus;
   if (password) {
     //hash
     user.password = await bcrypt.hash(password, 10); // salt rounds

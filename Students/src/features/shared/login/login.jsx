@@ -29,7 +29,7 @@ function Login() {
       const handleSubmit = async (e) => {
           e.preventDefault()
           try {
-              const { accessToken } = await login({ role: 'admin', email, password }).unwrap()
+              const { accessToken } = await login({ role: 'undergraduate', email, password }).unwrap()
               if (accessToken) {
                 
                 dispatch(setCredentials({ accessToken }))
