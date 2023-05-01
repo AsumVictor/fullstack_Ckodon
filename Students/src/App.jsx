@@ -17,9 +17,7 @@ import UnderConstruction from "./components/indications/underConstruction";
 import Student_SharedLayout from "./features/undergrad_students/layout/student_layout";
 import HonorLayout from "./features/undergrad_students/layout/honorLayout";
 import HonorQuickView from "./features/undergrad_students/honors/quickView";
-import CreateHonor, {
-  getHonorsLoader,
-} from "./features/undergrad_students/honors/createHonor";
+import CreateHonor from "./features/undergrad_students/honors/createHonor";
 import InDetailReview, {
   GetSpecficReviewLoader,
 } from "./features/undergrad_students/reviews/inDetailReview";
@@ -56,7 +54,6 @@ const router = createBrowserRouter(
               <Route
                 path="create"
                 element={<CreateHonor />}
-                loader={getHonorsLoader}
               />
             </Route>
             <Route

@@ -164,16 +164,12 @@ const updateReview = asyncHandler(async (req, res) => {
 });
 
 const deleteReview = asyncHandler(async (req, res) => {
-  const { document, model, user } = req.query;
-  if (!document || !model || !user) {
+  const { id } = req.params;
+  if (!id) {
     res.status(400).json({ message: "All fields required" });
   }
 
-  const review = await Review.findOne({
-    user: user,
-    documentId: document,
-    onModel: model,
-  }).exec();
+  const review = await Review.findById(id).exec();
 
   if (!review) {
     return res.status(400).json({ message: "Review not found" });

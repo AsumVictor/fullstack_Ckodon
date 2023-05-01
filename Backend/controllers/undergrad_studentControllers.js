@@ -46,7 +46,7 @@ const addNewUser = asyncHandler(async (req, res) => {
     !school ||
     !password ||
     !gender ||
-    updatedStatus ||
+    typeof updatedStatus !== 'boolean' ||
     typeof isActive !== "boolean";
 
   if (anyEmptyField) {
@@ -101,7 +101,8 @@ const updateUser = asyncHandler(async (req, res) => {
     residence,
     role,
     school,
-    password,
+    oldPassword,
+    newPassword,
     isActive,
     gender,
     phone,
@@ -111,7 +112,6 @@ const updateUser = asyncHandler(async (req, res) => {
     intendedMajor,
     updatedStatus,
   } = req.body;
-
   const anyEmptyField =
     !id ||
     !firstName ||
@@ -119,8 +119,8 @@ const updateUser = asyncHandler(async (req, res) => {
     !email ||
     !residence ||
     !school ||
-    !isActive ||
-    typeof updatedStatus !== 'Boolean';
+    typeof isActive !== "boolean" ||
+    typeof updatedStatus !== 'boolean'
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "You must filled the form" });
@@ -153,9 +153,13 @@ const updateUser = asyncHandler(async (req, res) => {
   user.bio = bio;
   user.intendedMajor = intendedMajor;
   user.updatedStatus = updatedStatus;
-  if (password) {
+  if (newPassword && oldPassword) {
     //hash
-    user.password = await bcrypt.hash(password, 10); // salt rounds
+    const match = await bcrypt.compare(oldPassword, user.password);
+   if(!match){
+    return res.status(409).json({ message: "Your old password doesn't match" });
+   }
+    user.password = await bcrypt.hash(newPassword, 10); // salt rounds
   }
 
   const updatedUser = await user.save();

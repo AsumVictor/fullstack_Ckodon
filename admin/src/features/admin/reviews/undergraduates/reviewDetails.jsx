@@ -21,7 +21,6 @@ import { HiBadgeCheck } from "react-icons/hi";
 import { CoverLoaderMedium } from "../../../../components/loaders/loader";
 
 function StudentDocDetails_ug() {
-  const loaderData = useLoaderData();
   const params = useParams();
   const { data, isLoading, isError, error, isSuccess } =
     useGetSpecificReviewQuery(params.id);

@@ -23,7 +23,7 @@ export const reviewsApiSlice = apiSlice.injectEndpoints({
         url: `/undergradeReviews/id/${id}`,
         method: "GET",
       }),
-      providesTags: ["ReviewByUser"],
+      providesTags: ["SpecficReview"],
     }),
 
     getReviewByUser: builder.query({
@@ -43,8 +43,8 @@ export const reviewsApiSlice = apiSlice.injectEndpoints({
         },
       }),
       invalidatesTags: [
-        { type: "UndergraduateReview", id: "LIST" },
-        { type: "ReviewByUser" },
+        'SpecficReview',
+        'ReviewByUser'
       ],
     }),
 
@@ -56,9 +56,20 @@ export const reviewsApiSlice = apiSlice.injectEndpoints({
           ...initialReviewData,
         },
       }),
-      invalidatesTags: (result, error, arg) => [
-        { type: "UndergraduateReview", id: arg.id },
-        { type: "ReviewByUser" },
+      invalidatesTags: [
+        'SpecficReview',
+        'ReviewByUser'
+      ],
+    }),
+
+    deleteReview: builder.mutation({
+      query: (id) => ({
+        url: `/undergradeReviews/${id}`,
+        method: "DELETE",
+              }),
+      invalidatesTags: [
+        'SpecficReview',
+        'ReviewByUser',
       ],
     }),
   }),
@@ -69,5 +80,6 @@ export const {
   useGetReviewByUserQuery,
   useAddNewReviewMutation,
   useUpdateReviewMutation,
+  useDeleteReviewMutation
 } = reviewsApiSlice;
 

@@ -34,6 +34,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
                 url: '/auth/refresh',
                 method: 'GET',
             }),
+            providesTags: ["Refresh"],
             async onQueryStarted(arg, { dispatch, queryFulfilled }) {
                 try {
                     const { data } = await queryFulfilled

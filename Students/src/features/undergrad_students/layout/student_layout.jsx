@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink, Outlet, Navigate, Link } from "react-router-dom";
+import React, { useState, useEffect, } from "react";
+import { NavLink, Outlet, useNavigate, Link } from "react-router-dom";
 import {
   HiSun,
   HiChartPie,
@@ -21,7 +21,6 @@ import {
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import Logo from "../../../assets/images/logoWhite.jpg";
-import StudentLogo from "../../../assets/images/studentLogo.png";
 import SideNav from "../../../components/shared/sideNav";
 import Navbar from "../../../components/shared/navbar";
 import "../../../components/shared/style.css";
@@ -32,12 +31,20 @@ import ModalBox, {
   ModalFooter,
 } from "../../../components/modal.js/ModalBox";
 import useAuth from "../../../hooks/useAuth";
+import '../../../components/shared/style.css'
+import { useSendLogoutMutation } from "../../auth/authApiSlice";
+import { CoverLoaderMedium } from "../../../components/loaders/loader";
+
 
 function Student_SharedLayout() {
   const [isSideNavShow, setIsSideNavShow] = useState(false);
   const [showProfileSettings, setShowProfileSettings] = useState(false);
   const student = useAuth();
-  console.log(student);
+ const navigate = useNavigate()
+  const [logout, { isLoading, isSuccess, isError, error }] =
+    useSendLogoutMutation();
+
+
   function toogleSideNav() {
     setIsSideNavShow((prevState) => !prevState);
   }
@@ -46,6 +53,16 @@ function Student_SharedLayout() {
     color: "#2455FE",
     backgroundColor: "white",
   };
+
+  useEffect(() => {
+    if (isSuccess) navigate("/");
+  }, [isSuccess, navigate]);
+
+  if (isLoading) {
+    return (
+    <CoverLoaderMedium />
+    )
+  }
 
   return (
     <>
@@ -259,7 +276,7 @@ function Student_SharedLayout() {
         <div className={`main ${isSideNavShow ? "toggle-space" : null}`}>
           <Navbar toggleSidenav={toogleSideNav} isShow={isSideNavShow}>
             {/* Ckodon or admin text */}
-            <h3 className="hidden flex flex-row gap-x-2 md:block font-bold">
+            <h3 className="hidden md:flex flex-row gap-x-2 font-bold">
               <span className="text-emerald-600">Student: </span>
               <span className="capitalize">{`${student?.firstName} ${student?.lastName}`}</span>
             </h3>
@@ -278,7 +295,7 @@ function Student_SharedLayout() {
                   setShowProfileSettings((prevState) => !prevState)
                 }
               >
-                <img src={StudentLogo} alt="user avater" />
+                <img src={`${student?.avatar}`} alt="user avater" />
               </div>
 
               {/* user setting */}
@@ -298,11 +315,15 @@ function Student_SharedLayout() {
                       <HiCog /> <span> Setting</span>
                     </li>
                   </Link>
-                  <Link>
+                  <button
+                  onClick={logout}
+                  >
                     <li className="mt-3 w-full px-4 font-semibold rounded-md py-1 whitespace-nowrap hover:bg-MdBlue hover:text-white flex flex-row gap-x-2 flex-nowrap items-center">
                       <HiLogout /> Logout
                     </li>
-                  </Link>
+                  </button
+                  
+                  >
                 </ul>
               </div>
             </div>

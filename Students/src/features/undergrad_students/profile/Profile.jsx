@@ -9,9 +9,8 @@ import { Link } from "react-router-dom/dist/umd/react-router-dom.development";
 
 function Profile() {
   const student = useAuth();
-console.log(student)
   return (
-    <main className="profile-page overflow-y-auto">
+    <>
       <div className="relative block h-500-px">
         <div className=" absolute top-0 w-full flex justify-center items-start h-full bg-center bg-cover bg-MdBlue">
           <img
@@ -47,11 +46,7 @@ console.log(student)
               <div className="flex flex-wrap justify-center">
                 <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
                   <div className="relative">
-                    <img
-                      alt="..."
-                      src={`${student?.avatar}`}
-                      className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"
-                    />
+                    <img src={student?.avatar} alt={student?.firstName} style={{height:"5cm", width: "5cm",}} className="border-2 border-white shadow-xl rounded-full -mt-20"/>
                   </div>
                 </div>
 
@@ -134,7 +129,7 @@ console.log(student)
                       <h1>No listed interest</h1>
                     ): student?.keyInterest.map((interest,index)=>(
                       <div key={index} className="py-1 font-bold text-white px-3 bg-blue-900 rounded-md">
-                      {interest.interest}
+                      {interest.text}
                     </div>
                     ))
                 
@@ -152,7 +147,7 @@ console.log(student)
                       <h1>No listed interest</h1>
                     ): student?.intendedMajor.map((major,index)=>(
                       <div key={index} className="py-1 font-bold text-white px-3 bg-emerald-700 rounded-md">
-                      {major.major}
+                      {major.text}
                     </div>
                     ))
                 
@@ -166,12 +161,8 @@ console.log(student)
 
                 <div className="flex flex-wrap  justify-center">
                   <div className="w-full lg:w-9/12 px-4">
-                    <p className="mb-4 text-lg leading-relaxed text-blueGray-700">
-                      An artist of considerable range, Jenna the name taken by
-                      Melbourne-raised, Brooklyn-based Nick Murphy writes,
-                      performs and records all of his own music, giving it a
-                      warm, intimate feel with a solid groove structure. An
-                      artist of considerable range.
+                    <p className="mb-4 mt-5 text-lg leading-relaxed text-blueGray-700">
+                      {student?.bio ? `${student.bio}`: `No bio available`}
                     </p>
                   </div>
                 </div>
@@ -200,7 +191,7 @@ console.log(student)
           </div>
         </footer>
       </div>
-    </main>
+    </>
   );
 }
 

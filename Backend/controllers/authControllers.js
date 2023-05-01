@@ -33,26 +33,54 @@ const login = asyncHandler(async (req, res) => {
   }
 
   const match = await bcrypt.compare(password, foundUser.password);
-  console.log(password);
-  console.log(foundUser.password);
 
   if (!match) return res.status(401).json({ message: "Unauthorized" });
 
   const accessToken = jwt.sign(
     {
-      UserInfo: {
-       ...foundUser
+      UserInfo: { 
+    id: foundUser._id,
+    firstName: foundUser.firstName,
+    lastName: foundUser.lastName,
+    email: foundUser.email,
+    residence: foundUser.residence,
+    role: foundUser.role,
+    school: foundUser.school,
+    phone: foundUser.phone,
+    avatar: foundUser.avatar,
+    keyInterest: foundUser.keyInterest,
+    intendedMajor: foundUser.intendedMajor,
+    updatedStatus: foundUser.updatedStatus,
+    bio: foundUser.bio,
+    isActive: foundUser.isActive,
+    gender: foundUser.gender,
       },
     },
+    
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: "15m" }
   );
 
+
   const refreshToken = jwt.sign(
     {
-      UserInfo: {
-        ...foundUser
-      },
+      UserInfo: { 
+        id: foundUser._id,
+        firstName: foundUser.firstName,
+        lastName: foundUser.lastName,
+        email: foundUser.email,
+        residence: foundUser.residence,
+        role: foundUser.role,
+        school: foundUser.school,
+        phone: foundUser.phone,
+        avatar: foundUser.avatar,
+        keyInterest: foundUser.keyInterest,
+        intendedMajor: foundUser.intendedMajor,
+        updatedStatus: foundUser.updatedStatus,
+        bio: foundUser.bio,
+        isActive: foundUser.isActive,
+        gender: foundUser.gender,
+          },
     },
     process.env.REFRESH_TOKEN_SECRET,
     { expiresIn: "2d" }
@@ -86,7 +114,7 @@ const refresh = (req, res) => {
     asyncHandler(async (err, decoded) => {
       if (err) return res.status(403).json({ message: "Forbidden" });
       let Collection;
-      switch (decoded.UserInfo._doc.role) {
+      switch (decoded.UserInfo.role) {
         case "admin":
           Collection = Admin;
           break;
@@ -96,15 +124,29 @@ const refresh = (req, res) => {
         default:
           return res.status(401).json({ message: "Invalid role" });
       }
-      const foundUser = await Collection.findOne({ email: decoded.UserInfo._doc.email }).exec();
+      const foundUser = await Collection.findOne({ email: decoded.UserInfo.email }).exec();
 
       if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
 
       const accessToken = jwt.sign(
         {
-          UserInfo: {
-            ...foundUser
-          },
+          UserInfo: { 
+            id: foundUser._id,
+            firstName: foundUser.firstName,
+            lastName: foundUser.lastName,
+            email: foundUser.email,
+            residence: foundUser.residence,
+            role: foundUser.role,
+            school: foundUser.school,
+            phone: foundUser.phone,
+            avatar: foundUser.avatar,
+            keyInterest: foundUser.keyInterest,
+            intendedMajor: foundUser.intendedMajor,
+            updatedStatus: foundUser.updatedStatus,
+            bio: foundUser.bio,
+            isActive: foundUser.isActive,
+            gender: foundUser.gender,
+              },
         },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "15m" }

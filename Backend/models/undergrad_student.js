@@ -52,7 +52,7 @@ const userSchema = new mongoose.Schema(
 
     keyInterest: [
       {
-        interest: { type: String, required: false },
+        text: { type: String, required: false },
       },
     ],
     bio: {
@@ -61,7 +61,7 @@ const userSchema = new mongoose.Schema(
     },
     intendedMajor: [
       {
-        major: { type: String, required: false },
+        text: { type: String, required: false },
       },
     ],
 

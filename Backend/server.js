@@ -1,6 +1,7 @@
 require("dotenv").config();
 require('express-async-errors')
 const express = require("express");
+const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const path = require("path");
@@ -15,11 +16,15 @@ const mongoose = require("mongoose");
 
 connectDB();
 
+app.use(bodyParser.json({ limit: '50mb' }));
+
+// set a higher limit for URL-encoded requests
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+
  app.use(logger);
 
  app.use(cors(corOptions));
-
- app.use(express.json());
 
  app.use(cookieParser());
 
