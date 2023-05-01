@@ -66,7 +66,7 @@ function Login() {
           </p>
 
           <img
-            src="/images/adminLogo.png"
+            src="/images/logoWhite.png"
             alt="admin"
             style={{ height: "2cm", width: "2cm" }}
             className="mt-5 border-2 rounded-full p-2 border-MdBlue"

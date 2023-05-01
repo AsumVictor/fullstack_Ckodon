@@ -4,7 +4,7 @@ const reviewByuserController = require('../../controllers/Specificuser/reviewByU
 const verifyJWT = require('../../middleware/verifyJWT')
 
 router.use(verifyJWT)
-router.route("/:userId")
-.get(reviewByuserController.getReviewByUser)
+router.route("/:document")
+.get(reviewByuserController.getReviewByDocument)
 
 module.exports = router

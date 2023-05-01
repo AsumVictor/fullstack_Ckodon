@@ -5,7 +5,6 @@ import { HiOutlinePlus } from "react-icons/hi2";
 import { HiTrash } from "react-icons/hi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
 import { CoverLoaderMedium } from "../../../components/loaders/loader";
 import { nanoid } from "@reduxjs/toolkit";
 import NoContent from "../../../components/indications/noContent";
@@ -16,7 +15,7 @@ import {
   useUpdateHonorMutation,
 } from "../../../apiSlice/honorSlice";
 import {
-  useGetReviewByUserQuery,
+  useGetReviewByDocumentQuery,
   useDeleteReviewMutation,
   useUpdateReviewMutation,
   useAddNewReviewMutation,
@@ -33,10 +32,10 @@ function CreateHonor() {
   } = useGetHonorByUserQuery(student.id);
   const [addNewHonor, { isLoading: addLoading }] = useAddNewHonorMutation();
   const [updateHonor, { isLoading: updateLoading }] = useUpdateHonorMutation();
-  const { data: userReview } = useGetReviewByUserQuery(student.id);
+  const { data: userReview } = useGetReviewByDocumentQuery(honors?._id);
   const [updateReview] = useUpdateReviewMutation();
   const [addReview, {isLoading: addReviewLoad}] = useAddNewReviewMutation();
-  const [deleteReview] = useDeleteReviewMutation();
+  const [deleteReview, {isLoading: deleteReviewLoad}] = useDeleteReviewMutation();
   const [Honors, setHonors] = useState(null);
 
   useEffect(() => {
@@ -45,7 +44,7 @@ function CreateHonor() {
     }
   }, [honors]);
 
-  const loading = fetchLoading || addLoading || updateLoading || addReviewLoad;
+  const loading = fetchLoading || addLoading || updateLoading || addReviewLoad || deleteReviewLoad;
 
   //Create new Honor for new user
   async function createNewHonor() {
@@ -518,6 +517,60 @@ function CreateHonor() {
         theme: "colored",
       });
     }
+  }
+
+   async function withdraw() {
+   try {
+    let response = await deleteReview(userReview._id)
+    if (response.data) {
+      let res = await updateHonor({
+        ...Honors,
+        id: Honors._id,
+        submitted: false,
+        submittedBefore: false,
+      });
+
+      if (res.data) {
+        toast.success(`You have Submitted your honor for review.`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      } else {
+        toast.error(`${res.error.data.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } else {
+      toast.error(`${response.error.data.message}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+
+
+
+   } catch (error) {
+    
+   }
   }
 
   return (

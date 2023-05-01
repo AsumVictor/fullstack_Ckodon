@@ -162,9 +162,10 @@ const updateReview = asyncHandler(async (req, res) => {
     res.json({ message: `failed to update` });
   }
 });
-
 const deleteReview = asyncHandler(async (req, res) => {
+
   const { id } = req.params;
+
   if (!id) {
     res.status(400).json({ message: "All fields required" });
   }

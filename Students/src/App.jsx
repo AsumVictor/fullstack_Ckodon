@@ -30,6 +30,12 @@ import ProfileLayout from "./features/undergrad_students/layout/profileLayout";
 import EditProfile from "./features/undergrad_students/profile/EditProfile";
 import Profile from "./features/undergrad_students/profile/Profile";
 
+
+//ACTIVITES PAGE
+import ActivityLayout from "./features/undergrad_students/layout/activity.Layout";
+import ActivityQuickReview from "./features/undergrad_students/activities/quickReview";
+import CreateActivity from "./features/undergrad_students/activities/createActivity";
+
 //Logins
 import PersistLogin from "./features/auth/persistLogin";
 import RequireAuth from "./features/auth/requireAuth";
@@ -56,6 +62,15 @@ const router = createBrowserRouter(
                 element={<CreateHonor />}
               />
             </Route>
+
+            <Route path="activities" element={<ActivityLayout />}>
+              <Route index element={<ActivityQuickReview />} />
+              <Route
+                path="create"
+                element={<CreateActivity />}
+              />
+            </Route>
+
             <Route
               path="reviews"
               element={<Student_reviews />}
@@ -67,7 +82,6 @@ const router = createBrowserRouter(
               loader={GetSpecficReviewLoader}
             />
 
-            <Route path="activities" element={<UnderConstruction />} />
             <Route path="essays" element={<UnderConstruction />} />
             <Route path="recommendation" element={<UnderConstruction />} />
             <Route path="financial-aid" element={<UnderConstruction />} />

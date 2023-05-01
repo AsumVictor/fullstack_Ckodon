@@ -13,7 +13,6 @@ const activitiesAdapter = createEntityAdapter({
   },
 });
 
-const initialState = activitiesAdapter.getInitialState();
 
 export const activitiesApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -23,7 +22,7 @@ export const activitiesApiSlice = apiSlice.injectEndpoints({
         url: `/activities/id/${id}`,
         method: "GET",
       }),
-      invalidatesTags: [{ type: "Activity", id: "LIST" }],
+      providesTags:['SpecificActivity'],
     }),
 
     getActivityByUser: builder.query({
@@ -31,7 +30,7 @@ export const activitiesApiSlice = apiSlice.injectEndpoints({
         url: `/activities/user/${id}`,
         method: "GET",
       }),
-      invalidatesTags: [{ type: "Activity", id: "LIST" }],
+      providesTags:['UserActivity'],
     }),
 
     addNewActivity: builder.mutation({
@@ -42,7 +41,7 @@ export const activitiesApiSlice = apiSlice.injectEndpoints({
           ...initialActivityData,
         },
       }),
-      invalidatesTags: [{ type: "Activity", id: "LIST" }],
+      invalidatesTags: ['SpecificActivity','UserActivity'],
     }),
 
     updateActivity: builder.mutation({
@@ -53,7 +52,7 @@ export const activitiesApiSlice = apiSlice.injectEndpoints({
           ...initialActivityData,
         },
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Activity", id: arg.id }],
+      invalidatesTags: ['SpecificActivity','UserActivity'],
     }),
   }),
 });
@@ -67,22 +66,3 @@ export const {
   
 } = activitiesApiSlice;
 
-// returns the query result object
-export const selectActivitiesResult =
-  activitiesApiSlice.endpoints.getActivities.select();
-
-// creates memoized selector
-const selectActivitiesData = createSelector(
-  selectActivitiesResult,
-  (activitiesResult) => activitiesResult.data // normalized state object with ids & entities
-);
-
-//getSelectors creates these selectors and we rename them with aliases using destructuring
-export const {
-  selectAll: selectAllActivities,
-  selectById: selectActivityById,
-  selectIds: selectActivityIds,
-  // Pass in a selector that returns the activities slice of state
-} = activitiesAdapter.getSelectors(
-  (state) => selectActivitiesData(state) ?? initialState
-);
