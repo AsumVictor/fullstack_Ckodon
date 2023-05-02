@@ -32,61 +32,221 @@ function ActivityQuickReview() {
     error,
   } = useGetActivityByUserQuery(student.id);
   const [addnewActivity, {isLoading: addLoading}] = useAddNewActivityMutation()
-  const loading = fetchLoading || addLoading
-  // || updateLoading || addReviewLoad || deleteReviewLoad;
+  const [updateActivity, {isLoading: updateLoading}] = useUpdateActivityMutation()
+  const { data: userReview } = useGetReviewByDocumentQuery(activities?._id);
+  const [updateReview] = useUpdateReviewMutation();
+  const [addReview, {isLoading: addReviewLoad}] = useAddNewReviewMutation();
+  const [deleteReview, {isLoading: deleteReviewLoad}] = useDeleteReviewMutation();
+  const loading = fetchLoading || addLoading || updateLoading  || addReviewLoad || deleteReviewLoad;
   const [Activity, setActivity] = useState(null);
   useEffect(() => {
     if (activities) {
-        console.log(Activity);
-
       setActivity({ ...activities });
     }
   }, [activities]);
 
   //Add new activity
-  function addActivity() {
-    const newActivity = {
-      id: nanoid(6),
-      type: "",
-      position: " ",
-      organisationName: "",
-      description: "",
-      Grade9: false,
-      Grade10: false,
-      Grade11: false,
-      Grade12: false,
-      GradePost: false,
-      SchoolYear: false,
-      SchoolBreak: false,
-      Allyear: false,
-      hourUsed: null,
-      weekPerYear: null,
-    };
-    setActivity((prevActivity) => [...prevActivity, newActivity]);
+  async function addActivity() {
+    const newActivity =
+        {
+            position: "",
+            description: '',
+            organisationName:'',
+            didItInGrade9: false,
+            didItInGrade10: false,
+            didItInGrade11: false,
+            didItInGrade12: false,
+            didItAfterSchool: false,
+            participstedInSchoolDay: false,
+            participstedInSchoolBreak: false,
+            participstedAllYear: false,
+            isRecognisedInternational: false,
+            hourSpentPerYear:'',
+            weeksSpentPerYear:'',
+            comments: [
+              {
+                comment: "",
+              },
+            ],
+            rate: "notRated",
+          };
+
+          let newActivityObj = {...Activity };
+          let updateActivitys = [...newActivityObj.activities];
+          updateActivitys = [...updateActivitys, newActivity];
+          try {
+            const res = await updateActivity({
+              ...Activity,
+              id: Activity._id,
+              activities: updateActivitys,
+            });
+      
+            if (res.data) {
+              toast.info("New activity has been Created successfully", {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+              });
+            }
+      
+            if (res.error) {
+              toast.error(res.error.data.message, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+              });
+            }
+          } catch (error) {
+            toast.error(`Error occured! Please try again`, {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+          }
   }
 
+ 
   //Handle Activity form chandge
   function HanldeActivityChange(e, index) {
     const { name, value, type, checked } = e.target;
+
     setActivity((prevState) => {
-      const newState = [...prevState];
-      newState[index] = {
-        ...newState[index],
+      let newState = { ...prevState };
+      let updatedActivity = [...newState.activities];
+      let currentActivity = { ...updatedActivity[index] };
+      currentActivity = {
+        ...currentActivity,
         [name]: type == "checkbox" ? checked : value,
+      };
+      updatedActivity[index] = currentActivity;
+      newState = {
+        ...newState,
+        activities: updatedActivity,
       };
       return newState;
     });
+   
   }
 
   // Delete Activity
-  function deleteActivity(id) {
-    setActivity((prevData) => {
-      const newState = prevData.filter((child) => child.id !== id);
-      return newState;
-    });
-  }
+  async function deleteActivity(index) {
+    let newActivityObj = {...Activity };
+    let activities = [...newActivityObj.activities];
+    const updatedActivity = activities.filter(
+      (child) => activities.indexOf(child) !== index
+    );
 
-  // Save Changes when Activity changes
+    try {
+      const res = await updateActivity({
+        ...Activity,
+        id: Activity._id,
+        activities: updatedActivity,
+      });
+
+      if (res.data) {
+        toast.warn("An activity has been deleted successfully", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+
+      if (res.error) {
+        toast.error(res.error.data.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      toast.error(`Error occured! Please try again`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+
+   
+
+
+  }
+  //Save changes
+  async function saveChanges() {
+    try {
+      const res = await updateActivity({
+        ...Activity,
+        id: Activity._id,
+      });
+
+      if (res.data) {
+        toast.success("Changes saved successfully", {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+
+      if (res.error) {
+        toast.error(res.error.data.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      toast.error(`Error occured! Please try again`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  }
+ 
   useEffect(() => {
     localStorage.setItem("Activities", JSON.stringify(Activity));
   }, [Activity]);
@@ -165,6 +325,200 @@ async function createNewActivity() {
     }
   }
 
+  async function submitToReview(e) {
+    e.preventDefault()
+    try {
+      let response =  await addReview({
+        deadline: null,
+        status: "unresolved",
+        documentId: Activity._id,
+        onModel: "Activity",
+        user: Activity.user,
+      });
+
+      if (response.data) {
+        let res = await updateActivity({
+          ...Activity,
+          id: Activity._id,
+          submitted: true,
+          submittedBefore: true,
+        });
+
+        if (res.data) {
+          toast.success(`You have Submitted your activity for review.`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        } else {
+          toast.error(`${res.error.data.message}`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+      } else {
+        toast.error(`${response.error.data.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      toast.error(`${error.message}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  }
+
+  async function submitToReviewAnother(e) {
+    e.preventDefault()
+    try {
+      let response = await await updateReview({
+        ...userReview,
+        id: userReview._id
+      });
+
+      if (response.data) {
+        let res = await updateActivity({
+          ...Activity,
+          id: Activity._id,
+          submitted: true,
+        });
+
+        if (res.data) {
+          toast.success(`You have Submitted your activity for review.`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        } else {
+          toast.error(`${res.error.data.message}`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+      } else {
+        toast.error(`${response.error.data.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      toast.error(`${error.message}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  }
+  async function withdraw() {
+    try {
+     let response = await deleteReview(userReview._id)
+     if (response.data) {
+       let res = await updateActivity({
+         ...Activity,
+         id: Activity._id,
+         submitted: false,
+         submittedBefore: false,
+       });
+ 
+       if (res.data) {
+         toast.warn(`You have withdraw your activities for review.`, {
+           position: "bottom-right",
+           autoClose: 5000,
+           hideProgressBar: false,
+           closeOnClick: true,
+           pauseOnHover: true,
+           draggable: true,
+           progress: undefined,
+           theme: "colored",
+         });
+       } else {
+         toast.error(`${res.error.data.message}`, {
+           position: "bottom-right",
+           autoClose: 5000,
+           hideProgressBar: false,
+           closeOnClick: true,
+           pauseOnHover: true,
+           draggable: true,
+           progress: undefined,
+           theme: "colored",
+         });
+       }
+     } else {
+       toast.error(`${response.error.data.message}`, {
+         position: "bottom-right",
+         autoClose: 5000,
+         hideProgressBar: false,
+         closeOnClick: true,
+         pauseOnHover: true,
+         draggable: true,
+         progress: undefined,
+         theme: "colored",
+       });
+     }
+ 
+ 
+ 
+    } catch (error) {
+      toast.error(`Error Occured! Try again later`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+   }
+ 
   if (!Activity) {
     return (
       <>
@@ -176,6 +530,30 @@ async function createNewActivity() {
           >
             <HiOutlinePlus /> <span> Create new Activity List</span>
           </div>
+        </div>
+        <ToastContainer />
+        {loading && (
+          <CoverLoaderMedium
+            styles={{ backgroundColor: "rgba(255,255,255,0.5)" }}
+          />
+        )}
+      </>
+    );
+  }
+
+  if (Activity.submitted) {
+    return (
+      <>
+        <div className="flex flex-col">
+          <h1 className="mt-10 text-center px-3 font-bold text-2xl md:px-10">
+            You have submitted your activity and it's under-review by Selorm
+          </h1>
+          <button
+            className="mt-10 py-2 px-4 bg-red-900 active:scale-105 hover:bg-red-700 text-white rounded-md self-center font-bold"
+            onClick={withdraw}
+          >
+            Withdraw
+          </button>
         </div>
         <ToastContainer />
         {loading && (
@@ -206,7 +584,7 @@ async function createNewActivity() {
               <h3 className="text-white font-bold text-15">Status</h3>
             </aside>
           </div>
-          {Activity.map((Activity, index) => (
+          {Activity.activities.map((Activity, index) => (
             <div
               className="Activity w-full md:w-11/12 bg-white border-2 border-MdBlue py-4 rounded-md mt-10"
               key={Activity.id}
@@ -219,7 +597,7 @@ async function createNewActivity() {
                 <div
                   className="text-20 md:text-2xl cursor-pointer px-3 md:px-4 py-2 md:py-3 bg-slate-200 rounded-md text-red-600 flex flex-row items-center 
                            justify-center space-x-2"
-                  onClick={() => deleteActivity(`${Activity.id}`)}
+                  onClick={() => deleteActivity(index)}
                 >
                   <HiTrash />
                 </div>
@@ -227,21 +605,6 @@ async function createNewActivity() {
 
               {/* Activity inputs*/}
               <div className="Activity--inputs w-full py-10 bg-tranparent mt-5 px-3 md:px-10 flex flex-col">
-                {/* Activity title */}
-                <label htmlFor="title">
-                  <span className="font-bold">* Activity Type</span>
-                  <br />
-                  <textarea
-                    maxlength="100"
-                    name="type"
-                    id="type"
-                    value={Activity.type}
-                    onChange={(e) => HanldeActivityChange(e, index)}
-                    title="Activity type"
-                    className="text-black w-full md:w-12/12 border-2 border-blue-300 rounded-md px-2 hover:border-MdBlue focus:border-MdBlue"
-                  />
-                </label>
-
                 {/* Activity Position */}
 
                 <label htmlFor="position">
@@ -311,9 +674,9 @@ async function createNewActivity() {
                           <input
                             id={`Grade9${index}`}
                             type="checkbox"
-                            name="Grade9"
+                            name="didItInGrade9"
                             onChange={(e) => HanldeActivityChange(e, index)}
-                            checked={Activity.Grade9}
+                            checked={Activity.didItInGrade9}
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                           />
                           <label
@@ -330,9 +693,9 @@ async function createNewActivity() {
                           <input
                             id={`Grade10${index}`}
                             type="checkbox"
-                            name="Grade10"
+                            name="didItInGrade10"
                             onChange={(e) => HanldeActivityChange(e, index)}
-                            checked={Activity.Grade10}
+                            checked={Activity.didItInGrade10}
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 "
                           />
                           <label
@@ -350,8 +713,8 @@ async function createNewActivity() {
                             id={`Grade11${index}`}
                             type="checkbox"
                             onChange={(e) => HanldeActivityChange(e, index)}
-                            checked={Activity.Grade11}
-                            name="Grade11"
+                            checked={Activity.didItInGrade11}
+                            name="didItInGrade11"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                           />
                           <label
@@ -369,8 +732,8 @@ async function createNewActivity() {
                             id={`Grade12${index}`}
                             type="checkbox"
                             onChange={(e) => HanldeActivityChange(e, index)}
-                            checked={Activity.Grade12}
-                            name="Grade12"
+                            checked={Activity.didItInGrade12}
+                            name="didItInGrade12"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                           />
                           <label
@@ -388,8 +751,8 @@ async function createNewActivity() {
                             id={`GradePost${index}`}
                             type="checkbox"
                             onChange={(e) => HanldeActivityChange(e, index)}
-                            checked={Activity.GradePost}
-                            name="GradePost"
+                            checked={Activity.didItAfterSchool}
+                            name="didItAfterSchool"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                           />
                           <label
@@ -414,9 +777,9 @@ async function createNewActivity() {
                           <input
                             id={`SchoolYear${index}`}
                             type="checkbox"
-                            name="SchoolYear"
+                            name="participstedInSchoolDay"
                             onChange={(e) => HanldeActivityChange(e, index)}
-                            checked={Activity.SchoolYear}
+                            checked={Activity.participstedInSchoolDay}
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                           />
                           <label
@@ -434,8 +797,8 @@ async function createNewActivity() {
                             id={`SchoolBreak${index}`}
                             type="checkbox"
                             onChange={(e) => HanldeActivityChange(e, index)}
-                            checked={Activity.SchoolBreak}
-                            name="SchoolBreak"
+                            checked={Activity.participstedInSchoolBreak}
+                            name="participstedInSchoolBreak"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500 "
                           />
                           <label
@@ -453,8 +816,8 @@ async function createNewActivity() {
                             id={`Allyear${index}`}
                             type="checkbox"
                             onChange={(e) => HanldeActivityChange(e, index)}
-                            checked={Activity.Allyear}
-                            name="Allyear"
+                            checked={Activity.participstedAllYear}
+                            name="participstedAllYear"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500"
                           />
                           <label
@@ -473,11 +836,11 @@ async function createNewActivity() {
                   <span className="font-bold">* Hours spent per week </span>{" "}
                   <br />
                   <input
-                    name="hourUsed"
+                    name="hourSpentPerYear"
                     type="number"
                     id="hourUsed"
                     title="hourUsed"
-                    value={Activity.hourUsed}
+                    value={Activity.hourSpentPerYear}
                     onChange={(e) => HanldeActivityChange(e, index)}
                     min={0}
                     placeholder="Hour spent"
@@ -490,11 +853,11 @@ async function createNewActivity() {
                   <span className="font-bold">* Weeks spent per year </span>{" "}
                   <br />
                   <input
-                    name="weekPerYear"
+                    name="weeksSpentPerYear"
                     type="number"
                     id="weekPerYear"
                     title="weekPerYear"
-                    value={Activity.weekPerYear}
+                    value={Activity.weeksSpentPerYear}
                     onChange={(e) => HanldeActivityChange(e, index)}
                     min={0}
                     placeholder="Weeks spent"
@@ -506,6 +869,7 @@ async function createNewActivity() {
           ))}
           <button
             type="button"
+            onClick={saveChanges}
             className="self-end mr-20 bg-MdBlue text-white px-3 py-1 rounded-md mt-4"
           >
             Save Changes
@@ -519,19 +883,36 @@ async function createNewActivity() {
             <HiOutlinePlus /> <span>Add new Activity</span>
           </div>
 
-          {/* Submit when Activity is 5 or more and Activity is 10 or more */}
+          {/* Submit when Activity is 10 or more */}
+ {/* Submit when Honor is 5 or more and Activity is 10 or more */}
+ {Activity.activities.length >= 5 && !Activity.submittedBefore && (
+          <button
+            className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-gray-400 py-2 bg-MdBlue rounded-md text-white font-bold mt-20"
+            type="submit"
+            onClick={submitToReview}
+          >
+            {loading ? <>Submitting...</> : <>Submit for review </>}
+          </button>
+        )}
 
-          {Activity.length >= 10 && (
-            <button
-              className="capitalize px-5 py-2 bg-MdBlue rounded-md text-white font-bold mt-20"
-              type="submit"
-              // onClick={handleSubmit}
-            >
-              Submit for review
-            </button>
-          )}
+        {Activity.activities.length >= 5 && Activity.submittedBefore && (
+          <button
+            className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-red-400 py-2 bg-MdBlue rounded-md text-white font-bold mt-20"
+            type="submit"
+            onClick={submitToReviewAnother}
+          >
+            {loading ? <>Submitting...</> : <>Submit for review </>}
+          </button>
+        )}
+         
         </form>
       </Page>
+      <ToastContainer />
+        {loading && (
+          <CoverLoaderMedium
+            styles={{ backgroundColor: "rgba(255,255,255,0.5)" }}
+          />
+        )}
     </>
   );
 }

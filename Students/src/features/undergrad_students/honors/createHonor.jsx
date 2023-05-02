@@ -429,69 +429,22 @@ function CreateHonor() {
   }
 
   async function submitToReviewAnother(e) {
-    e.preventDefault();
-
-    setloading(true);
+    e.preventDefault()
     try {
-      await axios
-        .patch("http://localhost:5000/undergradeReviews", {
-          deadline: null,
-          status: "unresolved",
-          document: Honors._id,
-          model: "Honor",
-          user: Honors.user,
-        })
-        .then((res) => {
-          axios
-            .patch("http://localhost:5000/honors", {
-              ...Honors,
-              id: Honors._id,
-              submitted: true,
-            })
-            .then((res2) => {
-              setHonors((prev) => {
-                return {
-                  ...prev,
-                  submitted: true,
-                };
-              });
-              toast.success(`Your honor has been submitted successfully `, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-              });
-              setloading(false);
-            })
-            .catch((err) => {
-              toast.error(`${err.message}`, {
-                position: "bottom-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-              });
-              toast.error(`could'nt update honor but it has been submitted `, {
-                position: "bottom-right",
-                autoClose: 20000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-              });
-            });
-        })
-        .catch((err) => {
-          toast.error(`${err.message}`, {
+      let response = await await updateReview({
+        ...userReview,
+        id: userReview._id
+      });
+
+      if (response.data) {
+        let res = await updateHonor({
+          ...Honors,
+          id: Honors._id,
+          submitted: true,
+        });
+
+        if (res.data) {
+          toast.success(`You have Submitted your honor for review.`, {
             position: "bottom-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -501,12 +454,32 @@ function CreateHonor() {
             progress: undefined,
             theme: "colored",
           });
-        })
-        .finally(() => {
-          setloading(false);
+        } else {
+          toast.error(`${res.error.data.message}`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+      } else {
+        toast.error(`${response.error.data.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
         });
+      }
     } catch (error) {
-      toast.success(`${error.message}`, {
+      toast.error(`${error.message}`, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -518,6 +491,7 @@ function CreateHonor() {
       });
     }
   }
+
 
    async function withdraw() {
    try {
@@ -531,7 +505,7 @@ function CreateHonor() {
       });
 
       if (res.data) {
-        toast.success(`You have Submitted your honor for review.`, {
+        toast.warn(`You have withdraw your honor for review.`, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
