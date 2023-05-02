@@ -5,9 +5,10 @@ const asyncHandler = require("express-async-handler");
 //get Activity by Id
 
 const getActivityOfUser = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
 
   // Confirm data
+console.log(userId)
 
   if (!userId) {
     return res.status(400).json({ message: "All fields are required" });

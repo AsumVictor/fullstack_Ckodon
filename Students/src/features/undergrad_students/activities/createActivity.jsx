@@ -247,10 +247,7 @@ function ActivityQuickReview() {
     }
   }
  
-  useEffect(() => {
-    localStorage.setItem("Activities", JSON.stringify(Activity));
-  }, [Activity]);
-
+ 
 //Create new Activity list
 async function createNewActivity() {
     try {

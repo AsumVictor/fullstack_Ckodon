@@ -112,7 +112,11 @@ const activitySchema = new mongoose.Schema(
           type: String,
           enum: ['bad', 'normal', 'good', 'notRated'],
           default: 'notRated'
-        }
+        },
+        submittedBefore: {
+          type: Boolean,
+          default: false,
+        },
       },
     ],
   },

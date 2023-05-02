@@ -8,6 +8,8 @@ router.route("/")
 .get(essayControllers.getEssays)
 .post(essayControllers.addNewEssay)
 .patch(essayControllers.updateEssay)
+
+router.route('/:id')
 .delete(essayControllers.deleteEssay);
 
 module.exports = router

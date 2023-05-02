@@ -5,7 +5,7 @@ const asyncHandler = require("express-async-handler");
 //get Essay by Id
 
 const getEssayOfUser = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
 
   // Confirm data
 
@@ -22,8 +22,6 @@ const getEssayOfUser = asyncHandler(async (req, res) => {
 
   const essays = await Essay.find({ user: userId }).lean().exec();
  
-
-
   res.json(essays);
 
   // Create and store the new user
