@@ -455,7 +455,7 @@ async function createNewActivity() {
   }
   async function withdraw() {
     try {
-     let response = await deleteReview(userReview._id)
+     let response = await deleteReview(userReview.documentId)
      if (response.data) {
        let res = await updateActivity({
          ...Activity,

@@ -9,7 +9,7 @@ import {
   useGetEssayByUserQuery,
   useAddNewEssayMutation,
   useUpdateEssayMutation,
-  useDeleteEssayMutation
+  useDeleteEssayMutation,
 } from "../../../apiSlice/essaySlice";
 import {
   useGetReviewByDocumentQuery,
@@ -24,9 +24,11 @@ import ModalBox, {
   ModalBody,
   ModalFooter,
 } from "../../../components/modal.js/ModalBox";
+import TextareaAutosize from "react-textarea-autosize";
 
 export default function CreateEssays() {
   const student = useAuth();
+
   const {
     data: essayLists,
     isLoading: fetchLoading,
@@ -37,9 +39,10 @@ export default function CreateEssays() {
   const [addNewSchoolEssay, { isLoading: addLoading }] =
     useAddNewEssayMutation();
   const [updateEssay, { isLoading: updateLoading }] = useUpdateEssayMutation();
-  //   const { data: userReview } = useGetReviewByDocumentQuery(activities?._id);
-  const [deleteSchoolEssay, {isLoading: deleteSchLoad}] = useDeleteEssayMutation()
+  const [deleteSchoolEssay, { isLoading: deleteSchLoad }] =
+    useDeleteEssayMutation();
   const [updateReview] = useUpdateReviewMutation();
+
   const [addReview, { isLoading: addReviewLoad }] = useAddNewReviewMutation();
   const [deleteReview, { isLoading: deleteReviewLoad }] =
     useDeleteReviewMutation();
@@ -51,14 +54,14 @@ export default function CreateEssays() {
     addLoading ||
     updateLoading ||
     addReviewLoad ||
-    deleteReviewLoad || deleteSchLoad
+    deleteReviewLoad ||
+    deleteSchLoad;
   const [EssayList, setEssayList] = useState(null);
   useEffect(() => {
     if (essayLists) {
       setEssayList(essayLists);
     }
   }, [essayLists]);
-  console.log(EssayList);
 
   const addSchool = async () => {
     try {
@@ -110,21 +113,65 @@ export default function CreateEssays() {
     }
   };
 
-  const addEssay = (schoolIndex) => {
+  const addEssay = async (schoolIndex) => {
     const newEssay = {
-      id: schools[schoolIndex].essays.length + 1,
-      essayQuestion: "",
-      essayAnswer: "",
+      question: "",
+      answer: "",
+      comments: [{ comment: "" }],
+      voiceNOtes: [],
+      additionalDocs: [],
+      rate: "notRated",
     };
 
-    setSchools((prevState) => {
-      const newState = [...prevState];
-      newState[schoolIndex].essays = [
-        ...newState[schoolIndex].essays,
-        newEssay,
-      ];
-      return newState;
-    });
+    let currentSchool = EssayList[schoolIndex];
+    let updatedEssay = [...currentSchool.essays];
+    updatedEssay.push(newEssay);
+
+    try {
+      const res = await updateEssay({
+        ...currentSchool,
+        id: currentSchool._id,
+        essays: updatedEssay,
+      });
+      if (res.data) {
+        toast.success(
+          `You have added an essay to ${currentSchool.schoolName}`,
+          {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
+        );
+      }
+      if (res.error) {
+        toast.error(res.error.data.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      toast.error(`Error occured! Please try again`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
   };
 
   const handleSchoolChange = (event, index) => {
@@ -136,19 +183,31 @@ export default function CreateEssays() {
     });
   };
 
-  const handleEssayChange = (event, schoolIndex, essayIndex) => {
-    const { name, value } = event.target;
-    setSchools((prevState) => {
-      const newState = [...prevState];
-      newState[schoolIndex].essays[essayIndex] = {
-        ...newState[schoolIndex].essays[essayIndex],
+  const handleEssayChange = (e, schoolIndex, essayIndex) => {
+    const { name, value } = e.target;
+    setEssayList((prev) => {
+      let newState = [...prev];
+      let currentSchool = { ...newState[schoolIndex] };
+      let SchoolEssays = [...currentSchool.essays];
+      let currentEssay = SchoolEssays[essayIndex];
+      currentEssay = {
+        ...currentEssay,
         [name]: value,
       };
+
+      SchoolEssays[essayIndex] = currentEssay;
+
+      currentSchool = {
+        ...currentSchool,
+        essays: SchoolEssays,
+      };
+
+      newState[schoolIndex] = currentSchool;
+
       return newState;
     });
   };
 
-  
   async function deleteSchool(id, schoolName) {
     try {
       const res = await deleteSchoolEssay(id);
@@ -192,14 +251,59 @@ export default function CreateEssays() {
   }
 
   //Delete Essay
-  function deleteEssay(essayId, schoolIndex) {
-    setSchools((prevData) => {
-      let newState = [...prevData];
-      newState[schoolIndex].essays = newState[schoolIndex].essays.filter(
-        (essay) => essay.id !== essayId
-      );
-      return newState;
-    });
+  async function deleteEssay(essayIndex, schoolIndex) {
+    let newEssayList = [...EssayList];
+    let currentSchool = newEssayList[schoolIndex];
+    let essays = [...currentSchool.essays];
+    const newEssays = essays.filter(
+      (child) => essays.indexOf(child) !== essayIndex
+    );
+
+    try {
+      const res = await updateEssay({
+        ...currentSchool,
+        id: currentSchool._id,
+        essays: newEssays,
+      });
+      if (res.data) {
+        toast.warn(
+          `${currentSchool.schoolName} essay ${essayIndex + 1} deleted`,
+          {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
+        );
+      }
+      if (res.error) {
+        toast.error(res.error.data.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      toast.error(`Error occured! Please try again`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
   }
 
   const handleSubmit = (event) => {
@@ -207,6 +311,186 @@ export default function CreateEssays() {
     console.log(schools);
     // Code to submit the form data goes here
   };
+
+async function submitToReview(schoolIndex){
+  const currentSchool = EssayList[schoolIndex]
+  
+  try {
+    let response =  await addReview({
+      deadline: null,
+      status: "unresolved",
+      documentId: currentSchool._id,
+      onModel: "Essay",
+      user: currentSchool.user,
+    });
+
+    if (response.data) {
+      let res = await updateEssay({
+        ...currentSchool,
+        id: currentSchool._id,
+        submitted: true,
+        submittedBefore: true,
+      });
+
+      if (res.data) {
+        toast.success(`You have Submitted ${currentSchool.schoolName} essay(s) for review.`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      } else {
+        toast.error(`${res.error.data.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } else {
+      toast.error(`${response.error.data.message}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  } catch (error) {
+    toast.error(`${error.message}`, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  }
+}
+
+async function saveChanges(schoolIndex) {
+  const currentSchool = EssayList[schoolIndex]
+  try {
+    const res = await updateEssay({
+      ...currentSchool,
+      id: currentSchool._id,
+    });
+
+    if (res.data) {
+      toast.success(`${currentSchool.schoolName} Changes saved successfully`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+
+    if (res.error) {
+      toast.error(res.error.data.message, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  } catch (error) {
+    toast.error(`Error occured! Please try again`, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  }
+}
+
+
+async function withdraw(schoolIndex) {
+ const currentSchool = EssayList[schoolIndex]
+  try {
+    let response = await deleteReview(currentSchool._id)
+    if (response.data) {
+      let res = await updateEssay({
+        ...currentSchool,
+        id: currentSchool._id,
+        submitted: false,
+        submittedBefore: false,
+      });
+
+      if (res.data) {
+        toast.warn(`You have withdraw ${currentSchool.schoolName} essay(s).`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      } else {
+        toast.error(`${res.error.data.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } else {
+      toast.error(`${response.error.data.message}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+
+  } catch (error) {
+    console.log(error)
+    toast.error(`Error Occured! Try again later`, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+    });
+  }
+ }
 
   if (!EssayList?.length) {
     return (
@@ -262,105 +546,168 @@ export default function CreateEssays() {
   return (
     <>
       <Page>
-        <div className="w-full flex flex-col">
+        <div className="w-full px-0 flex flex-col">
           {/* Each school and its essay */}
-          {EssayList.map((school, schoolIndex) => (
-            <div
-              key={school._id}
-              className="w-full md:w-10/12 self-center flex rounded-md flex-col items-start border-2 border-MdBlue pb-5 mt-10 px-2 md:px-10"
-            >
-              {/* School and essay header */}
+          {EssayList.map((school, schoolIndex) => {
+            const colors = [
+              "red-900",
+              "emerald-700",
+              "green-600",
+              "fuchsia-700",
+              "purple-800",
+              "rose-600",
+            ];
+            let randomNumber = Math.floor(Math.random() * colors.length);
+            let randonBackgroundColor = colors[randomNumber];
 
-              {/* Essays Title, status bar and collasp button */}
-              <aside className="flex flex-row relative justify-between w-full py-3 bg-MdBlue items-center pl-3 pr-10 md:px-10">
-                <h3
-                  className="text-white placeholder-white placeholder-opacity-50 w-8/12 font-bold px-1 md:text-20 outline-none bg-transparent"
-                >
-                  {school.schoolName}
-                </h3>
-                <h3 className="text-white font-bold text-15">Status</h3>
-                <button
-                  type="button"
-                  onClick={() => deleteSchool(school._id, school.schoolName)}
-                  className="text-red-600 font-bold bg-red-100 rounded-lg px-2 py-2 mx-2"
-                >
-                  Delete
-                </button>
-              </aside>
-
-              {/* Essays here  */}
-
-              {school.essays.map((essay, essayIndex) => (
-                <div
-                  key={essay._id}
-                  className="w-full mt-10 border-2 border-MdBlue"
-                >
-                  <div className=" w-full flex justify-between  py-2 px-5 items-center bg-MdBlue ">
-                    <h3 className="text-white font-bold text-18">
-                      Essay {essayIndex + 1}
-                    </h3>
-                    <button
-                      type="button"
-                      onClick={() => deleteEssay(essay.id, schoolIndex)}
-                      className="px-3 py-2 bg-red-100 text-red-600 font-bold rounded-md"
-                    >
-                      Delete Essay
-                    </button>
-                  </div>
-
-                  <div className="w-full px-3 md:px-8  shadow-md">
-                    <label className="w-full">
-                      <span className="font-bold">Essay Question</span> <br />
-                      <textarea
-                        name="essayQuestion"
-                        value={essay.question}
-                        placeholder="Enter Essay Question here"
-                        onChange={(e) =>
-                          handleEssayChange(e, schoolIndex, essayIndex)
-                        }
-                        className="text-black w-full rounded-md px-2 outline-none"
-                      />
-                    </label>
-
-                    <label className="w-full">
-                      <span className="font-bold">Your written essay</span>
-                      <br />
-
-                      <TextareaAutosize
-                        minRows={10}
-                        className="w-full mt-5 text-18 resize-none border-2 p-3 rounded-md"
-                        placeholder="Past your essay here"
-                        value={essay.answer}
-                        name="answer"
-                        onChange={(e) =>
-                          handleEssayChange(e, schoolIndex, essayIndex)
-                        }
-                      />
-                    </label>
-                  </div>
-                </div>
-              ))}
-
-              <button
-                type="button"
-                onClick={() => addEssay(schoolIndex)}
-                className="cursor-pointer justify-center w-full flex flex-row items-center mt-3 font-semibold text-MdBlue text-18 md:text-20"
+          if(school.submitted){
+         return(
+          <div
+                key={school._id}
+                className={`w-full md:w-11/12 self-center flex rounded-md flex-col items-start pb-5 mt-20 px-0 md:px-10 border-b-4 
+              border-${randonBackgroundColor}`}
               >
-                <HiOutlinePlus /> <span>Add New essay</span>
-              </button>
 
-              <div className="w-full flex flex-row px-3 mt-10 md:px-10  flex-wrap justify-between">
-                {school.essays.length > 0 && (
+                <aside
+                  className={`flex flex-row relative justify-between w-full py-3 bg-${randonBackgroundColor}  items-center pl-3 pr-10 md:px-10`}
+                >
+                  <h3 className="text-white placeholder-white placeholder-opacity-50 w-8/12 font-bold px-1 text-16 md:text-20 outline-none bg-transparent">
+                    {school.schoolName}
+                  </h3>
+                 
+                </aside>
+
+
+                <h1 className="mt-10 text-center px-3 font-bold text-xl md:px-10">
+           {` You have submitted ${school.schoolName} essays for review`}
+          </h1>
+          <button
+            className="mt-10 py-2 px-4 bg-red-900 active:scale-105 hover:bg-red-700 text-white rounded-md self-center font-bold"
+             onClick={()=>withdraw(schoolIndex)}
+          >
+            Withdraw
+          </button>
+                </div>
+         )
+          }
+
+
+            return (
+              <div
+                key={school._id}
+                className={`w-full md:w-11/12 self-center flex rounded-md flex-col items-start pb-5 mt-20 px-0 md:px-10 border-b-4 
+              border-${randonBackgroundColor}`}
+              >
+                {/* School and essay header */}
+
+                {/* Essays Title, status bar and collasp button */}
+                <aside
+                  className={`flex flex-row relative justify-between w-full py-3 bg-${randonBackgroundColor}  items-center pl-3 pr-10 md:px-10`}
+                >
+                  <h3 className="text-white placeholder-white placeholder-opacity-50 w-8/12 font-bold px-1 text-16 md:text-20 outline-none bg-transparent">
+                    {school.schoolName}
+                  </h3>
                   <button
                     type="button"
-                    className="px-2 font-bold text-MdBlue border-2 rounded-md py-2 border-MdBlue"
+                    onClick={() => deleteSchool(school._id, school.schoolName)}
+                    className="text-red-600 font-bold bg-red-100 rounded-lg px-2 py-2 mx-2"
                   >
-                    Submit Princeton essays
+                    Delete
                   </button>
-                )}
+                </aside>
+
+
+                {school.essays.map((essay, essayIndex) => (
+                  <div key={essay._id} className={`w-11/12 self-center mt-10`}>
+                    <div
+                      className={`w-full flex justify-between py-2 px-5 items-center bg-${randonBackgroundColor}`}
+                    >
+                      <h3 className="text-white font-bold text-15">
+                        {` ${school.schoolName} Essay ${essayIndex + 1}`}
+                      </h3>
+                      <button
+                        type="button"
+                        onClick={() => deleteEssay(essayIndex, schoolIndex)}
+                        className="px-1 py-1 bg-red-100 text-red-600 font-bold rounded-md"
+                      >
+                        Delete
+                      </button>
+                    </div>
+
+                    <div className="w-full px-3 md:px-8  shadow-md">
+                      <label className="w-full">
+                        <span className="font-bold">Essay Question</span> <br />
+                        <TextareaAutosize
+                          minRows={1}
+                          className="w-full mt-5 resize-none border-2 p-3 rounded-md"
+                          placeholder="Enter Essay Question here"
+                          value={essay.question}
+                          name="question"
+                          onChange={(e) =>
+                            handleEssayChange(e, schoolIndex, essayIndex)
+                          }
+                        />
+                      </label>
+
+                      <label className="w-full">
+                        <span className="font-bold">Your written essay</span>
+                        <br />
+
+                        <TextareaAutosize
+                          minRows={10}
+                          className="w-full mt-5 resize-none border-2 p-3 rounded-md"
+                          placeholder="Past your essay here"
+                          value={essay.answer}
+                          name="answer"
+                          onChange={(e) =>
+                            handleEssayChange(e, schoolIndex, essayIndex)
+                          }
+                        />
+                      </label>
+                    </div>
+                  </div>
+                ))}
+
+                <button
+                  type="button"
+                  onClick={() => addEssay(schoolIndex)}
+                  className="cursor-pointer justify-center w-full flex flex-row items-center mt-3 font-semibold text-MdBlue text-18 md:text-20"
+                >
+                  <HiOutlinePlus />
+                  <span>{`New ${school.schoolName} essay`}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => saveChanges(schoolIndex)}
+                  className="cursor-pointer self-end justify-center px-3 rounded-md flex flex-row items-center mt-3 font-semibold text-emerald-700 text-18 md:text-20 bg-white border-2 border-emerald-700"
+                >
+                  <span>Save Changes</span>
+                </button>
+
+                {(school.essays.length > 0 && !school.submittedBefore) && (
+          <button
+            className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-gray-400  border-2 py-2 border-MdBlue bg-white rounded-md text-MdBlue font-bold mt-10"
+            type="submit"
+             onClick={()=>submitToReview(schoolIndex)}
+          >
+            {loading ? <>Submitting...</> : <>{` Submit ${school.schoolName} essays`} </>}
+          </button>
+        )}
+
+        {(school.essays.length > 0 && school.submittedBefore) && (
+          <button
+          className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-gray-400  border-2 py-2 border-MdBlue bg-white rounded-md text-MdBlue font-bold mt-10"
+            type="submit"
+            // onClick={submitToReviewAnother}
+          >
+            {loading ? <>Submitting...</> : <>{` Submit ${school.schoolName} essays`}</>}
+          </button>
+        )}
+
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         <div className="flex flex-row justify-center flex-wrap items-center py-2 mt-10">
