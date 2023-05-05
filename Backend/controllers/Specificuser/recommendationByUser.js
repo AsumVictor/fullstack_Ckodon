@@ -5,7 +5,7 @@ const asyncHandler = require("express-async-handler");
 //get Recommendation by Id
 
 const getRecommendationOfUser = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
 
   // Confirm data
 
@@ -22,7 +22,7 @@ const getRecommendationOfUser = asyncHandler(async (req, res) => {
 
   const recommendations = await Recommendation.findOne({ user: userId }).lean().exec();
 
-
+console.log(userId)
 
   res.json(recommendations);
 

@@ -157,11 +157,12 @@ const updateReview = asyncHandler(async (req, res) => {
 
   const updatedReview = await review.save();
   if (updatedReview) {
-    res.json({ message: `Review updated succesfully` });
+    res.status(200).json({ message: `Review updated succesfully`, isSuccess: true });
   } else {
     res.json({ message: `failed to update` });
   }
 });
+
 const deleteReview = asyncHandler(async (req, res) => {
 
   const { id } = req.params;

@@ -41,6 +41,17 @@ import EssayLayout from "./features/undergrad_students/layout/essayLayout";
 import EssayQuickReview from "./features/undergrad_students/essays/EssayQuickReview";
 import CreateEssays from "./features/undergrad_students/essays/CreateEssays";
 
+//Recommendation
+import RecommendationLayout from "./features/undergrad_students/layout/recommendation.Layout";
+import RecommendationQuickView from "./features/undergrad_students/recommendation/RecommendationQuickView";
+import InviteRecommendation from "./features/undergrad_students/recommendation/InviteRecommendation";
+
+
+//Financial Aid
+import AidLayout from "./features/undergrad_students/layout/aidLayout";
+import AidQuickReview from "./features/undergrad_students/financialAid/aidQuickReview";
+import CreateAids from "./features/undergrad_students/financialAid/CreateAids";
+
 //Logins
 import PersistLogin from "./features/auth/persistLogin";
 import RequireAuth from "./features/auth/requireAuth";
@@ -84,6 +95,22 @@ const router = createBrowserRouter(
               />
             </Route>
 
+            <Route path="recommendation" element={<RecommendationLayout />}>
+              <Route index element={<RecommendationQuickView />} />
+              <Route
+                path="invite"
+                element={<InviteRecommendation />}
+              />
+            </Route>
+
+            <Route path="financial-aid" element={<AidLayout />}>
+              <Route index element={<AidQuickReview />} />
+              <Route
+                path="create"
+                element={<CreateAids />}
+              />
+            </Route>
+
             <Route
               path="reviews"
               element={<Student_reviews />}
@@ -95,8 +122,6 @@ const router = createBrowserRouter(
               loader={GetSpecficReviewLoader}
             />
 
-            <Route path="recommendation" element={<UnderConstruction />} />
-            <Route path="financial-aid" element={<UnderConstruction />} />
             <Route path="interview-prep" element={<UnderConstruction />} />
             <Route path="chat" element={<UnderConstruction />} />
           </Route>

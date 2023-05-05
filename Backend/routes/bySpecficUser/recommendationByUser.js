@@ -4,7 +4,8 @@ const recommendationByuserController = require('../../controllers/Specificuser/r
 const verifyJWT = require('../../middleware/verifyJWT')
 
 router.use(verifyJWT)
-router.route("/")
+
+router.route("/:userId")
 .get(recommendationByuserController.getRecommendationOfUser)
 
 

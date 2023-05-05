@@ -5,7 +5,7 @@ const asyncHandler = require("express-async-handler");
 //get Aid by Id
 
 const getAidOfUser = asyncHandler(async (req, res) => {
-  const { userId } = req.body;
+  const { userId } = req.params;
 
   // Confirm data
 

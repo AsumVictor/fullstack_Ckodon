@@ -1,19 +1,6 @@
 import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
 import { apiSlice } from "../app/api/apiSlice";
 
-const aidsAdapter = createEntityAdapter({
-  sortComparer: (a, b) => {
-    if (a.status === "unresolved" && b.status !== "unresolved") {
-      return -1; // a comes first
-    }
-    if (a.status !== "unresolved" && b.status === "unresolved") {
-      return 1; // b comes first
-    }
-    return 0; // no change in order
-  },
-});
-
-const initialState = aidsAdapter.getInitialState();
 
 export const aidsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -23,7 +10,7 @@ export const aidsApiSlice = apiSlice.injectEndpoints({
         url: `/aids/id/${id}`,
         method: "GET",
       }),
-      invalidatesTags: [{ type: "Aid", id: "LIST" }],
+      providesTags: ['SpecificAid'],
     }),
 
     getAidByUser: builder.query({
@@ -31,7 +18,7 @@ export const aidsApiSlice = apiSlice.injectEndpoints({
         url: `/aids/user/${id}`,
         method: "GET",
       }),
-      invalidatesTags: [{ type: "Aid", id: "LIST" }],
+      providesTags: ['UserAid'],
     }),
 
     addNewAid: builder.mutation({
@@ -42,7 +29,7 @@ export const aidsApiSlice = apiSlice.injectEndpoints({
           ...initialAidData,
         },
       }),
-      invalidatesTags: [{ type: "Aid", id: "LIST" }],
+      invalidatesTags: ['UserAid', 'SpecificAid'],
     }),
 
     updateAid: builder.mutation({
@@ -53,7 +40,7 @@ export const aidsApiSlice = apiSlice.injectEndpoints({
           ...initialAidData,
         },
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Aid", id: arg.id }],
+      invalidatesTags:['UserAid', 'SpecificAid'],
     }),
   }),
 });
@@ -66,23 +53,3 @@ export const {
   useUpdateAidMutation,
   
 } = aidsApiSlice;
-
-// returns the query result object
-export const selectAidsResult =
-  aidsApiSlice.endpoints.getAids.select();
-
-// creates memoized selector
-const selectAidsData = createSelector(
-  selectAidsResult,
-  (aidsResult) => aidsResult.data // normalized state object with ids & entities
-);
-
-//getSelectors creates these selectors and we rename them with aliases using destructuring
-export const {
-  selectAll: selectAllAids,
-  selectById: selectAidById,
-  selectIds: selectAidIds,
-  // Pass in a selector that returns the aids slice of state
-} = aidsAdapter.getSelectors(
-  (state) => selectAidsData(state) ?? initialState
-);

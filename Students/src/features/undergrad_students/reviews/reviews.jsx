@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useState, useEffect } from "react";
 import {
   Await,
   defer,
@@ -17,12 +17,18 @@ import { useGetReviewByUserQuery } from "../../../apiSlice/reviewsApiSlice";
 function Student_reviews() {
   const student = useAuth();
   const {
-    data: reviews,
+    data: review,
     isLoading,
     isSuccess,
     isError,
     error,
   } = useGetReviewByUserQuery(student.id);
+const [reviews, setReviews] = useState(null)
+  useEffect(() => {
+    if (review) {
+      setReviews([...review ]);
+    }
+  }, [review]);
 
   if (isLoading) {
     return <CoverLoaderMedium />;
@@ -32,7 +38,7 @@ function Student_reviews() {
     return <h1>{error}</h1>;
   }
 
-  if (!reviews.length) {
+  if (!reviews?.length) {
     return (
       <NoContent message="You have not submitted any document for review" />
     )

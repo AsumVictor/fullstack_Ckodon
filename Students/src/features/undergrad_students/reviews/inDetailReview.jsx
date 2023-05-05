@@ -195,53 +195,11 @@ function StudentDocDetails_ug() {
                     <h2>{activity.description}</h2>
                   </div>
                 </div>
-                <div className="w-full flex flex-row px-2 gap-x-5 mt-5">
-                  <span
-                    className={`text-red-500  font-bold px-2 border-2 rounded-md border-red-500 cursor-pointer ${
-                      activity.rate == "bad" ? "bg-red-500 text-white" : null
-                    }`}
-                    // onClick={() => UpdateActivityRate(index, "bad")}
-                  >
-                    Bad
-                  </span>
-                  <span
-                    className={`text-blue-500  font-bold px-2 border-2 rounded-md border-blue-500 cursor-pointer ${
-                      activity.rate == "normal"
-                        ? "bg-blue-500 text-white"
-                        : null
-                    }`}
-                    onClick={() => UpdateActivityRate(index, "normal")}
-                  >
-                    Normal
-                  </span>
-                  <span
-                    className={`text-emerald-500  font-bold px-2 border-2 rounded-md border-emerald-500 cursor-pointer ${
-                      activity.rate == "good"
-                        ? "bg-emerald-500 text-white"
-                        : null
-                    }`}
-                    // onClick={() => UpdateActivityRate(index, "good")}
-                  >
-                    Good
-                  </span>
-                </div>
-                <div className="w-full flex flex-col px-2">
-                  <h2 className="mt-10">Add comment here</h2>
-
-                  <textarea
-                    name="comment"
-                    id="comment"
-                    value={
-                      activity.comments[activity.comments.length - 1].comment
-                    }
-                    className="w-full md:w-8/12 resize-none border-2 border-blue-400 p-3"
-                    rows="10"
-                    onChange={(e) => UpdateActivityComment(e, index)}
-                  ></textarea>
-                </div>
+            
+              
               </div>
 
-              <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-5">
+              <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 overflow-y-auto mt-5">
                 <h2 className="self-center font-bold capitalize">
                   Comments
                 </h2>
@@ -328,50 +286,11 @@ function StudentDocDetails_ug() {
 
                   <div className="w-full mt-4">{essayParagraphs}</div>
 
-                  <div className="w-full flex flex-row px-2 gap-x-5 mt-5">
-                    <span
-                      className={`text-red-500  font-bold px-2 border-2 rounded-md border-red-500 cursor-pointer ${
-                        essay.rate == "bad" ? "bg-red-500 text-white" : null
-                      }`}
-                      onClick={() => UpdateEssayRate(index, "bad")}
-                    >
-                      Bad
-                    </span>
-                    <span
-                      className={`text-blue-500  font-bold px-2 border-2 rounded-md border-blue-500 cursor-pointer ${
-                        essay.rate == "normal" ? "bg-blue-500 text-white" : null
-                      }`}
-                      onClick={() => UpdateEssayRate(index, "normal")}
-                    >
-                      Normal
-                    </span>
-                    <span
-                      className={`text-emerald-500  font-bold px-2 border-2 rounded-md border-emerald-500 cursor-pointer ${
-                        essay.rate == "good"
-                          ? "bg-emerald-500 text-white"
-                          : null
-                      }`}
-                      onClick={() => UpdateEssayRate(index, "good")}
-                    >
-                      Good
-                    </span>
-                  </div>
 
-                  <div className="w-full flex flex-col px-2">
-                    <h2 className="mt-10">Add comment here</h2>
-
-                    <textarea
-                      name="comment"
-                      id="comment"
-                      value={essay.comments[essay.comments.length - 1].comment}
-                      className="w-full md:w-8/12 resize-none border-2 border-blue-400 p-3"
-                      rows="10"
-                      onChange={(e) => UpdateEssayComment(e, index)}
-                    ></textarea>
-                  </div>
+                 
                 </div>
 
-                <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-5 overflow-x-hidden">
+                <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 overflow-y-auto mt-5 overflow-x-hidden">
                   <h2 className="self-center font-bold capitalize">
                     Comments
                   </h2>
@@ -467,65 +386,10 @@ function StudentDocDetails_ug() {
                         </h2>
                         <div className="w-full mt-4">{letterParagraphs}</div>
 
-                        <div className="w-full flex flex-row px-2 gap-x-5 mt-5">
-                          <span
-                            className={`text-red-500  font-bold px-2 border-2 rounded-md border-red-500 cursor-pointer ${
-                              letter.rate == "bad"
-                                ? "bg-red-500 text-white"
-                                : null
-                            }`}
-                            onClick={() =>
-                              UpdateLetterRate(recoIndex, letterIndex, "bad")
-                            }
-                          >
-                            Bad
-                          </span>
-                          <span
-                            className={`text-blue-500  font-bold px-2 border-2 rounded-md border-blue-500 cursor-pointer ${
-                              letter.rate == "normal"
-                                ? "bg-blue-500 text-white"
-                                : null
-                            }`}
-                            onClick={() =>
-                              UpdateLetterRate(recoIndex, letterIndex, "normal")
-                            }
-                          >
-                            Normal
-                          </span>
-                          <span
-                            className={`text-emerald-500  font-bold px-2 border-2 rounded-md border-emerald-500 cursor-pointer ${
-                              letter.rate == "good"
-                                ? "bg-emerald-500 text-white"
-                                : null
-                            }`}
-                            onClick={() =>
-                              UpdateLetterRate(recoIndex, letterIndex, "good")
-                            }
-                          >
-                            Good
-                          </span>
-                        </div>
 
-                        <div className="w-full flex flex-col px-2">
-                          <h2 className="mt-10">Add comment here</h2>
-
-                          <textarea
-                            name="comment"
-                            id="comment"
-                            value={
-                              letter.comments[letter.comments.length - 1]
-                                .comment
-                            }
-                            className="w-full md:w-8/12 resize-none border-2 border-blue-400 p-3"
-                            rows="10"
-                            onChange={(e) =>
-                              UpdateLetterComment(e, recoIndex, letterIndex)
-                            }
-                          ></textarea>
-                        </div>
                       </div>
 
-                      <div className="w-full md:w-4/12 py-2 bg-slate-300 flex flex-col px-2 h-96 overflow-y-auto mt-5 overflow-x-hidden">
+                      <div className="w-full md:w-4/12 py-2 bg-slate-300 flex flex-col px-2 overflow-y-auto mt-5 overflow-x-hidden">
                         <h2 className="self-center font-bold capitalize">
                           Comments
                         </h2>
@@ -645,48 +509,9 @@ function StudentDocDetails_ug() {
                     </span>
                   </h2>
 
-                  <div className="w-full flex flex-row px-2 gap-x-5 mt-10">
-                    <span
-                      className={`text-red-500 font-bold px-2 border-2 rounded-md border-red-500 cursor-pointer ${
-                        aid.rate == "bad" ? "bg-red-500 text-white" : null
-                      }`}
-                      onClick={() => UpdateAidRate(index, "bad")}
-                    >
-                      Bad
-                    </span>
-                    <span
-                      className={`text-blue-500  font-bold px-2 border-2 rounded-md border-blue-500 cursor-pointer ${
-                        aid.rate == "normal" ? "bg-blue-500 text-white" : null
-                      }`}
-                      onClick={() => UpdateAidRate(index, "normal")}
-                    >
-                      Normal
-                    </span>
-                    <span
-                      className={`text-emerald-500  font-bold px-2 border-2 rounded-md border-emerald-500 cursor-pointer ${
-                        aid.rate == "good" ? "bg-emerald-500 text-white" : null
-                      }`}
-                      onClick={() => UpdateAidRate(index, "good")}
-                    >
-                      Good
-                    </span>
-                  </div>
-
-                  <div className="w-full flex flex-col px-2">
-                    <h2 className="mt-10">Add comment here</h2>
-
-                    <textarea
-                      name="comment"
-                      id="comment"
-                      value={aid.comments[aid.comments.length - 1].comment}
-                      className="w-full md:w-8/12 resize-none border-2 border-blue-400 p-3"
-                      rows="10"
-                      onChange={(e) => UpdateAidComment(e, index)}
-                    ></textarea>
-                  </div>
                 </div>
 
-                <div className="w-full md:w-4/12 py-2 bg-slate-300 flex flex-col px-2 h-96 overflow-y-auto mt-10 overflow-x-hidden">
+                <div className="w-full md:w-4/12 py-2 bg-slate-300 flex flex-col px-2 overflow-y-auto mt-10 overflow-x-hidden">
                   <h2 className="self-center font-bold capitalize">
                     Comments
                   </h2>

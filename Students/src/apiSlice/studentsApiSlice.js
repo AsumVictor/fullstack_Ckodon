@@ -19,9 +19,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                     ...initialUserData,
                 }
             }),
-            invalidatesTags:  [
-                'Refresh'
-            ]
+            invalidatesTags:  ['Refresh']
         }),
         
     }),

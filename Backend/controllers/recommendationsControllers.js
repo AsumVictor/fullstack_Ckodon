@@ -13,14 +13,13 @@ const getRecommendations = asyncHandler(async (req, res) => {
 });
 
 const addNewRecommendation = asyncHandler(async (req, res) => {
-  const { user, status, submitted, recommendations } = req.body;
+  const { user, status, submitted, recommendations, submittedBefore } = req.body;
 
   // Confirm data
 
   const anyEmptyField =
-    !user || !status || !typeof submitted == 'boolean' || !Array.isArray(recommendations);
-
-  console.log(anyEmptyField);
+    !user || !status || !typeof submitted == 'boolean' || !Array.isArray(recommendations) || !typeof submittedBefore == 'boolean'
+    
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All fields are required" });
@@ -49,6 +48,7 @@ const addNewRecommendation = asyncHandler(async (req, res) => {
     status,
     submitted,
     recommendations,
+    submittedBefore
   });
 
   if (recommendation) {
@@ -60,9 +60,9 @@ const addNewRecommendation = asyncHandler(async (req, res) => {
 });
 
 const updateRecommendation = asyncHandler(async (req, res) => {
-  const { id, status, submitted, recommendations } = req.body;
+  const { id, status, submitted, recommendations, submittedBefore } = req.body;
 
-  const anyEmptyField = !status || !typeof submitted == 'boolean' || !Array.isArray(recommendations);
+  const anyEmptyField = !status || !typeof submitted == 'boolean' || !Array.isArray(recommendations) || !typeof submittedBefore == 'boolean' 
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });
@@ -83,6 +83,7 @@ const updateRecommendation = asyncHandler(async (req, res) => {
   recommendation.status = status;
   recommendation.submitted = submitted;
   recommendation.recommendations = recommendations;
+  recommendation.submittedBefore = submittedBefore;
 
   const updatedRecommendation = await recommendation.save();
   if (updatedRecommendation) {
@@ -94,7 +95,7 @@ const updateRecommendation = asyncHandler(async (req, res) => {
 });
 
 const deleteRecommendation = asyncHandler(async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.params;
   if (!id) {
     res.status(400).json({ message: "Recommendation ID required" });
   }

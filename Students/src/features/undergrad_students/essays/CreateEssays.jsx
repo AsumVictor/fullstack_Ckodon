@@ -174,15 +174,6 @@ export default function CreateEssays() {
     }
   };
 
-  const handleSchoolChange = (event, index) => {
-    const { name, value } = event.target;
-    setSchools((prevState) => {
-      const newState = [...prevState];
-      newState[index] = { ...newState[index], [name]: value };
-      return newState;
-    });
-  };
-
   const handleEssayChange = (e, schoolIndex, essayIndex) => {
     const { name, value } = e.target;
     setEssayList((prev) => {
@@ -306,11 +297,6 @@ export default function CreateEssays() {
     }
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(schools);
-    // Code to submit the form data goes here
-  };
 
 async function submitToReview(schoolIndex){
   const currentSchool = EssayList[schoolIndex]
