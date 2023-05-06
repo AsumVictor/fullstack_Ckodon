@@ -201,7 +201,7 @@ function ActivityQuickReview() {
 
   }
   //Save changes
-  async function saveChanges() {
+  async function saveChanges() { 
     try {
       const res = await updateActivity({
         ...Activity,

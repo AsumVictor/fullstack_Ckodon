@@ -10,7 +10,14 @@ const initialState = usersAdapter.getInitialState()
 
 export const usersApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
-
+        getStudent: builder.query({
+            query: (id) => ({
+              url: `/undergrads/${id}`,
+              method: "GET",
+            }),
+            providesTags:['Student'],
+          }),
+        
         updateUser: builder.mutation({
             query: initialUserData => ({
                 url: '/undergrads',
@@ -19,12 +26,14 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                     ...initialUserData,
                 }
             }),
-            invalidatesTags:  ['Refresh']
+            invalidatesTags:  ['Student']
         }),
-        
+
+      
     }),
 })
 
 export const {
     useUpdateUserMutation,
+    useGetStudentQuery
 } = usersApiSlice

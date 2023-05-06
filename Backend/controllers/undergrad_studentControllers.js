@@ -17,6 +17,21 @@ const getAllUsers = asyncHandler(async (req, res) => {
   res.json(users);
 });
 
+const getSpecificUndergrad = asyncHandler(async (req, res) => {
+ 
+  const { id } = req.params;
+  const user = await User.findById(id)
+    .select("-password")
+    .lean()
+  // If no users
+  if (!user) {
+    return res.status(400).json({ message: "No user found", isEmpty: true });
+  }
+
+  return res.json(user);
+});
+
+
 //create new user
 const addNewUser = asyncHandler(async (req, res) => {
   const {
@@ -189,4 +204,5 @@ module.exports = {
   addNewUser,
   updateUser,
   deleteUser,
+  getSpecificUndergrad
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, Outlet, useNavigate, Link } from "react-router-dom";
 import {
   HiSun,
@@ -30,20 +30,25 @@ import ModalBox, {
   ModalBody,
   ModalFooter,
 } from "../../../components/modal.js/ModalBox";
-import useAuth from "../../../hooks/useAuth";
-import '../../../components/shared/style.css'
+import useAuth from "../../../hooks/useStudent";
+import "../../../components/shared/style.css";
 import { useSendLogoutMutation } from "../../auth/authApiSlice";
 import { CoverLoaderMedium } from "../../../components/loaders/loader";
 
-
 function Student_SharedLayout() {
+  const {
+    data: student,
+    isLoading: loadStudent,
+    isError: errorStudent,
+    error: message,
+  } = useAuth();
+
   const [isSideNavShow, setIsSideNavShow] = useState(false);
   const [showProfileSettings, setShowProfileSettings] = useState(false);
-  const student = useAuth();
- const navigate = useNavigate()
+
+  const navigate = useNavigate();
   const [logout, { isLoading, isSuccess, isError, error }] =
     useSendLogoutMutation();
-
 
   function toogleSideNav() {
     setIsSideNavShow((prevState) => !prevState);
@@ -58,10 +63,8 @@ function Student_SharedLayout() {
     if (isSuccess) navigate("/");
   }, [isSuccess, navigate]);
 
-  if (isLoading) {
-    return (
-    <CoverLoaderMedium />
-    )
+  if (isLoading || loadStudent) {
+    return <CoverLoaderMedium />;
   }
 
   return (
@@ -154,6 +157,18 @@ function Student_SharedLayout() {
             </NavLink>
 
             <NavLink
+              to="sat"
+              id="sat"
+              onClick={() => setIsSideNavShow(false)}
+              className={`flex capitalize flex-row items-center gap-3 mt-2 ${
+                !isSideNavShow ? "justify-center" : "justify-start"
+              } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
+              style={({ isActive }) => (isActive ? activeStyle : null)}
+            >
+              <HiPencilSquare /> {isSideNavShow && <span> SAT Scores</span>}
+            </NavLink>
+
+            <NavLink
               to="reviews"
               id="reviews"
               onClick={() => setIsSideNavShow(false)}
@@ -215,6 +230,15 @@ function Student_SharedLayout() {
           place="right"
           variant="info"
           content="Activities"
+          className={`${
+            isSideNavShow ? "hidden" : "flex"
+          } opacity-100 text-MdBlue font-bold tooltip`}
+        />
+        <ReactTooltip
+          anchorId="sat"
+          place="right"
+          variant="info"
+          content="Sat Scores"
           className={`${
             isSideNavShow ? "hidden" : "flex"
           } opacity-100 text-MdBlue font-bold tooltip`}
@@ -315,15 +339,11 @@ function Student_SharedLayout() {
                       <HiCog /> <span> Setting</span>
                     </li>
                   </Link>
-                  <button
-                  onClick={logout}
-                  >
+                  <button onClick={logout}>
                     <li className="mt-3 w-full px-4 font-semibold rounded-md py-1 whitespace-nowrap hover:bg-MdBlue hover:text-white flex flex-row gap-x-2 flex-nowrap items-center">
                       <HiLogout /> Logout
                     </li>
-                  </button
-                  
-                  >
+                  </button>
                 </ul>
               </div>
             </div>

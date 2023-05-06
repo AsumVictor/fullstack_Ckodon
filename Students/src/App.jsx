@@ -52,6 +52,10 @@ import AidLayout from "./features/undergrad_students/layout/aidLayout";
 import AidQuickReview from "./features/undergrad_students/financialAid/aidQuickReview";
 import CreateAids from "./features/undergrad_students/financialAid/CreateAids";
 
+
+//Sat
+import SatScore from "./features/undergrad_students/sat scores/satScore";
+
 //Logins
 import PersistLogin from "./features/auth/persistLogin";
 import RequireAuth from "./features/auth/requireAuth";
@@ -111,6 +115,9 @@ const router = createBrowserRouter(
               />
             </Route>
 
+            <Route path="sat" element={<SatScore />} />
+
+
             <Route
               path="reviews"
               element={<Student_reviews />}
@@ -125,6 +132,7 @@ const router = createBrowserRouter(
             <Route path="interview-prep" element={<UnderConstruction />} />
             <Route path="chat" element={<UnderConstruction />} />
           </Route>
+
 
           <Route path="profile" element={<ProfileLayout />}>
             <Route index element={<Profile />} />

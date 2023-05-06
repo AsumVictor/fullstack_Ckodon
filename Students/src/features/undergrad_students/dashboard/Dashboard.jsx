@@ -1,7 +1,7 @@
 import React from 'react'
-import useAuth from '../../../hooks/useAuth'
+import useAuth from '../../../hooks/useStudent'
 function Dashboard() {
-    const student = useAuth()
+    const {data: student} = useAuth()
   return (
     <div>{`Welcome ${student.firstName} ${student.lastName}`}</div>
   )

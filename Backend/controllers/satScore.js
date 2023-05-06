@@ -106,26 +106,18 @@ const getStudentSat = asyncHandler(async (req, res) => {
   
     //Check if user exist
   
-    const student = await User.findById(user).lean().exec();
+    const student = await User.findById(userId).lean().exec();
     if (!student) {
-      return res.status(400).json({ message: "user not found" });
+      return res.status(400).json({ message: "user not found", });
     }
     // Check for duplicate title
   
+   const studentSat = await Sat.find({user: userId}).lean().exec();
   
-  
+   return res.status(200).json(studentSat);
+
     // Create and store the new user
   
-    const sat = await Sat.create({
-      user, date, state, totalScore, reading, math
-    });
-  
-    if (sat) {
-      // Created
-      return res.status(201).json({ message: "Sat created successfully", isSuccess: true,});
-    } else {
-      return res.status(400).json({ message: "Invalid applicant data received" });
-    }
   });
   
 
@@ -135,4 +127,5 @@ module.exports = {
   addNewSat,
   updateSat,
   deleteSat,
+  getStudentSat
 };

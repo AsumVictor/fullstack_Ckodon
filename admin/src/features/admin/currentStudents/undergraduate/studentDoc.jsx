@@ -5,6 +5,8 @@ import { useGetReviewByUserQuery } from "../../../../apiSlice/reviewsApiSlice";
 import { selectUserById } from "../../../../apiSlice/usersApiSlice";
 import { useSelector } from "react-redux";
 import { CoverLoaderMedium } from "../../../../components/loaders/loader";
+import { HiChevronDoubleLeft, HiChevronDown, HiChevronUp, HiBadgeCheck, HiLocationMarker, HiMail, HiPhone, HiLibrary, HiChat } from "react-icons/hi";
+
 function StudentDoc() {
     const context = useOutletContext()
     const studentId = context.studentId

@@ -24,7 +24,6 @@ const login = asyncHandler(async (req, res) => {
       break;
     default:
       return res.status(401).json({ message: "Invalid role" });
-     
   }
 
   const foundUser = await Collection.findOne({ email }).exec();
@@ -38,49 +37,24 @@ const login = asyncHandler(async (req, res) => {
 
   const accessToken = jwt.sign(
     {
-      UserInfo: { 
-    id: foundUser._id,
-    firstName: foundUser.firstName,
-    lastName: foundUser.lastName,
-    email: foundUser.email,
-    residence: foundUser.residence,
-    role: foundUser.role,
-    school: foundUser.school,
-    phone: foundUser.phone,
-    avatar: foundUser.avatar,
-    keyInterest: foundUser.keyInterest,
-    intendedMajor: foundUser.intendedMajor,
-    updatedStatus: foundUser.updatedStatus,
-    bio: foundUser.bio,
-    isActive: foundUser.isActive,
-    gender: foundUser.gender,
+      UserInfo: {
+         id: foundUser._id,
+        role: foundUser.role,
+        email: foundUser.email
       },
     },
-    
+
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: "15m" }
   );
 
-
   const refreshToken = jwt.sign(
     {
-      UserInfo: { 
-        id: foundUser._id,
-        firstName: foundUser.firstName,
-        lastName: foundUser.lastName,
-        email: foundUser.email,
-        residence: foundUser.residence,
+      UserInfo: {
+         id: foundUser._id,
         role: foundUser.role,
-        school: foundUser.school,
-        phone: foundUser.phone,
-        avatar: foundUser.avatar,
-        keyInterest: foundUser.keyInterest,
-        intendedMajor: foundUser.intendedMajor,
-        updatedStatus: foundUser.updatedStatus,
-        bio: foundUser.bio,
-        isActive: foundUser.isActive,
-        gender: foundUser.gender,
-          },
+        email: foundUser.email
+      },
     },
     process.env.REFRESH_TOKEN_SECRET,
     { expiresIn: "2d" }
@@ -124,29 +98,18 @@ const refresh = (req, res) => {
         default:
           return res.status(401).json({ message: "Invalid role" });
       }
-      const foundUser = await Collection.findOne({ email: decoded.UserInfo.email }).exec();
+      const foundUser = await Collection.findOne({
+        email: decoded.UserInfo.email,
+      }).exec();
 
       if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
 
       const accessToken = jwt.sign(
         {
-          UserInfo: { 
+          UserInfo: {
             id: foundUser._id,
-            firstName: foundUser.firstName,
-            lastName: foundUser.lastName,
-            email: foundUser.email,
-            residence: foundUser.residence,
             role: foundUser.role,
-            school: foundUser.school,
-            phone: foundUser.phone,
-            avatar: foundUser.avatar,
-            keyInterest: foundUser.keyInterest,
-            intendedMajor: foundUser.intendedMajor,
-            updatedStatus: foundUser.updatedStatus,
-            bio: foundUser.bio,
-            isActive: foundUser.isActive,
-            gender: foundUser.gender,
-              },
+          },
         },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "15m" }

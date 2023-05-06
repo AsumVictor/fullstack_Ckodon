@@ -10,4 +10,7 @@ router.route("/")
 .patch(usersController.updateUser)
 .delete(usersController.deleteUser);
 
+router.route("/:id")
+.get(usersController.getSpecificUndergrad)
+
 module.exports = router

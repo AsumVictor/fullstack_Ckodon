@@ -4,11 +4,19 @@ import "./tailwind.css";
 import Banner from "../../../assets/images/Banner.png";
 import { HiPencil } from "react-icons/hi2";
 import { HiLocationMarker, HiMail, HiPhone, HiLibrary } from "react-icons/hi";
-import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../../hooks/useStudent";
 import { Link } from "react-router-dom/dist/umd/react-router-dom.development";
+import { CoverLoaderMedium } from "../../../components/loaders/loader";
 
 function Profile() {
-  const student = useAuth();
+  const {data: student, isLoading, isSuccess, isError, error} = useAuth();
+
+  if(isLoading){
+    return (
+<CoverLoaderMedium />
+    )
+  }
+
   return (
     <>
       <div className="relative block h-500-px">

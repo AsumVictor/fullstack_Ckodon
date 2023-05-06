@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import "./tags.css";
 import { WithContext as ReactTags } from "react-tag-input";
 import TextareaAutosize from "react-textarea-autosize";
-import useAuth from "../../../hooks/useAuth";
+import useAuth from "../../../hooks/useStudent";
 import FileBase64 from "react-file-base64";
 import { useUpdateUserMutation } from "../../../apiSlice/studentsApiSlice";
 import { CoverLoaderMedium } from "../../../components/loaders/loader";
@@ -16,7 +16,9 @@ const KeyCodes = {
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 function EditProfile() {
-  const student = useAuth();
+  const {data: student, isLoading: loadUser, isSuccess: successUser, isError: errorUser, error: erromessage} = useAuth();
+
+ 
   const [profile, setProfile] = useState({ ...student });
   const [updateUser, { isLoading, isSuccess, isError, error }] =
     useUpdateUserMutation();
@@ -99,7 +101,7 @@ function EditProfile() {
     try {
       let res = await updateUser({
         ...profile,
-        id: profile.id,
+        id: profile._id,
         intendedMajor: intendedMajor,
         keyInterest: keyInterest,
         updatedStatus: true,
@@ -202,6 +204,12 @@ function EditProfile() {
       setOldmismatcherror("");
     }
   }, [confirmPassword]);
+
+  if(loadUser){
+    return (
+<CoverLoaderMedium />
+    )
+  }
 
   return (
     <>

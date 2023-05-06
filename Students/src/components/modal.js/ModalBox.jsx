@@ -30,7 +30,7 @@ export default ModalBox;
 
 export function ModalBody(props){
 return (
-            <div className="relative px-3 flex-auto py-2">
+            <div className="relative px-3 flex-auto py-2 flex flex-col">
               {props.children}
             </div>
 )
