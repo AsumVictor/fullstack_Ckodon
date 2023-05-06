@@ -27,6 +27,7 @@ import { SmallLoader } from "../../../../components/loaders/loader";
 import useTitle from "../../../../hooks/useTitle";
 
 function ApplicantDetails() {
+  useTitle('Applicant Application')
   const [loading, setLoading] = useState(false);
 
   const {
@@ -63,13 +64,13 @@ function ApplicantDetails() {
       residence: applicant.residence,
       role: "undergraduate",
       school: applicant.recentSchool,
-      password: nanoid(8),
+      password: 'student',
       phone: applicant.phone,
       gender: applicant.gender,
       isActive: true,
     };
 
-
+console.log(applicantBasicInfo.password)
     content = (
       <div className="flex flex-col items-center">
         <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2      md:justify-between justify-end items-center w-full flex-wrap gap-y-2 mt-5   sticky top-0">
@@ -222,7 +223,6 @@ function ApplicantDetails() {
       </div>
     );
   }
-  useTitle(`${firstName} ${lastName} Application`)
 
   //Modal and reject accept logics
   const [showModal, setShowModal] = useState({

@@ -1,6 +1,7 @@
 require("dotenv").config();
 require('express-async-errors')
 const express = require("express");
+const bodyParser = require('body-parser');
 const app = express();
 const PORT = process.env.PORT || 5000;
 const path = require("path");
@@ -15,11 +16,15 @@ const mongoose = require("mongoose");
 
 connectDB();
 
+app.use(bodyParser.json({ limit: '50mb' }));
+
+// set a higher limit for URL-encoded requests
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+
  app.use(logger);
 
  app.use(cors(corOptions));
-
- app.use(express.json());
 
  app.use(cookieParser());
 
@@ -36,6 +41,7 @@ app.use('/honors/user', require('./routes/bySpecficUser/honorByUser'))
 app.use('/undergradeReviews', require('./routes/reviewRoutes'))
 app.use('/undergradeReviews/user', require('./routes/bySpecficUser/reviewByUserRouts'))
 app.use('/undergradeReviews/id', require('./routes/bySpecficUser/reviewById_undergrad'))
+app.use('/undergradeReviews/document', require('./routes/bySpecficUser/reviewByDocument'))
 app.use('/activities', require('./routes/activityRoutes'))
 app.use('/activities/user', require('./routes/bySpecficUser/activityByUser'))
 app.use('/essays', require('./routes/essaysRoutes'))
@@ -44,6 +50,8 @@ app.use('/recommendations', require('./routes/recommendationsRoutes'))
 app.use('/recommendations/user', require('./routes/bySpecficUser/recommendationByUser'))
 app.use('/aids', require('./routes/aidsRoutes'))
 app.use('/aids/user', require('./routes/bySpecficUser/aidByUser'))
+app.use('/files', require('./routes/filesRoites'))
+app.use('/sats', require('./routes/satScore'))
 
 
 

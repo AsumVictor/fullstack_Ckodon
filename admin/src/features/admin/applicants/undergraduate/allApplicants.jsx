@@ -16,6 +16,8 @@ import Applicant from "./applicant";
 import { useGetUndergraduateApplicantsQuery } from "../../../../apiSlice/undergrauteApplicantsApiSlice";
 import NoContent from "../../../../components/indications/noContent";
 import { CoverLoaderMedium } from "../../../../components/loaders/loader";
+import useTitle from '../../../../hooks/useTitle'
+
 function AllApplicants() {
   const {
     data: applicants,

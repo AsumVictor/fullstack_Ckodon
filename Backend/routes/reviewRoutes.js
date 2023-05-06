@@ -8,6 +8,8 @@ router.route("/")
 .get(ReviewsControllers.getAllReviews)
 .post(ReviewsControllers.addNewReview)
 .patch(ReviewsControllers.updateReview)
+
+router.route("/:id")
 .delete(ReviewsControllers.deleteReview)
 
 module.exports = router

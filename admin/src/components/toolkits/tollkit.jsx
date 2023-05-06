@@ -3,12 +3,12 @@ import { HiArrowPath} from "react-icons/hi2";
 import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 
-export function RefreshToolkit() {
+export function RefreshToolkit(props) {
   return (
     <>
       <div
         id="refresh"
-        className="w-10 cursor-pointer h-10 flex items-center justify-center shadow-md rounded-2xl"
+        className={`w-10 cursor-pointer h-10 flex items-center justify-center shadow-md rounded-2xl ${props.class}`}
       >
         <div className="text-2xl">
           <HiArrowPath />

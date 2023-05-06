@@ -13,12 +13,12 @@ const getAids = asyncHandler(async (req, res) => {
 });
 
 const addNewAid = asyncHandler(async (req, res) => {
-  const { user, status, submitted, aids } = req.body;
+  const { user, status, submitted, aids, submittedBefore } = req.body;
 
   // Confirm data
 
   const anyEmptyField =
-    !user || !status || !typeof submitted == "boolean" || !Array.isArray(aids);
+    !user || !status || !typeof submitted == "boolean" || !Array.isArray(aids)  || !typeof submittedBefore == "boolean"
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All fields are required" });
@@ -47,20 +47,21 @@ const addNewAid = asyncHandler(async (req, res) => {
     status,
     submitted,
     aids,
+    submittedBefore
   });
 
   if (aid) {
     // Created
-    return res.status(201).json({ message: "Aid created successfully" });
+    return res.status(201).json({ message: "Aid created successfully", isSuccess: true, });
   } else {
     return res.status(400).json({ message: "Invalid applicant data received" });
   }
 });
 
 const updateAid = asyncHandler(async (req, res) => {
-  const { id, status, submitted, aids } = req.body;
+  const { id, status, submitted, aids , submittedBefore} = req.body;
 
-  const anyEmptyField = !status || !typeof submitted == "boolean" || !Array.isArray(aids);
+  const anyEmptyField = !status || !typeof submitted == "boolean" || !Array.isArray(aids)  || !typeof submittedBefore == "boolean"  
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });
@@ -81,10 +82,11 @@ const updateAid = asyncHandler(async (req, res) => {
   aid.status = status;
   aid.submitted = submitted;
   aid.aids = aids;
+  aid.submittedBefore = submittedBefore;
 
   const updatedAid = await aid.save();
   if (updatedAid) {
-    res.json({ message: `aid updated succesfully` });
+    res.status(200).json({ message: `aid updated succesfully`, isSuccess: true, });
   }else{
     res.json({ message: `failed to update` });
 
@@ -92,7 +94,7 @@ const updateAid = asyncHandler(async (req, res) => {
 });
 
 const deleteAid = asyncHandler(async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.params;
   if (!id) {
     res.status(400).json({ message: "Aid ID required" });
   }

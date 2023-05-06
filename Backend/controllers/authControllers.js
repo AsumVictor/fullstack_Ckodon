@@ -24,11 +24,9 @@ const login = asyncHandler(async (req, res) => {
       break;
     default:
       return res.status(401).json({ message: "Invalid role" });
-     
   }
 
   const foundUser = await Collection.findOne({ email }).exec();
-
   if (!foundUser || !foundUser.isActive) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -40,9 +38,12 @@ const login = asyncHandler(async (req, res) => {
   const accessToken = jwt.sign(
     {
       UserInfo: {
-       ...foundUser
+         id: foundUser._id,
+        role: foundUser.role,
+        email: foundUser.email
       },
     },
+
     process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: "15m" }
   );
@@ -50,7 +51,9 @@ const login = asyncHandler(async (req, res) => {
   const refreshToken = jwt.sign(
     {
       UserInfo: {
-        ...foundUser
+         id: foundUser._id,
+        role: foundUser.role,
+        email: foundUser.email
       },
     },
     process.env.REFRESH_TOKEN_SECRET,
@@ -84,9 +87,8 @@ const refresh = (req, res) => {
     process.env.REFRESH_TOKEN_SECRET,
     asyncHandler(async (err, decoded) => {
       if (err) return res.status(403).json({ message: "Forbidden" });
-console.log(decoded);
       let Collection;
-      switch (decoded.UserInfo._doc.role) {
+      switch (decoded.UserInfo.role) {
         case "admin":
           Collection = Admin;
           break;
@@ -96,14 +98,17 @@ console.log(decoded);
         default:
           return res.status(401).json({ message: "Invalid role" });
       }
-      const foundUser = await Collection.findOne({ email: decoded.UserInfo._doc.email }).exec();
+      const foundUser = await Collection.findOne({
+        email: decoded.UserInfo.email,
+      }).exec();
 
       if (!foundUser) return res.status(401).json({ message: "Unauthorized" });
 
       const accessToken = jwt.sign(
         {
           UserInfo: {
-            ...foundUser
+            id: foundUser._id,
+            role: foundUser.role,
           },
         },
         process.env.ACCESS_TOKEN_SECRET,

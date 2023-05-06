@@ -17,6 +17,21 @@ const getAllUsers = asyncHandler(async (req, res) => {
   res.json(users);
 });
 
+const getSpecificUndergrad = asyncHandler(async (req, res) => {
+ 
+  const { id } = req.params;
+  const user = await User.findById(id)
+    .select("-password")
+    .lean()
+  // If no users
+  if (!user) {
+    return res.status(400).json({ message: "No user found", isEmpty: true });
+  }
+
+  return res.json(user);
+});
+
+
 //create new user
 const addNewUser = asyncHandler(async (req, res) => {
   const {
@@ -31,6 +46,10 @@ const addNewUser = asyncHandler(async (req, res) => {
     phone,
     gender,
     avatar,
+    keyInterest,
+    bio,
+    intendedMajor,
+    updatedStatus,
   } = req.body;
 
   const anyEmptyField =
@@ -42,6 +61,7 @@ const addNewUser = asyncHandler(async (req, res) => {
     !school ||
     !password ||
     !gender ||
+    typeof updatedStatus !== 'boolean' ||
     typeof isActive !== "boolean";
 
   if (anyEmptyField) {
@@ -69,6 +89,10 @@ const addNewUser = asyncHandler(async (req, res) => {
     gender,
     phone,
     avatar,
+    keyInterest,
+    bio,
+    intendedMajor,
+    updatedStatus,
   };
 
   //create and store new user
@@ -92,13 +116,17 @@ const updateUser = asyncHandler(async (req, res) => {
     residence,
     role,
     school,
-    password,
+    oldPassword,
+    newPassword,
     isActive,
     gender,
     phone,
     avatar,
+    keyInterest,
+    bio,
+    intendedMajor,
+    updatedStatus,
   } = req.body;
-
   const anyEmptyField =
     !id ||
     !firstName ||
@@ -106,7 +134,8 @@ const updateUser = asyncHandler(async (req, res) => {
     !email ||
     !residence ||
     !school ||
-    !isActive;
+    typeof isActive !== "boolean" ||
+    typeof updatedStatus !== 'boolean'
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "You must filled the form" });
@@ -135,9 +164,17 @@ const updateUser = asyncHandler(async (req, res) => {
   user.gender = gender;
   user.phone = phone;
   user.avatar = avatar;
-  if (password) {
+  user.keyInterest = keyInterest;
+  user.bio = bio;
+  user.intendedMajor = intendedMajor;
+  user.updatedStatus = updatedStatus;
+  if (newPassword && oldPassword) {
     //hash
-    user.password = await bcrypt.hash(password, 10); // salt rounds
+    const match = await bcrypt.compare(oldPassword, user.password);
+   if(!match){
+    return res.status(409).json({ message: "Your old password doesn't match" });
+   }
+    user.password = await bcrypt.hash(newPassword, 10); // salt rounds
   }
 
   const updatedUser = await user.save();
@@ -167,4 +204,5 @@ module.exports = {
   addNewUser,
   updateUser,
   deleteUser,
+  getSpecificUndergrad
 };

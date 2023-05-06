@@ -157,23 +157,21 @@ const updateReview = asyncHandler(async (req, res) => {
 
   const updatedReview = await review.save();
   if (updatedReview) {
-    res.json({ message: `Review updated succesfully` });
+    res.status(200).json({ message: `Review updated succesfully`, isSuccess: true });
   } else {
     res.json({ message: `failed to update` });
   }
 });
 
 const deleteReview = asyncHandler(async (req, res) => {
-  const { document, model, user } = req.query;
-  if (!document || !model || !user) {
+
+  const { id } = req.params;
+
+  if (!id) {
     res.status(400).json({ message: "All fields required" });
   }
 
-  const review = await Review.findOne({
-    user: user,
-    documentId: document,
-    onModel: model,
-  }).exec();
+  const review = await Review.findOne({documentId: id}).exec();
 
   if (!review) {
     return res.status(400).json({ message: "Review not found" });

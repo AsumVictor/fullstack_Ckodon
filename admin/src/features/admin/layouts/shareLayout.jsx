@@ -212,6 +212,19 @@ function SharedLayout() {
           </div>
 
           <NavLink
+            end
+            to="files"
+            id="files"
+            onClick={() => setIsSideNavShow(false)}
+            className={`flex capitalize flex-row items-center gap-3 ${
+              !isSideNavShow ? "justify-center" : "justify-start"
+            } text-white font-semibold text-18 mt-5 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
+            style={({ isActive }) => (isActive ? activeStyle : null)}
+          >
+            <HiChartPie /> {isSideNavShow && <span> Files</span>}
+          </NavLink>
+
+          <NavLink
             to="sat-students"
             id="sat-students"
             onClick={() => setIsSideNavShow(false)}
@@ -321,6 +334,16 @@ function SharedLayout() {
         place="right"
         variant="info"
         content="Broadcast"
+        className={`${
+          isSideNavShow ? "hidden" : "flex"
+        } opacity-100 text-MdBlue font-bold tooltip`}
+      />
+
+<ReactTooltip
+        anchorId="files"
+        place="right"
+        variant="info"
+        content="Files"
         className={`${
           isSideNavShow ? "hidden" : "flex"
         } opacity-100 text-MdBlue font-bold tooltip`}

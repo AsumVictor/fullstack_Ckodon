@@ -23,6 +23,15 @@ import UndergraduateReviews from "./features/admin/reviews/undergraduates/review
 import UndergraduateReviewDetails from "./features/admin/reviews/undergraduates/reviewDetails";
 import StudentDocDetails_ug from "./features/admin/currentStudents/undergraduate/studentDocDetails";
 import RequireAuth from "./features/auth/requireAuth";
+
+
+//UNdergradute Students
+import UndergraduteStudentDetailLayout from "./features/admin/layouts/undergraduteStudentDetailLayout";
+import SatPage from "./features/admin/currentStudents/undergraduate/satPage";
+import StudentDoc from "./features/admin/currentStudents/undergraduate/studentDoc";
+
+import PostFile from "./features/admin/files/PostFile";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -40,9 +49,13 @@ const router = createBrowserRouter(
             <Route path="undergraduate-students">
               <Route index element={<AllStudent />} />
 
-              <Route path=":id" element={<StudentDetails />} />
+              <Route path=":id" element={<UndergraduteStudentDetailLayout />}>
+              <Route index element={<StudentDetails />} />
+              <Route path='sat' element={<SatPage />} />
+              <Route path='reviews' element={<StudentDoc />} />
+              </Route>
 
-              <Route path=":id/:id" element={<StudentDocDetails_ug />} />
+              <Route path=":id/reviews/:id" element={<StudentDocDetails_ug />} />
             </Route>
 
             {/* Layouts */}
@@ -71,6 +84,9 @@ const router = createBrowserRouter(
               path="applicants-graduates"
               element={<UnderConstruction />}
             />
+            
+            <Route path="files" element={<PostFile />} />
+
             <Route path="sat-students" element={<UnderConstruction />} />
             <Route path="broadcast" element={<UnderConstruction />} />
             <Route path="chat" element={<UnderConstruction />} />

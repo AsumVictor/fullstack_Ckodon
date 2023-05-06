@@ -7,5 +7,4 @@ router.use(verifyJWT)
 router.route("/:userId")
 .get(reviewByuserController.getReviewByUser)
 
-
 module.exports = router

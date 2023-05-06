@@ -97,7 +97,26 @@ const getReviewByUser = asyncHandler(async (req, res) => {
     res.json({...review, document, user})
   });
 
+  const getReviewByDocument = asyncHandler(async (req, res) => {
+    const { document } = req.params;
+    if(!document){
+      console.log(document)
+      return res.status(400).json({ message: "filled required" });
+    }
+
+    const review = await Review.findOne({documentId: document}).lean()
+   
+
+    if (!review) {
+      return res.status(400).json({ message: "Invalid Id" });
+
+    }
+
+    res.status(200).json(review)
+  });
+
   module.exports = {
     getReviewByUser,
-    getReviewById
+    getReviewById,
+    getReviewByDocument
   }; 

@@ -6,10 +6,10 @@ import { useDispatch } from 'react-redux'
 import { setCredentials } from '../../auth/authSlice'
 import { useLoginMutation } from '../../auth/authApiSlice'
 import usePersist from '../../../hooks/usePersist';
+import { CoverLoaderMedium } from "../../../components/loaders/loader";
+
 
 function Login() {
-
-  
 
       const errRef = useRef()
       const [email, setEmail] = useState('');
@@ -17,11 +17,8 @@ function Login() {
       const [errMsg, setErrMsg] = useState('')
       const [persist, setPersist] = usePersist()
       const [login, { isLoading }] = useLoginMutation()
-
       const navigate = useNavigate()
       const dispatch = useDispatch()
-  
-  
 
   
       useEffect(() => {
@@ -46,7 +43,7 @@ function Login() {
               } else if (err.status === 400) {
                   setErrMsg('Missing Username or Password');
               } else if (err.status === 401) {
-                  setErrMsg('Unauthorized');
+                  setErrMsg('Invalid email or password or you may be inactive');
               } else {
                   setErrMsg(err.data?.message);
               }
@@ -55,7 +52,7 @@ function Login() {
       }
       const handleToggle = () => setPersist(prev => !prev)
   
-      if (isLoading) return <p>Loading...</p>
+     
 
 
   return (
@@ -69,7 +66,7 @@ function Login() {
           We're are excited to see again!
         </p>
 
-        <img src="/images/adminLogo.png" alt="admin"  style={{height:"2cm",width:"2cm"}} className="mt-5 border-2 rounded-full p-2 border-MdBlue"/>
+        <img src="/images/logoWhite.png" alt="admin"  style={{height:"2cm",width:"2cm"}} className="mt-5 border-2 rounded-full p-2 border-MdBlue"/>
 
         <h4 className="capitalize font-bold text-18">
           admin
@@ -137,6 +134,9 @@ function Login() {
 
       </form>
     </section>
+    {isLoading && (
+<CoverLoaderMedium styles={{backgroundColor: 'rgba(205,205,255,0.4)',}}/>
+    )}
     </>
   );
 }
