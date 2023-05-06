@@ -50,6 +50,7 @@ app.use('/recommendations', require('./routes/recommendationsRoutes'))
 app.use('/recommendations/user', require('./routes/bySpecficUser/recommendationByUser'))
 app.use('/aids', require('./routes/aidsRoutes'))
 app.use('/aids/user', require('./routes/bySpecficUser/aidByUser'))
+app.use('/files', require('./routes/filesRoites'))
 
 
 

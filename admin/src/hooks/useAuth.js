@@ -9,7 +9,7 @@ const useAuth = () => {
 
     if (token) {
         const decoded = jwtDecode(token)
-        const admin = {...decoded.UserInfo._doc}
+        const admin = {...decoded.UserInfo}
         return { ...admin}
     }
 

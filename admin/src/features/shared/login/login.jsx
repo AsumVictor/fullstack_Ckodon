@@ -66,7 +66,7 @@ function Login() {
           We're are excited to see again!
         </p>
 
-        <img src="/images/adminLogo.png" alt="admin"  style={{height:"2cm",width:"2cm"}} className="mt-5 border-2 rounded-full p-2 border-MdBlue"/>
+        <img src="/images/logoWhite.png" alt="admin"  style={{height:"2cm",width:"2cm"}} className="mt-5 border-2 rounded-full p-2 border-MdBlue"/>
 
         <h4 className="capitalize font-bold text-18">
           admin
