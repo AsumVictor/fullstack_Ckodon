@@ -6,6 +6,7 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
+
 //PAGES PUBLIC
 import Login from "./features/shared/login/login";
 import Apply from "./features/shared/apply/apply";
