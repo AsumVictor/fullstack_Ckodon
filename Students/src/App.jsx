@@ -6,6 +6,8 @@ import {
   Route,
   Routes,
 } from "react-router-dom";
+import {disableReactDevTools} from '@fvilers/disable-react-devtools'
+
 //PAGES PUBLIC
 import Login from "./features/shared/login/login";
 import Apply from "./features/shared/apply/apply";
