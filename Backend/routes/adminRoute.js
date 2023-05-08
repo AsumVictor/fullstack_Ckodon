@@ -10,4 +10,7 @@ router.route("/")
 .patch(adminController.updateAdmin)
 .delete(adminController.deleteAdmin);
 
+router.route("/:id")
+.get(adminController.getSpecificAdmin)
+
 module.exports = router

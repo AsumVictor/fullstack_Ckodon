@@ -25,9 +25,12 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { SmallLoader } from "../../../../components/loaders/loader";
 import useTitle from "../../../../hooks/useTitle";
+import { Worker } from "@react-pdf-viewer/core";
+// Import the main component
+import { Viewer } from "@react-pdf-viewer/core";
 
 function ApplicantDetails() {
-  useTitle('Applicant Application')
+  useTitle("Applicant Application");
   const [loading, setLoading] = useState(false);
 
   const {
@@ -39,8 +42,7 @@ function ApplicantDetails() {
   } = useGetUndergraduateApplicantsQuery();
 
   const [addNewUser] = useAddNewUserMutation();
-  
-
+  const password = nanoid()
   const [updateApplicant] = useUpdateUndergraduateApplicantMutation();
 
   let content = null;
@@ -64,13 +66,13 @@ function ApplicantDetails() {
       residence: applicant.residence,
       role: "undergraduate",
       school: applicant.recentSchool,
-      password: 'student',
+      password: password,
       phone: applicant.phone,
       gender: applicant.gender,
       isActive: true,
+      updatedStatus: false,
     };
 
-console.log(applicantBasicInfo.password)
     content = (
       <div className="flex flex-col items-center">
         <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2      md:justify-between justify-end items-center w-full flex-wrap gap-y-2 mt-5   sticky top-0">
@@ -195,12 +197,30 @@ console.log(applicantBasicInfo.password)
             }`}</span>
           </h2>
 
-          <h2 className="flex flex-row gap-x-5 py-1 flex-wrap items-end">
-            <span className="text-gray-900 font-bold capitalize text-20 ">
-              WASSCE results:
-            </span>
-            <span className="text-18 capitalize">{applicant?.wassceText}</span>
-          </h2>
+          {applicant?.wassceText && (
+            <h2 className="flex flex-row gap-x-5 py-1 flex-wrap items-end">
+              <span className="text-gray-900 font-bold capitalize text-20 ">
+                WASSCE results:
+              </span>
+              <span className="text-18 capitalize">
+                {applicant?.wassceText}
+              </span>
+            </h2>
+          )}
+
+          {applicant.wasscePdf && (
+            <h2 className="flex flex-row gap-x-5 py-1 flex-wrap items-end">
+              <span className="text-gray-900 font-bold capitalize text-20 ">
+                WASSCE results:
+              </span>
+            </h2>
+          )}
+
+          {applicant.wasscePdf && (
+            <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+              <Viewer fileUrl={`${applicant.wasscePdf}`} />
+            </Worker>
+          )}
 
           <h2 className="text-center mt-10 text-2xl font-bold">ESSAYS</h2>
 
@@ -213,12 +233,30 @@ console.log(applicantBasicInfo.password)
             </span>
           </h2>
 
-          <h2 className="flex flex-col py-1 flex-wrap">
-            <span className="text-gray-900 font-bold capitalize text-20 ">
-              answer:
-            </span>
-            <span className="text-18 capitalize">{applicant?.essayAnswer}</span>
-          </h2>
+          {applicant?.essayAnswer && (
+            <h2 className="flex flex-col py-1 flex-wrap">
+              <span className="text-gray-900 font-bold capitalize text-20 ">
+                answer:
+              </span>
+              <span className="text-18 capitalize">
+                {applicant?.essayAnswer}
+              </span>
+            </h2>
+          )}
+
+          {applicant.essayAnswerPdf && (
+            <>
+              <h2 className="flex flex-row gap-x-5 py-1 flex-wrap items-end">
+                <span className="text-gray-900 font-bold capitalize text-20 ">
+                  Essay answer:
+                </span>
+              </h2>
+
+              <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                <Viewer fileUrl={`${applicant.essayAnswerPdf}`} />;
+              </Worker>
+            </>
+          )}
         </div>
       </div>
     );
@@ -255,7 +293,7 @@ console.log(applicantBasicInfo.password)
         setShowModal({
           show: false,
           text: null,
-        })
+        });
       } else {
         toast.error(`${updatingResponse.error.data.message}`, {
           position: "bottom-right",
@@ -288,13 +326,18 @@ console.log(applicantBasicInfo.password)
     try {
       setLoading(true);
       let addingResponse = await addNewUser(applicantBasicInfo);
-      
+
       if (addingResponse.data) {
+        console.log(password)
+
         let updatingResponse = await updateApplicant({
           ...applicant,
           applicationStatus: "admitted",
+          password: password,
         });
         if (updatingResponse.data) {
+          console.log(password)
+
           toast.success(`${applicant.firstName} has been enrolled`, {
             position: "bottom-right",
             autoClose: 5000,
@@ -311,7 +354,7 @@ console.log(applicantBasicInfo.password)
         setShowModal({
           show: false,
           text: null,
-        })
+        });
       } else {
         toast.error(`${addingResponse.error.data.message}`, {
           position: "bottom-right",

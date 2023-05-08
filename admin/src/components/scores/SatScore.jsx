@@ -8,7 +8,7 @@ function SatScore({date, state, totalScore, EVBRW, Math}) {
     <div className="flex mt-3 flex-row gap-3 flex-wrap">
       <h4 className="font-semibold">{date}</h4>
       <div className="w-1 py-1 bg-gray-300"></div>
-      <h4  className="font-semibold text-MdBlue">{state}</h4>
+      <h4 className="font-semibold text-MdBlue">{`${state=='Official'? 'Official test, College Board': 'Trial test score' }`}</h4>
     </div>
     <hr className="mt-1"/>
     <div className="flex flex-col mt-5 flex-wrap">

@@ -1,5 +1,7 @@
 const UndergraduteApplicant = require("../models/undergraduateApplicant");
 const asyncHandler = require("express-async-handler");
+const HTML_TEMPLATE = require("../notifications/email/htmlTemplates.js");
+const SENDMAIL = require("../notifications/email/mail.js");
 
 //get all users
 const getAllUndergraduateApplicants = asyncHandler(async (req, res) => {
@@ -27,8 +29,10 @@ const addNewApplicant = asyncHandler(async (req, res) => {
     currentUniversity,
     yearOfCompletion,
     wassceText,
+    wasscePdf,
     essayQuestion,
     essayAnswer,
+    essayAnswerPdf,
     gender,
     phone,
     whatsappNumber,
@@ -36,6 +40,8 @@ const addNewApplicant = asyncHandler(async (req, res) => {
   } = req.body;
 
   // Confirm data
+  const wassceResult = !wasscePdf && !wassceText;
+  const essayResult = !essayAnswerPdf && !essayAnswer;
 
   const anyEmptyField =
     !firstName ||
@@ -47,14 +53,16 @@ const addNewApplicant = asyncHandler(async (req, res) => {
     !dateOfBirth ||
     !gender ||
     !yearOfCompletion ||
-    !wassceText ||
+    wassceResult ||
     !essayQuestion ||
-    !essayAnswer;
+    essayResult;
 
   console.log(anyEmptyField);
 
   if (anyEmptyField) {
-    return res.status(400).json({ message: "All fields are required" });
+    return res
+      .status(400)
+      .json({ message: "It seems you have not filled the required fields" });
   }
 
   // Check for duplicate title
@@ -87,20 +95,43 @@ const addNewApplicant = asyncHandler(async (req, res) => {
     phone,
     whatsappNumber,
     level,
+    essayAnswerPdf,
+    wasscePdf,
   });
 
   if (undergraduteApplicant) {
+    const message = `
+      Congratulations ${firstName}! Your application has been successfully submitted.
+
+      Thank you for your interest in Ckodon. We appreciate your time and effort in completing the application. We will review your application carefully and get back to you as soon as possible.
+      `;
+    const options = {
+      from: "Application <iamasum369@outlook.com>", // sender address
+      to: email, // receiver email
+      subject: "Application Recieved", // Subject line
+      text: message,
+      html: HTML_TEMPLATE(message),
+    };
+
+    SENDMAIL(options, (info) => {
+      console.log("Email sent successfully");
+      console.log("MESSAGE ID: ", info.messageId);
+    });
+
     // Created
     return res
       .status(201)
-      .json({ message: "Your application has been submitted successfuly" });
+      .json({
+        message: "Your application has been submitted successfuly",
+        isSuccess: true,
+      });
   } else {
     return res.status(400).json({ message: "Invalid applicant data received" });
   }
 });
 
 const updateApplicant = asyncHandler(async (req, res) => {
-  const { id, applicationStatus } = req.body;
+  const { id, applicationStatus, email, firstName, password } = req.body;
 
   const anyEmptyField = !id || !applicationStatus;
 
@@ -116,9 +147,44 @@ const updateApplicant = asyncHandler(async (req, res) => {
 
   applicant.applicationStatus = applicationStatus;
 
-
   const updatedApplicant = await applicant.save();
-  res.json({ message: `${applicant.firstName} updated succesfully` });
+
+  if (applicationStatus === "admitted") {
+    const message = `
+    Dear ${firstName},
+  
+  I am pleased to inform you that your application to join the ckodon group has been accepted! Congratulations on this achievement. <br> <br>
+  
+  As a member of the ckodon group, you will have access to a wide range of resources and opportunities that will help you to develop your skills and build your network within the industry. <br> <br>
+  
+  To access your member portal, please use the following password: <strong>${password}</strong> . Please keep this password safe and secure, as it will enable you to log in to the member portal and access all of the benefits available to you. <br> <br>
+  
+  We look forward to welcoming you to the ckodon group and working with you to achieve your goals. <br> <br>
+  
+  If you have any questions or concerns, please don't hesitate to contact us. <br> <br>
+  
+  Best regards, <br> <br>
+  
+  admission committee
+    `;
+    const options = {
+      from: "Application Decision <iamasum369@outlook.com>", // sender address
+      to: email, // receiver email
+      subject: "Ckodon Application Status", // Subject line
+      text: message,
+      html: HTML_TEMPLATE(message),
+    };
+
+    SENDMAIL(options, (info) => {
+      console.log("Email sent successfully");
+      console.log("MESSAGE ID: ", info.messageId);
+    });
+  }
+
+  res.json({
+    message: `${applicant.firstName} updated succesfully`,
+    isSuccess: true,
+  });
 });
 
 module.exports = {

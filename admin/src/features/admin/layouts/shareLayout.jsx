@@ -26,11 +26,14 @@ import "react-tooltip/dist/react-tooltip.css";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import "./style.css";
 import { useSendLogoutMutation } from "../../auth/authApiSlice";
-import useAuth from '../../../hooks/useAuth'
+import useAuth from '../../../hooks/useAdmin'
+import {CoverLoaderMedium} from '../../../components/loaders/loader'
+
 
 function SharedLayout() {
   const navigate = useNavigate();
-  const { firstName, lastName, avatar} = useAuth()
+  const {data: admin, isLoading, isSuccess, isError, error} = useAuth()
+
   const [isSideNavShow, setIsSideNavShow] = useState(false);
   const [showProfileSettings, setShowProfileSettings] = useState(false);
   const [isDropdown1Open, setIsDropdown1Open] = useState(false);
@@ -46,15 +49,20 @@ function SharedLayout() {
     backgroundColor: "white",
   };
 
-  const [sendLogout, { isLoading, isSuccess, isError, error }] =
+  const [sendLogout, { isLoading:logingOut, isSuccess: loggedout, isError:logError, error: logerror }] =
     useSendLogoutMutation();
 
   useEffect(() => {
-    if (isSuccess) navigate("/");
-  }, [isSuccess, navigate]);
+    if (loggedout) navigate("/");
+  }, [loggedout, navigate]);
 
-  if (isLoading) return <p>Logging Out...</p>;
+  if (logingOut) return <p>Logging Out...</p>;
 
+  if(isLoading){
+    return (
+      <CoverLoaderMedium />
+    )
+   }
   return (
     <section className={`${isSideNavShow ? "toggle-space" : null}`}>
       <SideNav isShow={isSideNavShow}>
@@ -354,7 +362,7 @@ function SharedLayout() {
           {/* Ckodon or admin text */}
         <div className="hidden md:flex flex-row capitalize items-center gap-x-1">
           <span className="text-emerald-700 font-bold">Admin:</span>
-          <span>{`${firstName} ${lastName}`}</span>
+          <span>{`${admin.firstName} ${admin.lastName}`}</span>
         </div>
           {/* Theme and User profile */}
           <div className="flex flex-row relative justify-center items-center gap-4">
@@ -369,7 +377,7 @@ function SharedLayout() {
               } profileIcon cursor-pointer overflow-hidden`}
               onClick={() => setShowProfileSettings((prevState) => !prevState)}
             >
-              <img src={`${avatar}`} alt="user avater" />
+              <img src={`${admin.avatar}`} alt="user avater" />
             </div>
 
             {/* user setting */}
