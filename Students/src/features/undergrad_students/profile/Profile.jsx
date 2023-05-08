@@ -1,7 +1,7 @@
 import React from "react";
 import "./tailwind2.css";
 import "./tailwind.css";
-import Banner from "../../../assets/images/Banner.png";
+import Banner from "../../../assets/images/banner.png";
 import { HiPencil } from "react-icons/hi2";
 import { HiLocationMarker, HiMail, HiPhone, HiLibrary } from "react-icons/hi";
 import useAuth from "../../../hooks/useStudent";
