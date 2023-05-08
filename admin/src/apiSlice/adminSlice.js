@@ -66,6 +66,13 @@ export const adminsApiSlice = apiSlice.injectEndpoints({
                 { type: 'Admin', id: arg.id }
             ]
         }),
+        getAdmin: builder.query({
+            query: (id) => ({
+              url: `/admins/${id}`,
+              method: "GET",
+            }),
+            providesTags:['Admin'],
+          }),
     }),
 })
 
@@ -74,6 +81,7 @@ export const {
     useAddNewAdminMutation,
     useUpdateAdminMutation,
     useDeleteAdminMutation,
+    useGetAdminQuery
 } = adminsApiSlice
 
 // returns the query result object

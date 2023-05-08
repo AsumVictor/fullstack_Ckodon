@@ -20,6 +20,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Worker } from "@react-pdf-viewer/core";
 // Import the main component
 import { Viewer } from "@react-pdf-viewer/core";
+import FileBase64 from "react-file-base64";
 
 // Import the styles
 import "@react-pdf-viewer/core/lib/styles/index.css";
@@ -30,7 +31,7 @@ export default function Apply() {
   const [addNewApplicant, { isLoading, isSuccess, isError, error }] =
     useAddNewUndergraduateApplicantMutation();
 
-  const [roles, setRoles] = useState("undergraduate");
+  const [roles, setRoles] = useState("");
   const [formData, setformData] = useState({
     firstName: "",
     lastName: "",
@@ -42,28 +43,21 @@ export default function Apply() {
     currentUniversity: "",
     yearOfCompletion: "",
     wassceText: "",
+    wasscePdf: "",
     essayQuestion: "",
     essayAnswer: "",
+    essayAnswerPdf: "",
     gender: "",
     phone: "",
     whatsappNumber: "",
     level: "",
   });
   const [submitted, setSubmitted] = useState(false);
-  const [wassceResult, setWassceResult] = useState(null);
-  const [essayPdf, setEssayPdf] = useState(null);
 
   function handleRoleData(e) {
     setRoles(e.target.value);
   }
 
-  const handleWassceResult = (event) => {
-    setWassceResult(event.target.files[0]);
-  };
-
-  const handleEssayPdf = (event) => {
-    setEssayPdf(event.target.files[0]);
-  };
 
   function HandleFormData(e) {
     const { name, value } = e.target;
@@ -78,11 +72,11 @@ export default function Apply() {
   //submit form
   async function submitForm(e) {
     e.preventDefault();
+
     try {
       let sendingResponse = await addNewApplicant({ ...formData, role: roles });
-
-      if (sendingResponse.data) {
-        setRoles("undergraduate");
+      if (sendingResponse?.data?.isSuccess) {
+        setRoles('')
         setformData({
           firstName: "",
           lastName: "",
@@ -103,7 +97,7 @@ export default function Apply() {
         });
         setSubmitted(true);
       } else {
-        toast.error(`${error?.data?.message}`, {
+        toast.error(`${sendingResponse?.error?.data?.message}`, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: true,
@@ -400,15 +394,17 @@ export default function Apply() {
                     <strong> Upload your WASSCE result here </strong>
                   </div>
                 </label>
-                <input
-                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                  aria-describedby="file_wassce_help"
-                  id="file_wassce"
-                  type="file"
-                  onChange={(event) => handleWassceResult(event)}
-                  name="wassceResult"
-                  accept=".pdf"
-                />
+                <FileBase64
+            multiple={false}
+            onDone={({ base64 }) =>
+              setformData(prevData=>{
+                return {
+                  ...prevData,
+                  wasscePdf: base64
+                }
+              })
+              
+            } />
                 <p
                   className="mt-1 text-sm text-red-500 font-bold dark:text-gray-300 "
                   id="file_input_help"
@@ -416,9 +412,9 @@ export default function Apply() {
                   PDF only
                 </p>
 
-                {wassceResult && (
+                {formData.wasscePdf && (
                   <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
-                    <Viewer fileUrl={`${wassceResult}`} />;
+                    <Viewer fileUrl={`${formData.wasscePdf}`} />;
                   </Worker>
                 )}
                 <div className="mt-2">
@@ -574,47 +570,25 @@ export default function Apply() {
                     Or you can upload PDF form of your essay here{" "}
                   </strong>
                 </div>
-                <div class="flex items-center justify-center w-full mb-10">
-                  <label
-                    for="dropzone-file"
-                    class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                  >
-                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                      <svg
-                        aria-hidden="true"
-                        class="w-10 h-10 mb-3 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                        ></path>
-                      </svg>
-                      <p class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                        <span class="font-semibold">Click to upload</span> or
-                        drag and drop
-                      </p>
-                      <p class="text-xs text-red-500 font-bold dark:text-gray-400">
-                        PDF only
-                      </p>
-                    </div>
-                    <input
-                      id="dropzone-file"
-                      type="file"
-                      class="hidden"
-                      accept=".pdf"
-                      name="essayPdf"
-                      value={essayPdf}
-                      onChange={(event) => handleEssayPdf(event)}
-                    />
-                  </label>
-                </div>
-                <ButtonDefault>Submit Application</ButtonDefault>
+                <FileBase64
+            multiple={false}
+            onDone={({ base64 }) =>
+              setformData(prevData=>{
+                return {
+                  ...prevData,
+                  essayAnswerPdf: base64
+                }
+              })
+              
+            } />
+            {formData.essayAnswerPdf && (
+                  <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+                    <Viewer fileUrl={`${formData.essayAnswerPdf}`} />
+                  </Worker>
+                )}
+
+
+                <ButtonDefault classExtend='w-full mt-12'>Submit Application</ButtonDefault>
               </div>
             )}
           </form>

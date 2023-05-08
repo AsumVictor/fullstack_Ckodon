@@ -35,7 +35,7 @@ const undergraduteApplicantSchema = new mongoose.Schema(
       default: "pending",
     },
     dateOfBirth: {
-      type: Date,
+      type: String,
       require: true,
     },
     currentUniversity: {
@@ -43,10 +43,14 @@ const undergraduteApplicantSchema = new mongoose.Schema(
       require: false,
     },
     yearOfCompletion: {
-      type: Date,
+      type: String,
       require: true,
     },
     wassceText: {
+      type: String,
+      require: false,
+    },
+    wasscePdf: {
       type: String,
       require: false,
     },
@@ -55,6 +59,10 @@ const undergraduteApplicantSchema = new mongoose.Schema(
       require: true,
     },
     essayAnswer: {
+      type: String,
+      require: true,
+    },
+    essayAnswerPdf: {
       type: String,
       require: true,
     },

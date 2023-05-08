@@ -162,9 +162,26 @@ const deleteAdmin = asyncHandler(async (req, res) => {
   res.json(reply);
 });
 
+
+const getSpecificAdmin = asyncHandler(async (req, res) => {
+ 
+  const { id } = req.params;
+  const user = await Admin.findById(id)
+    .select("-password")
+    .lean()
+  // If no users
+  if (!user) {
+    return res.status(400).json({ message: "No user found", isEmpty: true });
+  }
+
+  return res.json(user);
+});
+
+
 module.exports = {
   getAllAdmins,
   addNewAdmin,
   updateAdmin,
   deleteAdmin,
+  getSpecificAdmin
 };
