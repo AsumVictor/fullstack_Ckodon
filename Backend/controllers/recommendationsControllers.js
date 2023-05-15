@@ -13,7 +13,7 @@ const getRecommendations = asyncHandler(async (req, res) => {
 });
 
 const addNewRecommendation = asyncHandler(async (req, res) => {
-  const { user, status, submitted, recommendations, submittedBefore } = req.body;
+  const { user, status, submitted, recommendations, submittedBefore,  } = req.body;
 
   // Confirm data
 

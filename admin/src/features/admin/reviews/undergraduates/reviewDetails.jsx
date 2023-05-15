@@ -19,6 +19,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { HiBadgeCheck } from "react-icons/hi";
 import { CoverLoaderMedium } from "../../../../components/loaders/loader";
+import FileBase64 from "react-file-base64";
+import PdfLogo from '../../../../assets/images/pdf-icon.png'
 
 function StudentDocDetails_ug() {
   const params = useParams();
@@ -36,6 +38,10 @@ function StudentDocDetails_ug() {
   const [updateAid] = useUpdateAidMutation();
 
   const [updateRecommendation] = useUpdateRecommendationMutation();
+  const [fileContent, setFileContent] = useState({
+    doc: "",
+    title: "",
+  });
 
   let content;
   if (isLoading) {
@@ -364,7 +370,6 @@ function StudentDocDetails_ug() {
         });
         setLoading(false);
       }
-
     } catch (error) {
       toast.error(`${error.message}`, {
         position: "bottom-right",
@@ -378,7 +383,6 @@ function StudentDocDetails_ug() {
       });
       setLoading(false);
     }
-
   }
   //re-review Activity
   async function reReviewActivity() {
@@ -497,6 +501,7 @@ function StudentDocDetails_ug() {
       return {
         ...essay,
         comments: [...essay.comments, { comment: "" }],
+        additionalDocs: [...essay.additionalDocs, { doc: "", title: '' }]
       };
     });
 
@@ -567,7 +572,6 @@ function StudentDocDetails_ug() {
         });
         setLoading(false);
       }
-
     } catch (error) {
       toast.error(`${error.message}`, {
         position: "bottom-right",
@@ -665,6 +669,116 @@ function StudentDocDetails_ug() {
     }
   }
 
+  async function uploadDocEssay(index) {
+    const emptyFile = reviewDoc.essays[index].additionalDocs[reviewDoc.essays[index].additionalDocs.length - 1].doc ==''
+    const emptyTitle = reviewDoc.essays[index].additionalDocs[reviewDoc.essays[index].additionalDocs.length - 1].title ==''
+if(emptyFile || emptyTitle){
+  toast.error(`Error occured! you must add file and a caption`, {
+           position: "bottom-right",
+           autoClose: 5000,
+           hideProgressBar: true,
+           closeOnClick: true,
+           pauseOnHover: true,
+           draggable: true,
+           progress: undefined,
+           theme: "colored",
+         });
+}else{
+   let essayDoc = {...reviewDoc}
+     let essays = [...reviewDoc.essays]
+     let currentDoc = [...essays[index].additionalDocs]
+     currentDoc = [...currentDoc, {doc:'',title:''}]
+     essays[index] = {...essays[index], additionalDocs: currentDoc}
+console.log(essays)
+  toast.success(`You have attached a document to this review`, {
+    position: "bottom-right",
+    autoClose: 5000,
+    hideProgressBar: true,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "colored",
+  });
+}
+
+    // let essayDoc = {...reviewDoc}
+    // let essays = [...reviewDoc.essays]
+    // let currentDoc = [...essays[index].additionalDocs]
+    // currentDoc = [...currentDoc, {doc:'',title:''}]
+    // essays[index] = {...essays[index], additionalDocs: currentDoc}
+
+
+    
+    // try {
+    //   let updateRes = await updateEssay({
+    //     ...reviewDoc,
+    //     id: reviewDoc._id,
+    //     essays: Essays,
+    //     status: "resolved",
+    //     submitted: false,
+    //   });
+
+    //   if (updateRes.data) {
+    //     setReviewDoc({
+    //       ...reviewDoc,
+    //       id: reviewDoc._id,
+    //       essays: Essays,
+    //     });
+    //     toast.success(`You have review this ${DocumentType} successfully`, {
+    //       position: "bottom-right",
+    //       autoClose: 5000,
+    //       hideProgressBar: true,
+    //       closeOnClick: true,
+    //       pauseOnHover: true,
+    //       draggable: true,
+    //       progress: undefined,
+    //       theme: "colored",
+    //     });
+    //     setLoading(false);
+    //   }
+
+    //   if (updateRes.error) {
+    //     toast.error(`Unable to process to your request. Try again!`, {
+    //       position: "bottom-right",
+    //       autoClose: 5000,
+    //       hideProgressBar: true,
+    //       closeOnClick: true,
+    //       pauseOnHover: true,
+    //       draggable: true,
+    //       progress: undefined,
+    //       theme: "colored",
+    //     });
+    //     setLoading(false);
+    //   }
+
+    //   if (res.error) {
+    //     toast.error(`Unable to process to your request. Try again!`, {
+    //       position: "bottom-right",
+    //       autoClose: 5000,
+    //       hideProgressBar: true,
+    //       closeOnClick: true,
+    //       pauseOnHover: true,
+    //       draggable: true,
+    //       progress: undefined,
+    //       theme: "colored",
+    //     });
+    //     setLoading(false);
+    //   }
+    // } catch (error) {
+    //   toast.error(`${error.message}`, {
+    //     position: "bottom-right",
+    //     autoClose: 5000,
+    //     hideProgressBar: true,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //     theme: "colored",
+    //   });
+    //   setLoading(false);
+    // }
+  }
   // ------------------Essayas functions ends------------ //
 
   // ------------------Recommendation functions starts------------ //
@@ -813,7 +927,6 @@ function StudentDocDetails_ug() {
         });
         setLoading(false);
       }
-
     } catch (error) {
       toast.error(`${error.message}`, {
         position: "bottom-right",
@@ -1015,7 +1128,6 @@ function StudentDocDetails_ug() {
         });
         setLoading(false);
       }
-
     } catch (error) {
       toast.error(`${error.message}`, {
         position: "bottom-right",
@@ -1115,7 +1227,6 @@ function StudentDocDetails_ug() {
 
   if (isSuccess && data) {
     DocumentType = data.onModel;
-    console.log();
 
     if (DocumentType == "Honor" && reviewDoc) {
       content = (
@@ -1473,6 +1584,7 @@ function StudentDocDetails_ug() {
     }
 
     if (DocumentType == "Essay" && reviewDoc) {
+
       content = (
         <>
           <Link
@@ -1528,6 +1640,7 @@ function StudentDocDetails_ug() {
                 {line}
               </p>
             ));
+
             return (
               <div className="w-full mt-10 py-2 flex flex-row flex-wrap rounded-md bg-slate-100">
                 <div className="w-full md:w-8/12 py-1 flex flex-col px-2 md:px-5">
@@ -1595,39 +1708,117 @@ function StudentDocDetails_ug() {
                       onChange={(e) => UpdateEssayComment(e, index)}
                     ></textarea>
                   </div>
+
+                  <h2 className="mt-5 font-bold ">
+                    Attach file to to this essay{" "}
+                    <span className="text-red-600">PDF ONLY</span>
+                  </h2>
+                  <FileBase64
+                    multiple={false}
+                    id="file"
+                    onDone={({ base64 }) => {
+                      const updatedEssays = [...reviewDoc.essays];
+                      const updatedDoc = [...updatedEssays[index].additionalDocs];
+                      updatedDoc[updatedDoc.length - 1] = {
+                        ...updatedDoc[updatedDoc.length - 1],
+                        doc: base64,
+                      };
+                      updatedEssays[index] = {
+                        ...updatedEssays[index],
+                        additionalDocs: updatedDoc,
+                      };
+                  
+                      setReviewDoc({ ...reviewDoc, essays: updatedEssays });
+                    }
+                   
+                    }
+                    accept="pdf"
+                  />
+
+                  <label htmlFor="title" className="mt-5">
+                    Add caption to this file
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    id="title"
+                    className="border-2 border-MdBlue"
+                    onChange={(e) =>{
+                      const updatedEssays = [...reviewDoc.essays];
+                      const updatedDoc = [...updatedEssays[index].additionalDocs];
+                      updatedDoc[updatedDoc.length - 1] = {
+                        ...updatedDoc[updatedDoc.length - 1],
+                        title: e.target.value,
+                      };
+                      updatedEssays[index] = {
+                        ...updatedEssays[index],
+                        additionalDocs: updatedDoc,
+                      };
+                  
+                      setReviewDoc({ ...reviewDoc, essays: updatedEssays });
+                    }}
+                  />
+
+                  <button
+                    className="px-2 py-1 bg-MdBlue mt-3 rounded-md text-white disabled:hidden"
+                    disabled={!fileContent}
+                    onClick={()=>uploadDocEssay(index)}
+                  >
+                    Upload file
+                  </button>
                 </div>
 
-                <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-5 overflow-x-hidden">
-                  <h2 className="self-center font-bold capitalize">
-                    Your Previous comments
-                  </h2>
+                <div className="w-full md:w-4/12 flex flex-col  overflow-y-auto overflow-x-hidden">
+                  <div className="w-full py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-5 overflow-x-hidden">
+                    <h2 className="self-center font-bold capitalize">
+                      Your Previous comments
+                    </h2>
 
-                  {essay.comments.map((comment) => {
-                    if (comment.comment !== "" && comment.comment) {
-                      const lines = comment.comment.split("\n");
-                      const commentParagraphs = lines.map((line, index) => (
-                        <p className="mt-1" key={index}>
-                          {line}
-                        </p>
-                      ));
+                    {essay.comments.map((comment) => {
+                      if (comment.comment !== "" && comment.comment) {
+                        const lines = comment.comment.split("\n");
+                        const commentParagraphs = lines.map((line, index) => (
+                          <p className="mt-1" key={index}>
+                            {line}
+                          </p>
+                        ));
 
-                      return (
-                        <div
-                          className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
-                          key={comment._id}
-                        >
-                          {comment.comment && (
-                            <div className="w-full flex flex-col">
-                              {commentParagraphs}
-                            </div>
-                          )}
-                          {comment.timeDate && (
-                            <span className="self-end font-bold"></span>
-                          )}
-                        </div>
-                      );
-                    }
-                  })}
+                        return (
+                          <div
+                            className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
+                            key={comment._id}
+                          >
+                            {comment.comment && (
+                              <div className="w-full flex flex-col">
+                                {commentParagraphs}
+                              </div>
+                            )}
+                            {comment.timeDate && (
+                              <span className="self-end font-bold"></span>
+                            )}
+                          </div>
+                        );
+                      }
+                    })}
+                  </div>
+
+                  <div className="w-full py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-5 overflow-x-hidden">
+                    <h2 className="self-center font-bold capitalize">
+                      Additional document
+                    </h2>
+                   
+                    {essay.additionalDocs.map((document, index) => {
+                     
+                     return (
+                      <div className="w-full flex flex-row gap-x-3 justify-between flex-wrap bg-gray-300 py-1" key={document._id}>
+                      <img src={PdfLogo} alt="pdf" />
+                      <p className="font-bold">Additional document for Princeton essay 3. Use this</p>
+                      <p className="text-emerald-600 font-semibold">4 days ago</p>
+                      </div>
+                     ) 
+
+                    })}
+                  </div>
                 </div>
               </div>
             );
@@ -2030,5 +2221,3 @@ function StudentDocDetails_ug() {
 }
 
 export default StudentDocDetails_ug;
-
-

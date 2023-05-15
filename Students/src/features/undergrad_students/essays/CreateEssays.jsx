@@ -72,6 +72,7 @@ export default function CreateEssays() {
         status: "unresolved",
         submitted: false,
         submittedBefore: false,
+        link: '',
       });
       if (res.data) {
         setSchoolName("");
@@ -119,7 +120,7 @@ export default function CreateEssays() {
       answer: "",
       comments: [{ comment: "" }],
       voiceNOtes: [],
-      additionalDocs: [],
+      additionalDocs: [{doc: '', title:''}],
       rate: "notRated",
     };
 
@@ -550,12 +551,12 @@ async function withdraw(schoolIndex) {
          return(
           <div
                 key={school._id}
-                className={`w-full md:w-11/12 self-center flex rounded-md flex-col items-start pb-5 mt-20 px-0 md:px-10 border-b-4 
-              border-${randonBackgroundColor}`}
+                className={`w-full border-${randonBackgroundColor} md:w-11/12 self-center flex rounded-md flex-col items-start pb-5 mt-20 px-0 md:px-10 border-b-4 border-emerald-600
+              `}
               >
 
                 <aside
-                  className={`flex flex-row relative justify-between w-full py-3 bg-${randonBackgroundColor}  items-center pl-3 pr-10 md:px-10`}
+                  className={`flex flex-row relative justify-between w-full py-3 bg-${randonBackgroundColor}  items-center pl-3 pr-10 md:px-10 bg-emerald-600`}
                 >
                   <h3 className="text-white placeholder-white placeholder-opacity-50 w-8/12 font-bold px-1 text-16 md:text-20 outline-none bg-transparent">
                     {school.schoolName}
@@ -581,14 +582,14 @@ async function withdraw(schoolIndex) {
             return (
               <div
                 key={school._id}
-                className={`w-full md:w-11/12 self-center flex rounded-md flex-col items-start pb-5 mt-20 px-0 md:px-10 border-b-4 
+                className={`w-full border-emerald-600 md:w-11/12 self-center flex rounded-md flex-col items-start pb-5 mt-20 px-0 md:px-10 border-b-4 
               border-${randonBackgroundColor}`}
               >
                 {/* School and essay header */}
 
                 {/* Essays Title, status bar and collasp button */}
                 <aside
-                  className={`flex flex-row relative justify-between w-full py-3 bg-${randonBackgroundColor}  items-center pl-3 pr-10 md:px-10`}
+                  className={`flex flex-row bg-emerald-600 relative justify-between w-full py-3 bg-${randonBackgroundColor} items-center pl-3 pr-10 md:px-10`}
                 >
                   <h3 className="text-white placeholder-white placeholder-opacity-50 w-8/12 font-bold px-1 text-16 md:text-20 outline-none bg-transparent">
                     {school.schoolName}
@@ -606,7 +607,7 @@ async function withdraw(schoolIndex) {
                 {school.essays.map((essay, essayIndex) => (
                   <div key={essay._id} className={`w-11/12 self-center mt-10`}>
                     <div
-                      className={`w-full flex justify-between py-2 px-5 items-center bg-${randonBackgroundColor}`}
+                      className={`w-full bg-${randonBackgroundColor} flex justify-between py-2 px-5 items-center bg-MdBlue`}
                     >
                       <h3 className="text-white font-bold text-15">
                         {` ${school.schoolName} Essay ${essayIndex + 1}`}

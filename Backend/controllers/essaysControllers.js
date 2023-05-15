@@ -13,7 +13,7 @@ const getEssays = asyncHandler(async (req, res) => {
 });
 
 const addNewEssay = asyncHandler(async (req, res) => {
-  const { user, status, submitted, submittedBefore, essays, schoolName } =
+  const { user, status, submitted, submittedBefore, essays, schoolName, link } =
     req.body;
 
   // Confirm data
@@ -58,6 +58,7 @@ const addNewEssay = asyncHandler(async (req, res) => {
     submittedBefore,
     essays,
     schoolName,
+    link
   });
 
   if (essay) {
@@ -69,7 +70,7 @@ const addNewEssay = asyncHandler(async (req, res) => {
 });
 
 const updateEssay = asyncHandler(async (req, res) => {
-  const { id, status, submitted, essays, schoolName } = req.body;
+  const { id, status, submitted, essays, schoolName, link } = req.body;
 
   const anyEmptyField =
     !status ||
@@ -97,10 +98,13 @@ const updateEssay = asyncHandler(async (req, res) => {
   essay.submitted = submitted;
   essay.essays = essays;
   essay.schoolName = schoolName;
+  essay.link = link;
+
+  
 
   const updatedEssay = await essay.save();
   if (updatedEssay) {
-    res.json({ message: `essay updated succesfully` });
+    res.json({ message: `essay updated succesfully`, isSuccess: true });
   } else {
     res.json({ message: `failed to update` });
   }

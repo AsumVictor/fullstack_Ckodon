@@ -41,10 +41,13 @@ const honorSchema = new mongoose.Schema(
           required: false,
         },
         timeDate: {
-          type: Date,
+          type: String,
           required: false,
         },
       },
+      {
+        timestamps: true,
+      }
     ],
 
     honors: [
