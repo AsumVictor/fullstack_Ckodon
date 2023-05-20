@@ -12,9 +12,6 @@ const review = require("../models/review");
 const getAllReviews = asyncHandler(async (req, res) => {
   const reviews = await Review.find().lean().sort({ updatedAt: -1 });
   // If no undergradute Applicant
-  if (!reviews?.length) {
-    return res.status(400).json({ message: "No Reviews found" });
-  }
 
   const reviewWithUserAndDoc = await Promise.all(
     reviews.map(async (review) => {
@@ -22,7 +19,7 @@ const getAllReviews = asyncHandler(async (req, res) => {
         .select("-password")
         .lean()
         .exec();
-      let Document;
+       let Document;
       switch (review.onModel) {
         case "Honor":
           Document = Honor;
@@ -40,17 +37,19 @@ const getAllReviews = asyncHandler(async (req, res) => {
           Document = Recommendation;
           break;
         default:
-          return res.status(400).json({ error: "Invalid document model" });
-      }
-      const document = await Document.findById(review.documentId);
-      if (!document) {
-        return res.status(404).json({ error: "Document not found" });
-      }
+           return res.status(400).json({ error: "Invalid document model" });
+       }
+       const document = await Document.findById(review.documentId);
+       console.log(document)
+   
+        if (!document) {
+          return res.status(404).json({ error: "Document not found" });
+        }
 
       return {
         ...review,
         student: { ...user },
-        document,
+        document: {...document}
       };
     })
   );
@@ -127,7 +126,7 @@ const addNewReview = asyncHandler(async (req, res) => {
 
   if (review) {
     // Created
-    return res.status(201).json({ message: "You have submitted successfully" });
+    return res.status(201).json({ message: "You have submitted successfully", isSuccess: true });
   } else {
     return res.status(400).json({ message: "Invalid  data received" });
   }
@@ -179,7 +178,7 @@ const deleteReview = asyncHandler(async (req, res) => {
 
   const result = await review.deleteOne();
   if(result){
-    return res.status(200).json({ message: "Deleted " });
+    return res.status(200).json({ message: "Deleted ",  isSuccess: true });
   }
 
 });

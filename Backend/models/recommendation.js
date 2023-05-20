@@ -21,16 +21,17 @@ const recommendationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    link: {
+      type: String,
+      required: false,
+    },
     recommendations: [
       {
         recommenderName: {
           type: String,
           required: false,
         },
-        link: {
-          type: String,
-          required: false,
-        },
+        
         voiceNOtes: [
           {
             voiceNote: {

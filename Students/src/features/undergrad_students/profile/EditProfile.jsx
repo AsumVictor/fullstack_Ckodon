@@ -152,6 +152,7 @@ function EditProfile() {
     try {
       let res = await updateUser({
         ...profile,
+        id: profile._id,
         oldPassword: oldpassword,
         newPassword: newpassword,
       });

@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import "./style.css";
 import { TextInputs } from "../../../components/customHTML/textInputs";
 import { useDispatch } from "react-redux";
@@ -17,7 +17,7 @@ function Login() {
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
+ const location = useLocation()
   useEffect(() => {
     setErrMsg("");
   }, [email, password]);
@@ -62,7 +62,7 @@ function Login() {
             Welcome Back!
           </h2>
           <p className="text-center text-gray-500 font-bold text-1xl">
-            We're are excited to see again!
+            We're excited to see again!
           </p>
 
           <img

@@ -20,7 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { HiBadgeCheck } from "react-icons/hi";
 import { CoverLoaderMedium } from "../../../../components/loaders/loader";
 import FileBase64 from "react-file-base64";
-import PdfLogo from '../../../../assets/images/pdf-icon.png'
+import PdfLogo from "../../../../assets/images/pdf-icon.png";
 
 function StudentDocDetails_ug() {
   const params = useParams();
@@ -42,7 +42,7 @@ function StudentDocDetails_ug() {
     doc: "",
     title: "",
   });
-
+console.log(reviewDoc)
   let content;
   if (isLoading) {
     content = <CoverLoaderMedium />;
@@ -501,7 +501,7 @@ function StudentDocDetails_ug() {
       return {
         ...essay,
         comments: [...essay.comments, { comment: "" }],
-        additionalDocs: [...essay.additionalDocs, { doc: "", title: '' }]
+        additionalDocs: [...essay.additionalDocs, { doc: "", title: "" }],
       };
     });
 
@@ -670,114 +670,81 @@ function StudentDocDetails_ug() {
   }
 
   async function uploadDocEssay(index) {
-    const emptyFile = reviewDoc.essays[index].additionalDocs[reviewDoc.essays[index].additionalDocs.length - 1].doc ==''
-    const emptyTitle = reviewDoc.essays[index].additionalDocs[reviewDoc.essays[index].additionalDocs.length - 1].title ==''
-if(emptyFile || emptyTitle){
-  toast.error(`Error occured! you must add file and a caption`, {
-           position: "bottom-right",
-           autoClose: 5000,
-           hideProgressBar: true,
-           closeOnClick: true,
-           pauseOnHover: true,
-           draggable: true,
-           progress: undefined,
-           theme: "colored",
-         });
-}else{
-   let essayDoc = {...reviewDoc}
-     let essays = [...reviewDoc.essays]
-     let currentDoc = [...essays[index].additionalDocs]
-     currentDoc = [...currentDoc, {doc:'',title:''}]
-     essays[index] = {...essays[index], additionalDocs: currentDoc}
-console.log(essays)
-  toast.success(`You have attached a document to this review`, {
-    position: "bottom-right",
-    autoClose: 5000,
-    hideProgressBar: true,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "colored",
-  });
-}
+    setLoading(true);
 
-    // let essayDoc = {...reviewDoc}
-    // let essays = [...reviewDoc.essays]
-    // let currentDoc = [...essays[index].additionalDocs]
-    // currentDoc = [...currentDoc, {doc:'',title:''}]
-    // essays[index] = {...essays[index], additionalDocs: currentDoc}
+    const emptyFile =
+      reviewDoc.essays[index].additionalDocs[
+        reviewDoc.essays[index].additionalDocs.length - 1
+      ].doc == "";
+    const emptyTitle =
+      reviewDoc.essays[index].additionalDocs[
+        reviewDoc.essays[index].additionalDocs.length - 1
+      ].title == "";
+    if (emptyFile || emptyTitle) {
+      toast.error(`Error occured! you must add file and a caption`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      setLoading(false);
+    } else {
+      try {
+        let essayDoc = { ...reviewDoc };
+        let essays = [...reviewDoc.essays];
+        let currentDoc = [...essays[index].additionalDocs];
+        currentDoc = [...currentDoc, { doc: "", title: "" }];
+        essays[index] = { ...essays[index], additionalDocs: currentDoc };
 
-
-    
-    // try {
-    //   let updateRes = await updateEssay({
-    //     ...reviewDoc,
-    //     id: reviewDoc._id,
-    //     essays: Essays,
-    //     status: "resolved",
-    //     submitted: false,
-    //   });
-
-    //   if (updateRes.data) {
-    //     setReviewDoc({
-    //       ...reviewDoc,
-    //       id: reviewDoc._id,
-    //       essays: Essays,
-    //     });
-    //     toast.success(`You have review this ${DocumentType} successfully`, {
-    //       position: "bottom-right",
-    //       autoClose: 5000,
-    //       hideProgressBar: true,
-    //       closeOnClick: true,
-    //       pauseOnHover: true,
-    //       draggable: true,
-    //       progress: undefined,
-    //       theme: "colored",
-    //     });
-    //     setLoading(false);
-    //   }
-
-    //   if (updateRes.error) {
-    //     toast.error(`Unable to process to your request. Try again!`, {
-    //       position: "bottom-right",
-    //       autoClose: 5000,
-    //       hideProgressBar: true,
-    //       closeOnClick: true,
-    //       pauseOnHover: true,
-    //       draggable: true,
-    //       progress: undefined,
-    //       theme: "colored",
-    //     });
-    //     setLoading(false);
-    //   }
-
-    //   if (res.error) {
-    //     toast.error(`Unable to process to your request. Try again!`, {
-    //       position: "bottom-right",
-    //       autoClose: 5000,
-    //       hideProgressBar: true,
-    //       closeOnClick: true,
-    //       pauseOnHover: true,
-    //       draggable: true,
-    //       progress: undefined,
-    //       theme: "colored",
-    //     });
-    //     setLoading(false);
-    //   }
-    // } catch (error) {
-    //   toast.error(`${error.message}`, {
-    //     position: "bottom-right",
-    //     autoClose: 5000,
-    //     hideProgressBar: true,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: "colored",
-    //   });
-    //   setLoading(false);
-    // }
+        let updateRes = await updateEssay({
+          ...reviewDoc,
+          id: reviewDoc._id,
+          essays: essays,
+        });
+        console.log(updateRes)
+        if (updateRes?.data?.isSuccess) {
+          toast.success(`You have attached a document to this review`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          setLoading(false);
+        }else{
+          toast.error(`Unable to process to your request. Try again!`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          setLoading(false);
+        }
+      } catch (error) {
+        toast.error(`Unable to process to your request. Try again!`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setLoading(false);
+      }
+    }
   }
   // ------------------Essayas functions ends------------ //
 
@@ -1584,7 +1551,6 @@ console.log(essays)
     }
 
     if (DocumentType == "Essay" && reviewDoc) {
-
       content = (
         <>
           <Link
@@ -1592,9 +1558,9 @@ console.log(essays)
             relative="path"
             className="text-20 text-MdBlue flex flex-row items-center"
           >
-            <HiChevronDoubleLeft />{" "}
+            <HiChevronDoubleLeft />
             <span>
-              {`Back to ${data.user.firstName} ${data.user.lastName}`}{" "}
+              {`Back to ${data.user.firstName} ${data.user.lastName}`}
             </span>
           </Link>
 
@@ -1633,6 +1599,7 @@ console.log(essays)
           <h2 className="self-center text-2xl text-MdBlue font-bold mt-5">
             {`${reviewDoc.schoolName} Essays`}
           </h2>
+          <h2>{`Link to the ${data.user.firstName} ${reviewDoc.schoolName} essays google docs `} <a className="text-blue-600 underline" href={reviewDoc.link} target="_blank">go to google docs</a> </h2>
           {reviewDoc.essays.map((essay, index) => {
             const lines = essay.answer.split("\n");
             const essayParagraphs = lines.map((line, index) => (
@@ -1710,7 +1677,7 @@ console.log(essays)
                   </div>
 
                   <h2 className="mt-5 font-bold ">
-                    Attach file to to this essay{" "}
+                    Attach file to to this essay
                     <span className="text-red-600">PDF ONLY</span>
                   </h2>
                   <FileBase64
@@ -1718,7 +1685,9 @@ console.log(essays)
                     id="file"
                     onDone={({ base64 }) => {
                       const updatedEssays = [...reviewDoc.essays];
-                      const updatedDoc = [...updatedEssays[index].additionalDocs];
+                      const updatedDoc = [
+                        ...updatedEssays[index].additionalDocs,
+                      ];
                       updatedDoc[updatedDoc.length - 1] = {
                         ...updatedDoc[updatedDoc.length - 1],
                         doc: base64,
@@ -1727,11 +1696,9 @@ console.log(essays)
                         ...updatedEssays[index],
                         additionalDocs: updatedDoc,
                       };
-                  
+
                       setReviewDoc({ ...reviewDoc, essays: updatedEssays });
-                    }
-                   
-                    }
+                    }}
                     accept="pdf"
                   />
 
@@ -1743,9 +1710,11 @@ console.log(essays)
                     name="title"
                     id="title"
                     className="border-2 border-MdBlue"
-                    onChange={(e) =>{
+                    onChange={(e) => {
                       const updatedEssays = [...reviewDoc.essays];
-                      const updatedDoc = [...updatedEssays[index].additionalDocs];
+                      const updatedDoc = [
+                        ...updatedEssays[index].additionalDocs,
+                      ];
                       updatedDoc[updatedDoc.length - 1] = {
                         ...updatedDoc[updatedDoc.length - 1],
                         title: e.target.value,
@@ -1754,7 +1723,7 @@ console.log(essays)
                         ...updatedEssays[index],
                         additionalDocs: updatedDoc,
                       };
-                  
+
                       setReviewDoc({ ...reviewDoc, essays: updatedEssays });
                     }}
                   />
@@ -1762,7 +1731,7 @@ console.log(essays)
                   <button
                     className="px-2 py-1 bg-MdBlue mt-3 rounded-md text-white disabled:hidden"
                     disabled={!fileContent}
-                    onClick={()=>uploadDocEssay(index)}
+                    onClick={() => uploadDocEssay(index)}
                   >
                     Upload file
                   </button>
@@ -1802,21 +1771,29 @@ console.log(essays)
                     })}
                   </div>
 
-                  <div className="w-full py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-5 overflow-x-hidden">
+                  <div className="w-full py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-5 gap-3 overflow-x-hidden">
                     <h2 className="self-center font-bold capitalize">
                       Additional document
                     </h2>
-                   
-                    {essay.additionalDocs.map((document, index) => {
-                     
-                     return (
-                      <div className="w-full flex flex-row gap-x-3 justify-between flex-wrap bg-gray-300 py-1" key={document._id}>
-                      <img src={PdfLogo} alt="pdf" />
-                      <p className="font-bold">Additional document for Princeton essay 3. Use this</p>
-                      <p className="text-emerald-600 font-semibold">4 days ago</p>
-                      </div>
-                     ) 
 
+                    {essay.additionalDocs.map((document, index) => {
+                      return (
+                        <>
+                       {document.title && 
+                        <div
+                          className="w-full flex flex-row gap-x-3 justify-between flex-wrap bg-gray-300 py-1 "
+                          key={document._id}
+                        >
+                          <img src={PdfLogo} alt="pdf" />
+                          <p className="font-bold">
+                          {document.title}
+                          </p>
+                          <p className="text-emerald-600 font-semibold">
+                            4 days ago
+                          </p>
+                        </div>}
+                        </>
+                      );
                     })}
                   </div>
                 </div>
@@ -1835,14 +1812,16 @@ console.log(essays)
             relative="path"
             className="text-20 text-MdBlue flex flex-row items-center"
           >
-            <HiChevronDoubleLeft />{" "}
+            <HiChevronDoubleLeft />
             <span>
-              {`Back to ${data.user.firstName} ${data.user.lastName}`}{" "}
+              {`Back to ${data.user.firstName} ${data.user.lastName}`}
             </span>
           </Link>
           <h1 className="self-center text-2xl font-bold text-MdBlue">
             All Recommendation
           </h1>
+          <h2>{`Link to all ${data.user.firstName} recommendation letters google docs `} <a className="text-blue-600 underline" href={reviewDoc.link} target="_blank">go to google docs</a> </h2>
+
           <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2 md:justify-between justify-around items-center w-full flex-wrap gap-y-2 mt-5   sticky -top-5">
             <h1 className="capitalize flex-col flex">
               <span className="font-bold">
@@ -2009,6 +1988,7 @@ console.log(essays)
                             );
                           }
                         })}
+                        
                       </div>
                     </div>
                   );

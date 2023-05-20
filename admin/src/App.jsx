@@ -11,7 +11,7 @@ import Login from "./features/shared/login/login";
 //OTHER INDICATOR PAGES
 import UnderConstruction from "./components/indications/underConstruction";
 import PersistLogin from "./features/auth/persistLogin";
-
+import ErrorPage from "./components/indications/ErrorPage";
 //PAges FOR ADMIN
 import SharedLayout from "./features/admin/layouts/shareLayout";
 import Dashboard from "./features/admin/dashboard/dashboard";
@@ -38,7 +38,7 @@ const router = createBrowserRouter(
       {/* Public routes */}
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
-      <Route path="*" element={<h2>Error Page</h2>} />
+      <Route path="*" element={<ErrorPage/>} />
 
       {/* -------------------ROUTES ADMIN---------------------- */}
       <Route element={<PersistLogin />}>
@@ -55,7 +55,7 @@ const router = createBrowserRouter(
               <Route path='reviews' element={<StudentDoc />} />
               </Route>
 
-              <Route path=":id/reviews/:id" element={<StudentDocDetails_ug />} />
+              <Route path=":id/reviews/:id" element={<UndergraduateReviewDetails />} />
             </Route>
 
             {/* Layouts */}

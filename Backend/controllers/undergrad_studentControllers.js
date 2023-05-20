@@ -170,15 +170,15 @@ const updateUser = asyncHandler(async (req, res) => {
   user.updatedStatus = updatedStatus;
   if (newPassword && oldPassword) {
     //hash
-    const match = await bcrypt.compare(oldPassword, user.password);
-   if(!match){
+    const passMath = await bcrypt.compare(oldPassword, user.password);
+   if(!passMath){
     return res.status(409).json({ message: "Your old password doesn't match" });
    }
     user.password = await bcrypt.hash(newPassword, 10); // salt rounds
   }
 
   const updatedUser = await user.save();
-  res.json({ message: `${updatedUser.firstName} updated succesfully` });
+  res.json({ message: `${updatedUser.firstName} updated succesfully`, isSuccess: true });
 });
 
 //delete a user
