@@ -205,6 +205,19 @@ function Student_SharedLayout() {
               <HiChatBubbleBottomCenterText />
               {isSideNavShow && <span> chat</span>}
             </NavLink>
+            <NavLink
+              to="mentorship"
+              id="mentorship"
+              onClick={() => setIsSideNavShow(false)}
+              className={`flex capitalize flex-row items-center gap-3 mt-2 ${
+                !isSideNavShow ? "justify-center" : "justify-start"
+              } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
+              style={({ isActive }) => (isActive ? activeStyle : null)}
+            >
+              <HiCurrencyDollar />
+              {isSideNavShow && <span> Mentorship</span>}
+            </NavLink>
+
           </div>
         </SideNav>
         <ReactTooltip
@@ -221,6 +234,15 @@ function Student_SharedLayout() {
           place="right"
           variant="info"
           content="Honors"
+          className={`${
+            isSideNavShow ? "hidden" : "flex"
+          } opacity-100 text-MdBlue font-bold tooltip`}
+        />
+        <ReactTooltip
+          anchorId="mentorship"
+          place="right"
+          variant="info"
+          content="Mentorship"
           className={`${
             isSideNavShow ? "hidden" : "flex"
           } opacity-100 text-MdBlue font-bold tooltip`}

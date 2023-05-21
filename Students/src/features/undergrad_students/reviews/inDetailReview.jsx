@@ -8,10 +8,12 @@ import axios from "axios";
 import { RefreshToolkit } from "../../../components/toolkits/tollkit";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { HiBadgeCheck } from "react-icons/hi";
 import { CoverLoaderMedium } from "../../../components/loaders/loader";
 import useAuth from "../../../hooks/useAuth";
 import { useGetSpecificReviewQuery } from "../../../apiSlice/reviewsApiSlice";
+import PdfLogo from "../../../assets/images/pdf-icon.png";
+import { HiOutlineInboxIn } from "react-icons/hi";
+
 function StudentDocDetails_ug() {
   const params = useParams();
   const {
@@ -27,6 +29,8 @@ function StudentDocDetails_ug() {
   if (isLoading) {
     return <CoverLoaderMedium />;
   }
+
+  console.log(review);
 
   if (isSuccess) {
     DocumentType = review.onModel;
@@ -93,9 +97,7 @@ function StudentDocDetails_ug() {
               </div>
               {/* Previous Comments here */}
               <div className="w-full md:w-8/12 py-2 bg-slate-200 flex flex-col px-2 overflow-y-auto mt-3 overflow-x-hidden">
-                <h2 className="self-center font-bold capitalize">
-                  Comments
-                </h2>
+                <h2 className="self-center font-bold capitalize">Comments</h2>
                 {honor.comments.map((comment) => {
                   if (comment.comment !== "" && comment.comment) {
                     const lines = comment.comment.split("\n");
@@ -195,14 +197,10 @@ function StudentDocDetails_ug() {
                     <h2>{activity.description}</h2>
                   </div>
                 </div>
-            
-              
               </div>
 
               <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 overflow-y-auto mt-5">
-                <h2 className="self-center font-bold capitalize">
-                  Comments
-                </h2>
+                <h2 className="self-center font-bold capitalize">Comments</h2>
 
                 {activity.comments.map((comment) => {
                   if (comment.comment !== "" && comment.comment) {
@@ -285,42 +283,76 @@ function StudentDocDetails_ug() {
                   <h2 className="font-bold mt-2">{essay.question}</h2>
 
                   <div className="w-full mt-4">{essayParagraphs}</div>
-
-
-                 
                 </div>
 
-                <div className="w-full md:w-4/12 py-2 bg-slate-200 flex flex-col px-2 overflow-y-auto mt-5 overflow-x-hidden">
-                  <h2 className="self-center font-bold capitalize">
-                    Comments
-                  </h2>
+                <div className="w-full md:w-4/12 flex flex-col  overflow-y-auto overflow-x-hidden">
+                  <div className="w-full py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-5 overflow-x-hidden">
+                    <h2 className="self-center font-bold capitalize">
+                      Your Previous comments
+                    </h2>
 
-                  {essay.comments.map((comment) => {
-                    if (comment.comment !== "" && comment.comment) {
-                      const lines = comment.comment.split("\n");
-                      const commentParagraphs = lines.map((line, index) => (
-                        <p className="mt-1" key={index}>
-                          {line}
-                        </p>
-                      ));
+                    {essay.comments.map((comment) => {
+                      if (comment.comment !== "" && comment.comment) {
+                        const lines = comment.comment.split("\n");
+                        const commentParagraphs = lines.map((line, index) => (
+                          <p className="mt-1" key={index}>
+                            {line}
+                          </p>
+                        ));
 
+                        return (
+                          <div
+                            className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
+                            key={comment._id}
+                          >
+                            {comment.comment && (
+                              <div className="w-full flex flex-col">
+                                {commentParagraphs}
+                              </div>
+                            )}
+                            {comment.timeDate && (
+                              <span className="self-end font-bold"></span>
+                            )}
+                          </div>
+                        );
+                      }
+                    })}
+                  </div>
+
+                  <div className="w-full py-2 bg-slate-200 flex flex-col px-2 h-96 overflow-y-auto mt-5 gap-3 overflow-x-hidden">
+                    <h2 className="self-center font-bold capitalize">
+                      Additional document
+                    </h2>
+
+                    {essay.additionalDocs.map((document, index) => {
                       return (
-                        <div
-                          className="w-full bg-slate-300 py-1 px-2 mt-3 rounded-md flex flex-col"
-                          key={comment._id}
-                        >
-                          {comment.comment && (
-                            <div className="w-full flex flex-col">
-                              {commentParagraphs}
+                        <>
+                          {document.title && (
+                            <div
+                              className="w-full items-center flex flex-row gap-x-3 justify-between flex-wrap bg-gray-300 py-1 "
+                              key={document._id}
+                            >
+                              <img src={PdfLogo} alt="pdf" />
+                              <p className="font-bold">{document.title}</p>
+                              <p className="text-emerald-600 font-semibold">
+                                4 days ago
+                              </p>
+
+                              <a
+                                href={document.doc}
+                                download={document.title}
+                                className="text-emerald-700 font-bold text-2xl mx-2"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <HiOutlineInboxIn />
+                              </a>
                             </div>
                           )}
-                          {comment.timeDate && (
-                            <span className="self-end font-bold"></span>
-                          )}
-                        </div>
+                        </>
                       );
-                    }
-                  })}
+                    })}
+                  </div>
                 </div>
               </div>
             );
@@ -332,8 +364,7 @@ function StudentDocDetails_ug() {
     if (DocumentType == "Recommendation") {
       content = (
         <>
-         
-         <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2 md:justify-between justify-around items-center w-full flex-wrap gap-y-2 mt-5   sticky -top-5">
+          <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2 md:justify-between justify-around items-center w-full flex-wrap gap-y-2 mt-5   sticky -top-5">
             <h1 className={`capitalize flex-col flex font-bold text-2xl`}>
               {` ${
                 reviewDoc.status == "unresolved"
@@ -385,8 +416,6 @@ function StudentDocDetails_ug() {
                           </span>
                         </h2>
                         <div className="w-full mt-4">{letterParagraphs}</div>
-
-
                       </div>
 
                       <div className="w-full md:w-4/12 py-2 bg-slate-300 flex flex-col px-2 overflow-y-auto mt-5 overflow-x-hidden">
@@ -436,7 +465,6 @@ function StudentDocDetails_ug() {
     if (DocumentType == "Aid") {
       content = (
         <>
-          
           <div className="flex felx-row bg-white shadow-md px-3 rounded-md py-2 md:justify-between justify-around items-center w-full flex-wrap gap-y-2 mt-5   sticky -top-5">
             <h1 className={`capitalize flex-col flex font-bold text-2xl`}>
               {` ${
@@ -508,13 +536,10 @@ function StudentDocDetails_ug() {
                       {`$${aid.EFC}`}
                     </span>
                   </h2>
-
                 </div>
 
                 <div className="w-full md:w-4/12 py-2 bg-slate-300 flex flex-col px-2 overflow-y-auto mt-10 overflow-x-hidden">
-                  <h2 className="self-center font-bold capitalize">
-                    Comments
-                  </h2>
+                  <h2 className="self-center font-bold capitalize">Comments</h2>
                   {aid.comments.map((comment) => {
                     if (comment.comment !== "" && comment.comment) {
                       const lines = comment.comment.split("\n");

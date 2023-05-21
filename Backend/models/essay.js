@@ -26,6 +26,11 @@ const essaySchema = new mongoose.Schema(
       required: true,
     },
 
+    link: {
+      type: String,
+      required: false,
+    },
+
     essays: [
       {
         question: {
@@ -34,6 +39,11 @@ const essaySchema = new mongoose.Schema(
         },
 
         answer: {
+          type: String,
+          required: false,
+        },
+
+        answerPdf: {
           type: String,
           required: false,
         },
@@ -62,21 +72,26 @@ const essaySchema = new mongoose.Schema(
             },
           },
         ],
+
         additionalDocs: [
           {
             doc: {
               type: String,
               required: false,
             },
-            timeDate: {
-              type: Date,
+            title: {
+              type: String,
               required: false,
             },
           },
+          {
+            timestamps: true,
+          },
         ],
+
         rate: {
           type: String,
-          enum: ["bad", "normal","good", "notRated"],
+          enum: ["bad", "normal", "good", "notRated"],
           default: "notRated",
           required: false,
         },

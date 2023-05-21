@@ -30,7 +30,7 @@ import Dashboard from "./features/undergrad_students/dashboard/Dashboard";
 import ProfileLayout from "./features/undergrad_students/layout/profileLayout";
 import EditProfile from "./features/undergrad_students/profile/EditProfile";
 import Profile from "./features/undergrad_students/profile/Profile";
-
+import ErrorPage from "./components/indications/ErrorPage";
 
 //ACTIVITES PAGE
 import ActivityLayout from "./features/undergrad_students/layout/activity.Layout";
@@ -69,7 +69,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />
       <Route path="/apply" element={<Apply />} />
-
+      <Route path="*" element={<ErrorPage />} />
       {/* ROUTES FOR UNDERGRAD STUDENTS */}
       <Route element={<PersistLogin />}>
         <Route element={<RequireAuth />}>

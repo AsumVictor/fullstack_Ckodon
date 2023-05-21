@@ -115,7 +115,7 @@ function SharedLayout() {
                   style={({ isActive }) => (isActive ? activeStyle : null)}
                 >
                   <HiAcademicCap />
-                  {isSideNavShow && <span> undergradute</span>}
+                  {isSideNavShow && <span> undergraduate</span>}
                 </NavLink>
                 <NavLink
                   to="graduate-students"
@@ -126,7 +126,7 @@ function SharedLayout() {
                   } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
                   style={({ isActive }) => (isActive ? activeStyle : null)}
                 >
-                  <ImUserTie /> {isSideNavShow && <span> Gradutes</span>}
+                  <ImUserTie /> {isSideNavShow && <span> Graduates</span>}
                 </NavLink>
               </div>
             )}
@@ -158,7 +158,7 @@ function SharedLayout() {
                 >
                   <HiAcademicCap />
                   <button className="flex flex-row items-center gap-x-2"></button>
-                  {isSideNavShow && <span> undergradute</span>}
+                  {isSideNavShow && <span> undergraduate</span>}
                 </NavLink>
                 <NavLink
                   to="reviews-gradutes"
@@ -169,7 +169,7 @@ function SharedLayout() {
                   } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
                   style={({ isActive }) => (isActive ? activeStyle : null)}
                 >
-                  <ImUserTie /> {isSideNavShow && <span> Gradutes</span>}
+                  <ImUserTie /> {isSideNavShow && <span> Graduates</span>}
                 </NavLink>
               </div>
             )}
@@ -202,7 +202,7 @@ function SharedLayout() {
                 >
                   <HiAcademicCap />
                   <button className="flex flex-row items-center gap-x-2"></button>
-                  {isSideNavShow && <span> undergradute</span>}
+                  {isSideNavShow && <span> undergraduate</span>}
                 </NavLink>
                 <NavLink
                   to="applicants-graduates"
@@ -213,7 +213,7 @@ function SharedLayout() {
                   } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
                   style={({ isActive }) => (isActive ? activeStyle : null)}
                 >
-                  <ImUserTie /> {isSideNavShow && <span> Gradutes</span>}
+                  <ImUserTie /> {isSideNavShow && <span> Graduates</span>}
                 </NavLink>
               </div>
             )}
@@ -281,6 +281,18 @@ function SharedLayout() {
           >
             <HiBookOpen /> {isSideNavShow && <span> Community</span>}
           </NavLink>
+
+          <NavLink
+            to="mentors"
+            id="mentors"
+            onClick={() => setIsSideNavShow(false)}
+            className={`flex capitalize flex-row items-center gap-3 mt-2 ${
+              !isSideNavShow ? "justify-center" : "justify-start"
+            } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
+            style={({ isActive }) => (isActive ? activeStyle : null)}
+          >
+            <HiBookOpen /> {isSideNavShow && <span> Mentorship</span>}
+          </NavLink>
         </div>
       </SideNav>
       <ReactTooltip
@@ -288,6 +300,15 @@ function SharedLayout() {
         place="right"
         variant="info"
         content="Dashboard"
+        className={`${
+          isSideNavShow ? "hidden" : "flex"
+        } opacity-100 text-MdBlue font-bold tooltip`}
+      />
+       <ReactTooltip
+        anchorId="mentor"
+        place="right"
+        variant="info"
+        content="Mentorship"
         className={`${
           isSideNavShow ? "hidden" : "flex"
         } opacity-100 text-MdBlue font-bold tooltip`}

@@ -63,7 +63,7 @@ function Login() {
           Welcome Back!
         </h2>
         <p className="text-center text-gray-500 font-bold text-1xl">
-          We're are excited to see again!
+          We're excited to see again!
         </p>
 
         <img src="/images/logoWhite.png" alt="admin"  style={{height:"2cm",width:"2cm"}} className="mt-5 border-2 rounded-full p-2 border-MdBlue"/>

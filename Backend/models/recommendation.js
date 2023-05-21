@@ -21,12 +21,17 @@ const recommendationSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    link: {
+      type: String,
+      required: false,
+    },
     recommendations: [
       {
         recommenderName: {
           type: String,
           required: false,
         },
+        
         voiceNOtes: [
           {
             voiceNote: {
@@ -46,10 +51,13 @@ const recommendationSchema = new mongoose.Schema(
               required: false,
             },
             timeDate: {
-              type: Date,
+              type: String,
               required: false,
             },
           },
+          {
+            timestamps: true,
+          }
         ],
         letters: [
           {

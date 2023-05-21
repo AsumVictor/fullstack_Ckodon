@@ -245,7 +245,7 @@ export default function CreateAids() {
         user: aidData.user,
       });
 
-      if (response.data) {
+      if (response?.data?.isSuccess) {
         let res = await updateAid({
           ...aidData,
           id: aidData._id,
@@ -305,19 +305,22 @@ export default function CreateAids() {
   async function submitToReviewAnother(e) {
     e.preventDefault()
     try {
-      let response = await await updateReview({
-        ...userReview,
-        id: userReview._id
+      let response = await updateReview({
+        deadline: null,
+        status: "unresolved",
+        document: aidData._id,
+        model: "Aid",
+        user: aidData.user,
       });
 
-      if (response.data) {
-        let res = await updateActivity({
-          ...Activity,
-          id: Activity._id,
+      if (response?.data?.isSuccess) {
+        let res = await updateAid({
+          ...aidData,
+          id: aidData._id,
           submitted: true,
         });
 
-        if (res.data) {
+        if (res?.data?.isSuccess) {
           toast.success(`You have Submitted your activity for review.`, {
             position: "bottom-right",
             autoClose: 5000,

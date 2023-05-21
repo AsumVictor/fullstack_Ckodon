@@ -411,7 +411,7 @@ recommendations: recommendations,
         user: Recommendation.user,
       });
 
-      if (response.data) {
+      if (response?.data?.isSuccess) {
         let res = await updateRecommendation({
           ...Recommendation,
           id: Recommendation._id,
@@ -419,8 +419,74 @@ recommendations: recommendations,
           submittedBefore: true,
         });
 
-        if (res.data) {
+        if (res?.data?.isSuccess) {
           toast.success(`You have Submitted your recommendations for review.`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        } else {
+          toast.error(`${res.error.data.message}`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+      } else {
+        toast.error(`${response.error.data.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      toast.error(`${error.message}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  }
+
+  async function submitToReviewAnother() {
+
+    try {
+      let response = await updateReview({
+        status: "unresolved",
+        document: Recommendation._id,
+        model: "Recommendation",
+        user: Recommendation.user,
+      });
+
+      if (response?.data?.isSuccess) {
+        let res = await updateRecommendation({
+          ...Recommendation,
+          id: Recommendation._id,
+          submitted: true,
+        });
+
+        if (res?.data?.isSuccess) {
+          toast.success(`You have Submitted your honor for review.`, {
             position: "bottom-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -475,7 +541,7 @@ recommendations: recommendations,
         id: Recommendation._id,
       });
 
-      if (res.data) {
+      if (res?.data?.isSuccess) {
         toast.success("Changes saved successfully", {
           position: "bottom-right",
           autoClose: 5000,
@@ -714,7 +780,7 @@ recommendations: recommendations,
             <button
               className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-red-400 py-2 bg-MdBlue rounded-md text-white font-bold mt-20"
               type="submit"
-              // onClick={submitToReviewAnother}
+               onClick={()=>submitToReviewAnother()}
             >
               {loading ? <>Submitting...</> : <>Submit for review </>}
             </button>

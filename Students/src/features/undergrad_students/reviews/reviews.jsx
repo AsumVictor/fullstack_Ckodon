@@ -29,7 +29,7 @@ const [reviews, setReviews] = useState(null)
       setReviews([...review ]);
     }
   }, [review]);
-
+console.log(review)
   if (isLoading) {
     return <CoverLoaderMedium />;
   }

@@ -63,7 +63,7 @@ export const essaysApiSlice = apiSlice.injectEndpoints({
           ...initialEssayData,
         },
       }),
-      invalidatesTags: [{ type: "Essay", id: "LIST" }],
+      invalidatesTags: ["Essay","ReviewByUser",'ReviewBySpecific'],
     }),
 
     updateEssay: builder.mutation({
@@ -74,7 +74,7 @@ export const essaysApiSlice = apiSlice.injectEndpoints({
           ...initialEssayData,
         },
       }),
-      invalidatesTags: (result, error, arg) => [{ type: "Essay", id: arg.id }],
+      invalidatesTags: ["Essay","ReviewByUser",'ReviewBySpecific'],
     }),
   }),
 });

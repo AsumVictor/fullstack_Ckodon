@@ -52,9 +52,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                     ...initialUserData,
                 }
             }),
-            invalidatesTags: (result, error, arg) => [
-                { type: 'User', id: arg.id }
-            ]
+            invalidatesTags:['User', 'SpecificStudent' ]
         }),
         deleteUser: builder.mutation({
             query: ({ id }) => ({
@@ -62,10 +60,15 @@ export const usersApiSlice = apiSlice.injectEndpoints({
                 method: 'DELETE',
                 body: { id }
             }),
-            invalidatesTags: (result, error, arg) => [
-                { type: 'User', id: arg.id }
-            ]
+            invalidatesTags:['User', 'SpecificStudent' ]
         }),
+        getStudent: builder.query({
+            query: (id) => ({
+              url: `/undergrads/${id}`,
+              method: "GET",
+            }),
+            providesTags:['SpecificStudent'],
+          }),
     }),
 })
 
@@ -74,6 +77,7 @@ export const {
     useAddNewUserMutation,
     useUpdateUserMutation,
     useDeleteUserMutation,
+    useGetStudentQuery
 } = usersApiSlice
 
 // returns the query result object

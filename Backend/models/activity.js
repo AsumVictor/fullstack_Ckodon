@@ -17,6 +17,10 @@ const activitySchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    submittedBefore: {
+      type: Boolean,
+      default: false,
+    },
     voiceNOtes: [
       {
         voiceNote: {
@@ -36,10 +40,13 @@ const activitySchema = new mongoose.Schema(
           required: false,
         },
         timeDate: {
-          type: Date,
+          type: String,
           required: false,
         },
       },
+      {
+        timestamps: true,
+      }
     ],
     activities: [
       {

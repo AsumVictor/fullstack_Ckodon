@@ -43,19 +43,20 @@ const getReviewByUser = asyncHandler(async (req, res) => {
           default:
             return res.status(400).json({ error: "Invalid document model" });
         }
-        const document = await Document.findById(review.documentId);
-        if (!document) {
-          return res.status(404).json({ error: "Document not found" });
-        }
+         const document = await Document.findById(review.documentId);
+         console.log(document?._id, review?._id)
+         if (!document) {
+           return res.status(404).json({ error: "Document not found" });
+         }
   
         return {
           ...review,
-         document,
+          document: document
         };
       })
     );
-  
-    res.json(reviewWithUserAndDoc);
+ 
+    return res.status(200).json(reviewWithUserAndDoc);
   });
   
   const getReviewById = asyncHandler(async (req, res) => {

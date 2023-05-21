@@ -44,7 +44,7 @@ export const reviewsApiSlice = apiSlice.injectEndpoints({
         url: `/undergradeReviews/id/${id}`,
         method: "GET",
       }),
-      providesTags: ["ReviewByUser"],
+      providesTags: ["ReviewBySpecific"],
     }),
 
     getReviewByUser: builder.query({

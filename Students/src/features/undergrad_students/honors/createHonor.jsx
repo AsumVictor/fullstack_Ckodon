@@ -431,9 +431,11 @@ function CreateHonor() {
   async function submitToReviewAnother(e) {
     e.preventDefault()
     try {
-      let response = await await updateReview({
-        ...userReview,
-        id: userReview._id
+      let response = await updateReview({
+        status: "unresolved",
+        document: Honors._id,
+        model: "Honor",
+        user: Honors.user,
       });
 
       if (response.data) {

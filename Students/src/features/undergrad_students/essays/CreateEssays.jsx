@@ -72,6 +72,7 @@ export default function CreateEssays() {
         status: "unresolved",
         submitted: false,
         submittedBefore: false,
+        link: "",
       });
       if (res.data) {
         setSchoolName("");
@@ -119,7 +120,7 @@ export default function CreateEssays() {
       answer: "",
       comments: [{ comment: "" }],
       voiceNOtes: [],
-      additionalDocs: [],
+      additionalDocs: [{ doc: "", title: "" }],
       rate: "notRated",
     };
 
@@ -133,7 +134,7 @@ export default function CreateEssays() {
         id: currentSchool._id,
         essays: updatedEssay,
       });
-      if (res.data) {
+      if (res?.data?.isSuccess) {
         toast.success(
           `You have added an essay to ${currentSchool.schoolName}`,
           {
@@ -147,8 +148,7 @@ export default function CreateEssays() {
             theme: "colored",
           }
         );
-      }
-      if (res.error) {
+      }else{
         toast.error(res.error.data.message, {
           position: "bottom-right",
           autoClose: 5000,
@@ -256,7 +256,7 @@ export default function CreateEssays() {
         id: currentSchool._id,
         essays: newEssays,
       });
-      if (res.data) {
+      if (res?.data?.isSuccess) {
         toast.warn(
           `${currentSchool.schoolName} essay ${essayIndex + 1} deleted`,
           {
@@ -297,40 +297,54 @@ export default function CreateEssays() {
     }
   }
 
+  async function submitToReview(schoolIndex) {
+    const currentSchool = EssayList[schoolIndex];
 
-async function submitToReview(schoolIndex){
-  const currentSchool = EssayList[schoolIndex]
-  
-  try {
-    let response =  await addReview({
-      deadline: null,
-      status: "unresolved",
-      documentId: currentSchool._id,
-      onModel: "Essay",
-      user: currentSchool.user,
-    });
-
-    if (response.data) {
-      let res = await updateEssay({
-        ...currentSchool,
-        id: currentSchool._id,
-        submitted: true,
-        submittedBefore: true,
+    try {
+      let response = await addReview({
+        deadline: null,
+        status: "unresolved",
+        documentId: currentSchool._id,
+        onModel: "Essay",
+        user: currentSchool.user,
       });
 
-      if (res.data) {
-        toast.success(`You have Submitted ${currentSchool.schoolName} essay(s) for review.`, {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
+      if (response?.data?.isSuccess) {
+        let res = await updateEssay({
+          ...currentSchool,
+          id: currentSchool._id,
+          submitted: true,
+          submittedBefore: true,
         });
+
+        if (res?.data?.isSuccess) {
+          toast.success(
+            `You have Submitted ${currentSchool.schoolName} essay(s) for review.`,
+            {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            }
+          );
+        } else {
+          toast.error(`${res.error.data.message}`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
       } else {
-        toast.error(`${res.error.data.message}`, {
+        toast.error(`${response.error.data.message}`, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -341,8 +355,8 @@ async function submitToReview(schoolIndex){
           theme: "colored",
         });
       }
-    } else {
-      toast.error(`${response.error.data.message}`, {
+    } catch (error) {
+      toast.error(`${error.message}`, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -353,93 +367,50 @@ async function submitToReview(schoolIndex){
         theme: "colored",
       });
     }
-  } catch (error) {
-    toast.error(`${error.message}`, {
-      position: "bottom-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-    });
   }
-}
 
-async function saveChanges(schoolIndex) {
-  const currentSchool = EssayList[schoolIndex]
-  try {
-    const res = await updateEssay({
-      ...currentSchool,
-      id: currentSchool._id,
-    });
-
-    if (res.data) {
-      toast.success(`${currentSchool.schoolName} Changes saved successfully`, {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-    }
-
-    if (res.error) {
-      toast.error(res.error.data.message, {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
-    }
-  } catch (error) {
-    toast.error(`Error occured! Please try again`, {
-      position: "bottom-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-    });
-  }
-}
-
-
-async function withdraw(schoolIndex) {
- const currentSchool = EssayList[schoolIndex]
-  try {
-    let response = await deleteReview(currentSchool._id)
-    if (response.data) {
-      let res = await updateEssay({
-        ...currentSchool,
-        id: currentSchool._id,
-        submitted: false,
-        submittedBefore: false,
+  async function submitToReviewAnother(schoolIndex) {
+    const currentSchool = EssayList[schoolIndex];
+    try {
+      let response = await updateReview({
+        status: "unresolved",
+        document: currentSchool._id,
+        model: "Essay",
+        user: currentSchool.user,
       });
 
-      if (res.data) {
-        toast.warn(`You have withdraw ${currentSchool.schoolName} essay(s).`, {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
+      if (response?.data?.isSuccess) {
+        let res = await updateEssay({
+          ...currentSchool,
+          id: currentSchool._id,
+          submitted: true,
         });
+
+        if (res?.data?.isSuccess) {
+          toast.success(`You have Submitted your honor for review.`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        } else {
+          toast.error(`${res.error.data.message}`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
       } else {
-        toast.error(`${res.error.data.message}`, {
+        toast.error(`${response.error.data.message}`, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -450,8 +421,8 @@ async function withdraw(schoolIndex) {
           theme: "colored",
         });
       }
-    } else {
-      toast.error(`${response.error.data.message}`, {
+    } catch (error) {
+      toast.error(`${error.message}`, {
         position: "bottom-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -462,21 +433,122 @@ async function withdraw(schoolIndex) {
         theme: "colored",
       });
     }
-
-  } catch (error) {
-    console.log(error)
-    toast.error(`Error Occured! Try again later`, {
-      position: "bottom-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-      theme: "colored",
-    });
   }
- }
+
+  async function saveChanges(schoolIndex) {
+    const currentSchool = EssayList[schoolIndex];
+    try {
+      const res = await updateEssay({
+        ...currentSchool,
+        id: currentSchool._id,
+      });
+
+      if (res?.data?.isSuccess) {
+        toast.success(
+          `${currentSchool.schoolName} Changes saved successfully`,
+          {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
+        );
+      }
+
+      if (res.error) {
+        toast.error(res.error.data.message, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      toast.error(`Error occured! Please try again`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  }
+
+  async function withdraw(schoolIndex) {
+    const currentSchool = EssayList[schoolIndex];
+    try {
+      let response = await deleteReview(currentSchool._id);
+      if (response?.data?.isSuccess) {
+        let res = await updateEssay({
+          ...currentSchool,
+          id: currentSchool._id,
+          submitted: false,
+          submittedBefore: false,
+        });
+
+        if (res?.data?.isSuccess) {
+          toast.warn(
+            `You have withdraw ${currentSchool.schoolName} essay(s).`,
+            {
+              position: "bottom-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            }
+          );
+        } else {
+          toast.error(`${res.error.data.message}`, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+      } else {
+        toast.error(`${response.error.data.message}`, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(`Error Occured! Try again later`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    }
+  }
 
   if (!EssayList?.length) {
     return (
@@ -546,49 +618,45 @@ async function withdraw(schoolIndex) {
             let randomNumber = Math.floor(Math.random() * colors.length);
             let randonBackgroundColor = colors[randomNumber];
 
-          if(school.submitted){
-         return(
-          <div
-                key={school._id}
-                className={`w-full md:w-11/12 self-center flex rounded-md flex-col items-start pb-5 mt-20 px-0 md:px-10 border-b-4 
-              border-${randonBackgroundColor}`}
-              >
-
-                <aside
-                  className={`flex flex-row relative justify-between w-full py-3 bg-${randonBackgroundColor}  items-center pl-3 pr-10 md:px-10`}
+            if (school.submitted) {
+              return (
+                <div
+                  key={school._id}
+                  className={`w-full border-${randonBackgroundColor} md:w-11/12 self-center flex rounded-md flex-col items-start pb-5 mt-20 px-0 md:px-10 border-b-4 border-emerald-600
+              `}
                 >
-                  <h3 className="text-white placeholder-white placeholder-opacity-50 w-8/12 font-bold px-1 text-16 md:text-20 outline-none bg-transparent">
-                    {school.schoolName}
-                  </h3>
-                 
-                </aside>
+                  <aside
+                    className={`flex flex-row relative justify-between w-full py-3 bg-${randonBackgroundColor}  items-center pl-3 pr-10 md:px-10 bg-emerald-600`}
+                  >
+                    <h3 className="text-white placeholder-white placeholder-opacity-50 w-8/12 font-bold px-1 text-16 md:text-20 outline-none bg-transparent">
+                      {school.schoolName}
+                    </h3>
+                  </aside>
 
-
-                <h1 className="mt-10 text-center px-3 font-bold text-xl md:px-10">
-           {` You have submitted ${school.schoolName} essays for review`}
-          </h1>
-          <button
-            className="mt-10 py-2 px-4 bg-red-900 active:scale-105 hover:bg-red-700 text-white rounded-md self-center font-bold"
-             onClick={()=>withdraw(schoolIndex)}
-          >
-            Withdraw
-          </button>
+                  <h1 className="mt-10 text-center px-3 font-bold text-xl md:px-10">
+                    {` You have submitted ${school.schoolName} essays for review`}
+                  </h1>
+                  <button
+                    className="mt-10 py-2 px-4 bg-red-900 active:scale-105 hover:bg-red-700 text-white rounded-md self-center font-bold"
+                    onClick={() => withdraw(schoolIndex)}
+                  >
+                    Withdraw
+                  </button>
                 </div>
-         )
-          }
-
+              );
+            }
 
             return (
               <div
                 key={school._id}
-                className={`w-full md:w-11/12 self-center flex rounded-md flex-col items-start pb-5 mt-20 px-0 md:px-10 border-b-4 
+                className={`w-full border-emerald-600 md:w-11/12 self-center flex rounded-md flex-col items-start pb-5 mt-20 px-0 md:px-10 border-b-4 
               border-${randonBackgroundColor}`}
               >
                 {/* School and essay header */}
 
                 {/* Essays Title, status bar and collasp button */}
                 <aside
-                  className={`flex flex-row relative justify-between w-full py-3 bg-${randonBackgroundColor}  items-center pl-3 pr-10 md:px-10`}
+                  className={`flex flex-row bg-emerald-600 relative justify-between w-full py-3 bg-${randonBackgroundColor} items-center pl-3 pr-10 md:px-10`}
                 >
                   <h3 className="text-white placeholder-white placeholder-opacity-50 w-8/12 font-bold px-1 text-16 md:text-20 outline-none bg-transparent">
                     {school.schoolName}
@@ -602,11 +670,10 @@ async function withdraw(schoolIndex) {
                   </button>
                 </aside>
 
-
                 {school.essays.map((essay, essayIndex) => (
                   <div key={essay._id} className={`w-11/12 self-center mt-10`}>
                     <div
-                      className={`w-full flex justify-between py-2 px-5 items-center bg-${randonBackgroundColor}`}
+                      className={`w-full bg-${randonBackgroundColor} flex justify-between py-2 px-5 items-center bg-MdBlue`}
                     >
                       <h3 className="text-white font-bold text-15">
                         {` ${school.schoolName} Essay ${essayIndex + 1}`}
@@ -671,26 +738,33 @@ async function withdraw(schoolIndex) {
                   <span>Save Changes</span>
                 </button>
 
-                {(school.essays.length > 0 && !school.submittedBefore) && (
-          <button
-            className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-gray-400  border-2 py-2 border-MdBlue bg-white rounded-md text-MdBlue font-bold mt-10"
-            type="submit"
-             onClick={()=>submitToReview(schoolIndex)}
-          >
-            {loading ? <>Submitting...</> : <>{` Submit ${school.schoolName} essays`} </>}
-          </button>
-        )}
+                {school.essays.length > 0 && !school.submittedBefore && (
+                  <button
+                    className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-gray-400  border-2 py-2 border-MdBlue bg-white rounded-md text-MdBlue font-bold mt-10"
+                    type="submit"
+                    onClick={() => submitToReview(schoolIndex)}
+                  >
+                    {loading ? (
+                      <>Submitting...</>
+                    ) : (
+                      <>{` Submit ${school.schoolName} essays`} </>
+                    )}
+                  </button>
+                )}
 
-        {(school.essays.length > 0 && school.submittedBefore) && (
-          <button
-          className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-gray-400  border-2 py-2 border-MdBlue bg-white rounded-md text-MdBlue font-bold mt-10"
-            type="submit"
-            // onClick={submitToReviewAnother}
-          >
-            {loading ? <>Submitting...</> : <>{` Submit ${school.schoolName} essays`}</>}
-          </button>
-        )}
-
+                {school.essays.length > 0 && school.submittedBefore && (
+                  <button
+                    className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-gray-400  border-2 py-2 border-emerald-600 bg-white rounded-md text-MdBlue font-bold mt-10"
+                    type="submit"
+                    onClick={() => submitToReviewAnother(schoolIndex)}
+                  >
+                    {loading ? (
+                      <>Submitting...</>
+                    ) : (
+                      <>{` Submit ${school.schoolName} essays`}</>
+                    )}
+                  </button>
+                )}
               </div>
             );
           })}

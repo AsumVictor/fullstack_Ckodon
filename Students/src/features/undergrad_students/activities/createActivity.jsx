@@ -44,7 +44,7 @@ function ActivityQuickReview() {
       setActivity({ ...activities });
     }
   }, [activities]);
-
+console.log(activities)
   //Add new activity
   async function addActivity() {
     const newActivity =
@@ -119,7 +119,6 @@ function ActivityQuickReview() {
             });
           }
   }
-
  
   //Handle Activity form chandge
   function HanldeActivityChange(e, index) {
@@ -255,6 +254,7 @@ async function createNewActivity() {
         user: student.id,
         status: "unresolved",
         submitted: false,
+        submittedBefore: false,
         activities: [
           {
             position: "",
@@ -321,7 +321,7 @@ async function createNewActivity() {
       });
     }
   }
-
+console.log(Activity)
   async function submitToReview(e) {
     e.preventDefault()
     try {
@@ -333,7 +333,7 @@ async function createNewActivity() {
         user: Activity.user,
       });
 
-      if (response.data) {
+      if (response?.data?.isSuccess) {
         let res = await updateActivity({
           ...Activity,
           id: Activity._id,
@@ -341,7 +341,7 @@ async function createNewActivity() {
           submittedBefore: true,
         });
 
-        if (res.data) {
+        if (res?.data?.isSuccess) {
           toast.success(`You have Submitted your activity for review.`, {
             position: "bottom-right",
             autoClose: 5000,
@@ -394,8 +394,10 @@ async function createNewActivity() {
     e.preventDefault()
     try {
       let response = await await updateReview({
-        ...userReview,
-        id: userReview._id
+        status: "unresolved",
+        document: Activity._id,
+        model: "Activity",
+        user: Activity.user,
       });
 
       if (response.data) {
@@ -894,7 +896,7 @@ async function createNewActivity() {
 
         {Activity.activities.length >= 5 && Activity.submittedBefore && (
           <button
-            className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-red-400 py-2 bg-MdBlue rounded-md text-white font-bold mt-20"
+            className="capitalize px-5 flex flex-row justify-center items-center disabled:bg-red-400 py-2 bg-red-400 rounded-md text-white font-bold mt-20"
             type="submit"
             onClick={submitToReviewAnother}
           >

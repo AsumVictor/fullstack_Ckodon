@@ -1,5 +1,6 @@
 const Recommendation = require("../models/recommendation");
 const User = require("../models/undergrad_student");
+const Review = require("../models/review");
 const asyncHandler = require("express-async-handler");
 
 //get all users
@@ -13,7 +14,7 @@ const getRecommendations = asyncHandler(async (req, res) => {
 });
 
 const addNewRecommendation = asyncHandler(async (req, res) => {
-  const { user, status, submitted, recommendations, submittedBefore } = req.body;
+  const { user, status, submitted, recommendations, submittedBefore, link } = req.body;
 
   // Confirm data
 
@@ -48,19 +49,20 @@ const addNewRecommendation = asyncHandler(async (req, res) => {
     status,
     submitted,
     recommendations,
-    submittedBefore
+    submittedBefore,
+    link
   });
 
   if (recommendation) {
     // Created
-    return res.status(201).json({ message: "Recommendation created successfully" });
+    return res.status(201).json({ message: "Recommendation created successfully", isSuccess:true });
   } else {
     return res.status(400).json({ message: "Invalid applicant data received" });
   }
 });
 
 const updateRecommendation = asyncHandler(async (req, res) => {
-  const { id, status, submitted, recommendations, submittedBefore } = req.body;
+  const { id, status, submitted, recommendations, submittedBefore, link } = req.body;
 
   const anyEmptyField = !status || !typeof submitted == 'boolean' || !Array.isArray(recommendations) || !typeof submittedBefore == 'boolean' 
 
@@ -84,10 +86,10 @@ const updateRecommendation = asyncHandler(async (req, res) => {
   recommendation.submitted = submitted;
   recommendation.recommendations = recommendations;
   recommendation.submittedBefore = submittedBefore;
-
+  recommendation.link = link
   const updatedRecommendation = await recommendation.save();
   if (updatedRecommendation) {
-    res.json({ message: `recommendation updated succesfully` });
+    res.json({ message: `recommendation updated succesfully` , isSuccess: true});
   }else{
     res.json({ message: `failed to update` });
 
@@ -104,7 +106,13 @@ const deleteRecommendation = asyncHandler(async (req, res) => {
   if (!recommendation) {
     return res.status(400).json({ message: "Recommendation not found" });
   }
+  const hasReview = await Review.findOne({documentId: recommendation._id}).exec();
 
+  if(hasReview){
+    return res.status(409).json({ message: "You can delete a submitted document" });
+
+  }
+  
   const result = await recommendation.deleteOne();
   const reply = `Recommendation has been deleted`;
 

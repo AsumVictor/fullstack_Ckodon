@@ -1,5 +1,6 @@
 const Essay = require("../models/essay");
 const User = require("../models/undergrad_student");
+const Review = require("../models/review");
 const asyncHandler = require("express-async-handler");
 
 //get all users
@@ -13,7 +14,7 @@ const getEssays = asyncHandler(async (req, res) => {
 });
 
 const addNewEssay = asyncHandler(async (req, res) => {
-  const { user, status, submitted, submittedBefore, essays, schoolName } =
+  const { user, status, submitted, submittedBefore, essays, schoolName, link } =
     req.body;
 
   // Confirm data
@@ -42,12 +43,10 @@ const addNewEssay = asyncHandler(async (req, res) => {
     .lean()
     .exec();
   if (duplicate) {
-    return res
-      .status(409)
-      .json({
-        message:
-          "It seems you have already created an essay with same school Name",
-      });
+    return res.status(409).json({
+      message:
+        "It seems you have already created an essay with same school Name",
+    });
   }
   // Create and store the new user
 
@@ -58,18 +57,19 @@ const addNewEssay = asyncHandler(async (req, res) => {
     submittedBefore,
     essays,
     schoolName,
+    link,
   });
 
   if (essay) {
     // Created
-    return res.status(201).json({ message: "Essay created successfully" });
+    return res.status(201).json({ message: "Essay created successfully", isSuccess: true });
   } else {
     return res.status(400).json({ message: "Invalid applicant data received" });
   }
 });
 
 const updateEssay = asyncHandler(async (req, res) => {
-  const { id, status, submitted, essays, schoolName } = req.body;
+  const { id, status, submitted, essays, schoolName, link, submittedBefore } = req.body;
 
   const anyEmptyField =
     !status ||
@@ -97,10 +97,12 @@ const updateEssay = asyncHandler(async (req, res) => {
   essay.submitted = submitted;
   essay.essays = essays;
   essay.schoolName = schoolName;
+  essay.link = link;
+  essay.submittedBefore = submittedBefore;
 
   const updatedEssay = await essay.save();
   if (updatedEssay) {
-    res.json({ message: `essay updated succesfully` });
+    res.json({ message: `essay updated succesfully`, isSuccess: true });
   } else {
     res.json({ message: `failed to update` });
   }
@@ -117,6 +119,12 @@ const deleteEssay = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Essay not found" });
   }
 
+  const haveReview = await Review.findOne({ documentId: essay._id });
+  if (haveReview) {
+    return res
+      .status(409)
+      .json({ message: "You cannot delete a submitted document" });
+  }
   const result = await essay.deleteOne();
   const reply = `Essay has been deleted`;
 

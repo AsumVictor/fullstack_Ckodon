@@ -13,12 +13,12 @@ const getActivities = asyncHandler(async (req, res) => {
 });
 
 const addNewActivity = asyncHandler(async (req, res) => {
-  const { user, status, submitted, activities } = req.body;
+  const { user, status, submitted, activities ,submittedBefore} = req.body;
 
   // Confirm data
 
   const anyEmptyField =
-    !user || !status || !typeof submitted == 'boolean'  || !Array.isArray(activities);
+    !user || !status || !typeof submitted == 'boolean'|| !typeof submittedBefore == 'boolean' || !Array.isArray(activities);
 
 
   if (anyEmptyField) {
@@ -48,20 +48,21 @@ const addNewActivity = asyncHandler(async (req, res) => {
     status,
     submitted,
     activities,
+    submittedBefore
   });
 
   if (activity) {
     // Created
-    return res.status(201).json({ message: "Activity created successfully" });
+    return res.status(201).json({ message: "Activity created successfully", isSuccess:true, });
   } else {
     return res.status(400).json({ message: "Invalid applicant data received" });
   }
 });
 
 const updateActivity = asyncHandler(async (req, res) => {
-  const { id, status, submitted, activities } = req.body;
+  const { id, status, submitted, activities, submittedBefore } = req.body;
 
-  const anyEmptyField = !id || !status || !typeof submitted == 'boolean' || !Array.isArray(activities);
+  const anyEmptyField = !id || !status || !typeof submitted == 'boolean' || !typeof submittedBefore == 'boolean' || !Array.isArray(activities);
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "All field must be completed" });
@@ -82,6 +83,7 @@ const updateActivity = asyncHandler(async (req, res) => {
   activity.status = status;
   activity.submitted = submitted;
   activity.activities = activities;
+  activity.submittedBefore = submittedBefore
 
   const updatedActivity = await activity.save();
   if (updatedActivity) {

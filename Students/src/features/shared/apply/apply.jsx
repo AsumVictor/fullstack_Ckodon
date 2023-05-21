@@ -136,8 +136,8 @@ export default function Apply() {
           autoplay={true}
         />
         <p className="text-2xl text-MdBlue500 font-bold text-center md:px-10 px-3">
-          Congratulations Asum! Your application has been successfully
-          submitted.
+         {` Congratulations ${formData.firstName}! Your application has been successfully
+          submitted.`}
         </p>
         <p className="w-full md:w-6/12 mt-5 text-center">
           Thank you for your interest in Ckodon. We appreciate your time and
@@ -394,6 +394,7 @@ export default function Apply() {
                     <strong> Upload your WASSCE result here </strong>
                   </div>
                 </label>
+                
                 <FileBase64
             multiple={false}
             onDone={({ base64 }) =>
