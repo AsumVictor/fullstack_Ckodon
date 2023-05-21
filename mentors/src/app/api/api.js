@@ -3,7 +3,7 @@ import axios from 'axios';
 
 
  export async function getASpecificReview(id) {
-  let response = await axios.get(`http://localhost:5000/undergradeReviews/id/${id}`)
+  let response = await axios.get(`https://ckodon-api-backend.onrender.com/undergradeReviews/id/${id}`)
   if(!response.status == 200){
     throw {
       message: "Failed to fetch Review", 
@@ -18,7 +18,7 @@ import axios from 'axios';
 }
 
 export async function getAUserReview(id) {
-  let response = await axios.get(`http://localhost:5000/undergradeReviews/user/${id}`)
+  let response = await axios.get(`https://ckodon-api-backend.onrender.com/undergradeReviews/user/${id}`)
   if(!response.status == 200){
 
 
@@ -35,7 +35,7 @@ export async function getAUserReview(id) {
 
 
 export async function getAUserHonor(id) {
-  let response = await axios.get(`http://localhost:5000/honors/user/643e93e228fe348dc275fe37`)
+  let response = await axios.get(`https://ckodon-api-backend.onrender.com/honors/user/643e93e228fe348dc275fe37`)
   if(!response.status == 200){
     throw {
       message: "Failed to fetch Honor", 
@@ -50,7 +50,7 @@ export async function getAUserHonor(id) {
 }
 
 export async function getAUserActivity(id) {
-  let response = await axios.get(`http://localhost:5000/activities/user/643e93e228fe348dc275fe37`)
+  let response = await axios.get(`https://ckodon-api-backend.onrender.com/activities/user/643e93e228fe348dc275fe37`)
   if(!response.status == 200){
     throw {
       message: "Failed to fetch Activity", 
@@ -65,7 +65,7 @@ export async function getAUserActivity(id) {
 }
 
 export async function getAUserAid(id) {
-  let response = await axios.get(`http://localhost:5000/aids/user/643e93e228fe348dc275fe37`)
+  let response = await axios.get(`https://ckodon-api-backend.onrender.com/aids/user/643e93e228fe348dc275fe37`)
   if(!response.status == 200){
     throw {
       message: "Failed to fetch Aid", 
@@ -80,7 +80,7 @@ export async function getAUserAid(id) {
 }
 
 export async function getAUserEssay(id) {
-  let response = await axios.get(`http://localhost:5000/essays/user/643e93e228fe348dc275fe37`)
+  let response = await axios.get(`https://ckodon-api-backend.onrender.com/essays/user/643e93e228fe348dc275fe37`)
   if(!response.status == 200){
     throw {
       message: "Failed to fetch Essay", 
@@ -95,7 +95,7 @@ export async function getAUserEssay(id) {
 }
 
 export async function getAUserRecommendation(id) {
-  let response = await axios.get(`http://localhost:5000/recommendations/user/643e93e228fe348dc275fe37`)
+  let response = await axios.get(`https://ckodon-api-backend.onrender.com/recommendations/user/643e93e228fe348dc275fe37`)
   if(!response.status == 200){
     throw {
       message: "Failed to fetch Recommendation", 
