@@ -1,0 +1,12 @@
+const ex = {id: "guS6Fg",
+FirstName: "Asum",
+LastName: " Victor",
+Email: "Yoguay@grtg.com",
+Password: "erg5hg676jg54g54g56h67jh",
+UserRole: "undergrad",
+Location: "Kumasi",
+DateOfBirth: " 10/21/1231",
+School: "Dadiaso Shs",
+Gender: "Male",
+Phone: "65466464356",
+updated: true,}

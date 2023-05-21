@@ -150,7 +150,7 @@ const updateApplicant = asyncHandler(async (req, res) => {
   const updatedApplicant = await applicant.save();
 
   if (applicationStatus === "admitted") {
-    const text = `
+    const message = `
     Dear ${firstName},
   
   I am pleased to inform you that your application to join the ckodon group has been accepted! Congratulations on this achievement. <br> <br>
@@ -172,7 +172,7 @@ const updateApplicant = asyncHandler(async (req, res) => {
       to: email, // receiver email
       subject: "Ckodon Application Status", // Subject line
       text: message,
-      html: HTML_TEMPLATE(text, 'Congratulations'),
+      html: HTML_TEMPLATE(message, 'Congratulations'),
     };
 
     SENDMAIL(options, (info) => {

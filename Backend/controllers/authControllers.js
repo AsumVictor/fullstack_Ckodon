@@ -1,5 +1,6 @@
 const Undergrad_student = require("../models/undergrad_student");
 const Admin = require("../models/adminModel");
+const Mentor = require('../models/mentorsModel')
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
@@ -21,6 +22,9 @@ const login = asyncHandler(async (req, res) => {
       break;
     case "undergraduate":
       Collection = Undergrad_student;
+      break;
+      case "mentor":
+      Collection = Mentor;
       break;
     default:
       return res.status(401).json({ message: "Invalid role" });
