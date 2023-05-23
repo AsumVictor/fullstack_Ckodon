@@ -29,7 +29,7 @@ function Login() {
       const handleSubmit = async (e) => {
           e.preventDefault()
           try {
-              const { accessToken } = await login({ role: 'admin', email, password }).unwrap()
+              const { accessToken } = await login({ role: 'mentor', email, password }).unwrap()
               if (accessToken) {
                 
                 dispatch(setCredentials({ accessToken }))
@@ -69,7 +69,7 @@ function Login() {
         <img src="/images/logoWhite.png" alt="admin"  style={{height:"2cm",width:"2cm"}} className="mt-5 border-2 rounded-full p-2 border-MdBlue"/>
 
         <h4 className="capitalize font-bold text-18">
-          admin
+          mentor
         </h4>
 
         {/* User role  */}

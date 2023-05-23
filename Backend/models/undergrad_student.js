@@ -71,7 +71,9 @@ const userSchema = new mongoose.Schema(
       required: true,
       default: false,
     },
+    mentors: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Mentor' }],
   },
+
   {
     timestamps: true,
   }

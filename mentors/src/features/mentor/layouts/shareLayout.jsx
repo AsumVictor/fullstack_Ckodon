@@ -100,7 +100,7 @@ function SharedLayout() {
               onClick={() => setIsDropdown1Open((prev) => !prev)}
             >
               <HiUsers />
-              {isSideNavShow && <span> Students</span>} <HiChevronDown />
+              {isSideNavShow && <span> Mentees</span>} <HiChevronDown />
             </div>
 
             {isDropdown1Open && (
@@ -175,86 +175,8 @@ function SharedLayout() {
             )}
           </div>
 
-          {/* Students dropdown to select between grauduates and undergraduates */}
-          <div className="dropdown2 rounded-md bg-blue-400 pb-2">
-            <div
-              className={`flex cursor-pointer capitalize flex-row items-center gap-3 ${
-                !isSideNavShow ? "justify-center" : "justify-start"
-              } text-white font-semibold text-18 py-1 px-2 mt-5 rounded-md ${
-                isDropdown2Open ? "text-white bg-blue-800" : null
-              } `}
-              onClick={() => setIsDropdown2Open((prev) => !prev)}
-            >
-              <HiUsers />
-              {isSideNavShow && <span clas> Applicants</span>} <HiChevronDown />
-            </div>
+        
 
-            {isDropdown2Open && (
-              <div className="px-1">
-                <NavLink
-                  to="undergraduate-applicants"
-                  id="undergraduate-applicants"
-                  onClick={() => setIsSideNavShow(false)}
-                  className={`flex capitalize flex-row items-center gap-3 mt-2 ${
-                    !isSideNavShow ? "justify-center" : "justify-start"
-                  } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-                  style={({ isActive }) => (isActive ? activeStyle : null)}
-                >
-                  <HiAcademicCap />
-                  <button className="flex flex-row items-center gap-x-2"></button>
-                  {isSideNavShow && <span> undergraduate</span>}
-                </NavLink>
-                <NavLink
-                  to="applicants-graduates"
-                  id="applicants-graduates"
-                  onClick={() => setIsSideNavShow(false)}
-                  className={`flex capitalize flex-row items-center gap-3 mt-2 ${
-                    !isSideNavShow ? "justify-center" : "justify-start"
-                  } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-                  style={({ isActive }) => (isActive ? activeStyle : null)}
-                >
-                  <ImUserTie /> {isSideNavShow && <span> Graduates</span>}
-                </NavLink>
-              </div>
-            )}
-          </div>
-
-          <NavLink
-            end
-            to="files"
-            id="files"
-            onClick={() => setIsSideNavShow(false)}
-            className={`flex capitalize flex-row items-center gap-3 ${
-              !isSideNavShow ? "justify-center" : "justify-start"
-            } text-white font-semibold text-18 mt-5 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-            style={({ isActive }) => (isActive ? activeStyle : null)}
-          >
-            <HiChartPie /> {isSideNavShow && <span> Files</span>}
-          </NavLink>
-
-          <NavLink
-            to="sat-students"
-            id="sat-students"
-            onClick={() => setIsSideNavShow(false)}
-            className={`flex capitalize flex-row items-center gap-3 mt-2 ${
-              !isSideNavShow ? "justify-center" : "justify-start"
-            } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-            style={({ isActive }) => (isActive ? activeStyle : null)}
-          >
-            <HiBookOpen /> {isSideNavShow && <span> SAT students</span>}
-          </NavLink>
-
-          <NavLink
-            to="broadcast"
-            id="broadcast"
-            onClick={() => setIsSideNavShow(false)}
-            className={`flex capitalize flex-row items-center gap-3 mt-2 ${
-              !isSideNavShow ? "justify-center" : "justify-start"
-            } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-            style={({ isActive }) => (isActive ? activeStyle : null)}
-          >
-            <HiMegaphone /> {isSideNavShow && <span> broadcast</span>}
-          </NavLink>
 
           <NavLink
             to="chat"
@@ -282,17 +204,7 @@ function SharedLayout() {
             <HiBookOpen /> {isSideNavShow && <span> Community</span>}
           </NavLink>
 
-          <NavLink
-            to="mentors"
-            id="mentors"
-            onClick={() => setIsSideNavShow(false)}
-            className={`flex capitalize flex-row items-center gap-3 mt-2 ${
-              !isSideNavShow ? "justify-center" : "justify-start"
-            } text-white font-semibold text-18 py-1 px-2 rounded-md hover:text-MdBlue hover:bg-white`}
-            style={({ isActive }) => (isActive ? activeStyle : null)}
-          >
-            <HiBookOpen /> {isSideNavShow && <span> Mentorship</span>}
-          </NavLink>
+ 
         </div>
       </SideNav>
       <ReactTooltip
@@ -304,15 +216,7 @@ function SharedLayout() {
           isSideNavShow ? "hidden" : "flex"
         } opacity-100 text-MdBlue font-bold tooltip`}
       />
-       <ReactTooltip
-        anchorId="mentor"
-        place="right"
-        variant="info"
-        content="Mentorship"
-        className={`${
-          isSideNavShow ? "hidden" : "flex"
-        } opacity-100 text-MdBlue font-bold tooltip`}
-      />
+      
       <ReactTooltip
         anchorId="undergraduate-students"
         place="right"
@@ -340,15 +244,7 @@ function SharedLayout() {
           isSideNavShow ? "hidden" : "flex"
         } opacity-100 text-MdBlue font-bold tooltip`}
       />
-      <ReactTooltip
-        anchorId="sat-students"
-        place="right"
-        variant="info"
-        content="Sat Student"
-        className={`${
-          isSideNavShow ? "hidden" : "flex"
-        } opacity-100 text-MdBlue font-bold tooltip`}
-      />
+     
       <ReactTooltip
         anchorId="chat-room"
         place="right"
@@ -358,31 +254,15 @@ function SharedLayout() {
           isSideNavShow ? "hidden" : "flex"
         } opacity-100 text-MdBlue font-bold tooltip`}
       />
-      <ReactTooltip
-        anchorId="broadcast"
-        place="right"
-        variant="info"
-        content="Broadcast"
-        className={`${
-          isSideNavShow ? "hidden" : "flex"
-        } opacity-100 text-MdBlue font-bold tooltip`}
-      />
+     
 
-<ReactTooltip
-        anchorId="files"
-        place="right"
-        variant="info"
-        content="Files"
-        className={`${
-          isSideNavShow ? "hidden" : "flex"
-        } opacity-100 text-MdBlue font-bold tooltip`}
-      />
+
 
       <div className={`main ${isSideNavShow ? "toggle-space" : null}`}>
         <Navbar toggleSidenav={toogleSideNav} isShow={isSideNavShow}>
           {/* Ckodon or admin text */}
         <div className="hidden md:flex flex-row capitalize items-center gap-x-1">
-          <span className="text-emerald-700 font-bold">Admin:</span>
+          <span className="text-emerald-700 font-bold">Mentor:</span>
           <span>{`${admin.firstName} ${admin.lastName}`}</span>
         </div>
           {/* Theme and User profile */}

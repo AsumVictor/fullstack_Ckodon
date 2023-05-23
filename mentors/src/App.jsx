@@ -12,25 +12,25 @@ import Login from "./features/shared/login/login";
 import UnderConstruction from "./components/indications/underConstruction";
 import PersistLogin from "./features/auth/persistLogin";
 import ErrorPage from "./components/indications/ErrorPage";
-//PAges FOR ADMIN
-import SharedLayout from "./features/admin/layouts/shareLayout";
-import Dashboard from "./features/admin/dashboard/dashboard";
-import AllStudent from "./features/admin/currentStudents/undergraduate/allStudent";
-import StudentDetails from "./features/admin/currentStudents/undergraduate/studentDetails";
-import AllApplicants from "./features/admin/applicants/undergraduate/allApplicants";
-import ApplicantDetails from "./features/admin/applicants/undergraduate/applicantsDetails";
-import UndergraduateReviews from "./features/admin/reviews/undergraduates/reviews";
-import UndergraduateReviewDetails from "./features/admin/reviews/undergraduates/reviewDetails";
-import StudentDocDetails_ug from "./features/admin/currentStudents/undergraduate/studentDocDetails";
+//PAges FOR MENTOR
+import SharedLayout from "./features/mentor/layouts/shareLayout";
+import Dashboard from "./features/mentor/dashboard/dashboard";
+import AllStudent from "./features/mentor/currentStudents/undergraduate/allStudent";
+import StudentDetails from "./features/mentor/currentStudents/undergraduate/studentDetails";
+import AllApplicants from "./features/mentor/applicants/undergraduate/allApplicants";
+import ApplicantDetails from "./features/mentor/applicants/undergraduate/applicantsDetails";
+import UndergraduateReviews from "./features/mentor/reviews/undergraduates/reviews";
+import UndergraduateReviewDetails from "./features/mentor/reviews/undergraduates/reviewDetails";
+import StudentDocDetails_ug from "./features/mentor/currentStudents/undergraduate/studentDocDetails";
 import RequireAuth from "./features/auth/requireAuth";
 
 
 //UNdergradute Students
-import UndergraduteStudentDetailLayout from "./features/admin/layouts/undergraduteStudentDetailLayout";
-import SatPage from "./features/admin/currentStudents/undergraduate/satPage";
-import StudentDoc from "./features/admin/currentStudents/undergraduate/studentDoc";
+import UndergraduteStudentDetailLayout from "./features/mentor/layouts/undergraduteStudentDetailLayout";
+import SatPage from "./features/mentor/currentStudents/undergraduate/satPage";
+import StudentDoc from "./features/mentor/currentStudents/undergraduate/studentDoc";
 
-import PostFile from "./features/admin/files/PostFile";
+import PostFile from "./features/mentor/files/PostFile";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -40,7 +40,7 @@ const router = createBrowserRouter(
       <Route path="/login" element={<Login />} />
       <Route path="*" element={<ErrorPage/>} />
 
-      {/* -------------------ROUTES ADMIN---------------------- */}
+      {/* -------------------ROUTES MENTOR---------------------- */}
       <Route element={<PersistLogin />}>
         <Route element={<RequireAuth />}>
           <Route element={<SharedLayout />}>

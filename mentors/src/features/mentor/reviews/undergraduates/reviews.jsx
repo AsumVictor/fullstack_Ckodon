@@ -27,7 +27,7 @@ function UndergraduateReviews() {
   } = useGetReviewsQuery();
 
   let content;
-  if (isLoading) content = <CoverLoaderMedium/>;
+  if (isLoading) content = < CoverLoaderMedium />
 
   if (isError) {
     if (error?.status == 400) {
@@ -37,7 +37,7 @@ function UndergraduateReviews() {
 
   if (isSuccess) {
     const { ids } = reviews;
-
+   
     const tableContent = ids?.length
       ? ids.map((reviewsId, index) => (
           <Review key={reviewsId} reviewId={reviewsId} index={index + 1} />
@@ -45,7 +45,7 @@ function UndergraduateReviews() {
       : null;
 
     content = (
-      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400  shadow-md rounded-md mt-10 overflow-y-auto">
+      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400  shadow-md rounded-md mt-10 overflow-x-auto overflow-y-auto">
         <thead className="text-xs text-gray-700 uppercase bg-gray-200 ">
           <tr>
             <th scope="col" className="px-6 py-3 tabel-hide">
@@ -60,7 +60,7 @@ function UndergraduateReviews() {
             <th scope="col" className="px-6 py-3 tabel-hide">
               deadline
             </th>
-            <th scope="col" className="px-6 py-3">
+            <th scope="col" className="px-6 py-3 tabel-hide">
               submitted by
             </th>
             <th scope="col" className="px-6 py-3"></th>
@@ -92,7 +92,7 @@ function UndergraduateReviews() {
   return (
     <Page>
       <h1 className="text-center font-bold text-MdBlue text-20">
-        All document availble for review
+       Document from your mentees
       </h1>
 
       <div className="flex felx-row justify-between items-center w-full flex-wrap gap-y-2 mt-5 z-10 sticky top-0 bg-white py-2">

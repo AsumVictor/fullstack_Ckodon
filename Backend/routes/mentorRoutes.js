@@ -3,7 +3,7 @@ const router = express.Router();
 const mentorController = require('../controllers/mentorController')
 const verifyJWT = require('../middleware/verifyJWT')
 
-// router.use(verifyJWT)
+ router.use(verifyJWT)
 router.route("/")
 .get(mentorController.getAllMentors)
 .post(mentorController.addNewMentor)

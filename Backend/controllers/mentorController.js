@@ -186,7 +186,7 @@ const getSpecificMentor = asyncHandler(async (req, res) => {
   if (!mentor) {
     return res.status(400).json({ message: "No mentor found", isEmpty: true });
   }
-
+const mentees = []
   const mentorWithStudents = await Promise.all(
     mentor.students.map(async (studentId) => {
       const student = await Student.findById(studentId)
@@ -198,14 +198,11 @@ const getSpecificMentor = asyncHandler(async (req, res) => {
           return res.status(404).json({ error: "student not found" });
         }
 
-      return {
-        ...mentor,
-        mentee: { ...student },
-      };
+        mentees.push(student)
+    
     })
   );
-
-  return res.json(mentorWithStudents);
+  return res.json({...mentor, mentees: mentees});
  
 });
 
@@ -213,37 +210,12 @@ const getSpecificMentor = asyncHandler(async (req, res) => {
 const asignMentorMentee = asyncHandler(async (req, res) => {
  
   const {
-    id,
-    firstName,
-    lastName,
-    email,
-    residence,
-    students,
-    role,
-    school,
-    password,
-    isActive,
-    gender,
-    phone,
     mentorId,
     studentId,
-    avatar,
   } = req.body;
 
-  const anyEmptyField =
-    !id ||
-    !firstName ||
-    !lastName ||
-    !email ||
-    !residence ||
-    !school ||
-    !mentorId ||
-    !studentId ||
-    !isActive ||
-    !Array.isArray(students)
 
-
-  if (anyEmptyField) {
+  if (!mentorId || !studentId ) {
     return res.status(400).json({ message: "You must filled the form" });
   }
 
@@ -257,33 +229,29 @@ const asignMentorMentee = asyncHandler(async (req, res) => {
   if (!student) {
     return res.status(400).json({ message: "student not found" });
   }
-  //check duplicate
-  const duplicate = await Mentor.findOne({ email }).lean().exec();
-  //allow   original mentor
-  if (duplicate && duplicate?._id.toString() !== id) {
-    return res.status(409).json({ message: "Duplicate email" });
-  }
+
 
 let currentStudent = mentor.students
-currentStudent.push(studentId)
-  mentor.firstName = mentor.firstName;
-  mentor.lastName =  mentor.lastName;
-  mentor.email = mentor.email;
-  mentor.residence = mentor.residence;
-  mentor.school = mentor.school;
-  mentor.isActive = mentor.isActive;
-  mentor.role = mentor.role;
-  mentor.gender = mentor.gender;
-  mentor.phone = mentor.phone;
-  mentor.avatar = mentor.avatar;
-  mentor.students = currentStudent
-  if (password) {
-    //hash
-    mentor.password = await bcrypt.hash(password, 10); // salt rounds
-  }
+let currentMentor = student.mentors
+let alreadyAsignStudent = currentStudent.includes(studentId)
+let alreadyAsignMentor = currentMentor.includes(mentorId)
+if(alreadyAsignStudent || alreadyAsignMentor){
+  return res.status(409).json({ message: "It seems you have already asign this student to the mentor" });
+}
+ currentStudent.push(studentId)
+ currentMentor.push(mentorId)
+
+   mentor.students = currentStudent
+   student.mentors = currentMentor
 
   const updatedMentor = await mentor.save();
-  res.json({ message: `${updatedMentor.firstName} updated succesfully`, isSuccess: true, });
+  const updatedStudent = await student.save();
+  if(updatedMentor && updatedStudent){
+
+    res.json({ message: `You have succcessfully asign ${student.firstName} to mentor ${mentor.firstName} ${mentor.lastName}`, isSuccess: true, });
+  }else{
+    return resres.status(400).json({ message: `Invalid data input`, isSuccess: false, });
+  }
 
 
  

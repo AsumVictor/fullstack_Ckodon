@@ -1,6 +1,4 @@
- 
-
-import { useSelector } from 'react-redux'
+ import { useSelector } from 'react-redux'
 import { selectCurrentToken } from "../features/auth/authSlice"
 import jwtDecode from 'jwt-decode'
 
@@ -9,8 +7,8 @@ const useAuth = () => {
 
     if (token) {
         const decoded = jwtDecode(token)
-        const admin = {...decoded.UserInfo}
-        return { ...admin}
+        const mentor = {...decoded.UserInfo}
+        return { ...mentor}
     }
 
     return {roles: '', }

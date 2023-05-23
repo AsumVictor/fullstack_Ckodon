@@ -99,6 +99,9 @@ const refresh = (req, res) => {
         case "undergraduate":
           Collection = Undergrad_student;
           break;
+          case "mentor":
+            Collection = Mentor;
+            break;
         default:
           return res.status(401).json({ message: "Invalid role" });
       }

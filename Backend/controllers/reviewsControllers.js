@@ -42,7 +42,7 @@ const getAllReviews = asyncHandler(async (req, res) => {
            return res.status(400).json({ error: "Invalid document model" });
        }
        const document = await Document.findById(review.documentId);
-       console.log(document)
+
    
         if (!document) {
           return res.status(404).json({ error: "Document not found" });
