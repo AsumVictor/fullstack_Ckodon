@@ -3,11 +3,13 @@ import { useSelector } from "react-redux";
 import { selectReviewById } from "../../../../apiSlice/reviewsApiSlice";
 import { Link } from "react-router-dom";
 import { HiBadgeCheck } from "react-icons/hi";
-
+import useAdmin from '../../../../hooks/useAdmin'
 
 const Review = ({ reviewId, index }) => {
+  const {data: mentor} = useAdmin()
   const review = useSelector((state) => selectReviewById(state, reviewId))
-  if (review) {
+
+  if (review && mentor.students.includes(review.student._id)) {
     const reviewTrContent = (
         <tr className="bg-white cursor-pointer border-2 dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
         <td className="px-6 py-4 tabel-hide">{index}</td>
@@ -36,7 +38,7 @@ const Review = ({ reviewId, index }) => {
                          : null
         }</td>
         <td className="px-6 py-4 tabel-hide">{review.deadline}</td>
-        <td className="px-6 py-4 ">{`${review.student.firstName} ${review.student.lastName}`}</td>
+        <td className="px-6 py-4 tabel-hide">{`${review.student.firstName} ${review.student.lastName}`}</td>
         <td className="px-6 py-4 text-right">
           <Link
             to={`${review.id}`}

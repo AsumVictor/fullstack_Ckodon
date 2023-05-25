@@ -2,6 +2,8 @@ const Mentor = require("../models/mentorsModel");
 const Student = require("../models/undergrad_student");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
+const HTML_TEMPLATE = require("../notifications/email/htmlTemplates.js");
+const SENDMAIL = require("../notifications/email/mail.js");
 
 //asign mentor 
 //list all metors students
@@ -175,6 +177,41 @@ const deleteMentor = asyncHandler(async (req, res) => {
   res.json(reply);
 });
 
+const inviteMentor = asyncHandler(async (req, res) => {
+   const { email } = req.body;
+   const mentor = await Mentor.findOne({email: email})
+     .select("-password")
+     .lean()
+   // If no mentors
+   if (mentor) {
+     return res.status(400).json({ message: "You have already invited this mentor", isError: true });
+   }
+ 
+     const message = `
+       Congratulations Dear! Welcome to Ckodon.
+ 
+       Thank you for your interest in Mentor role. We are inviting you as a mentor.
+       Please confirm this offer by filling the form <a href='https://google.com'>here</a> here
+       `;
+     const options = {
+       from: "Mentorship invitation <iamasum369@outlook.com>", 
+       to: email, 
+       subject: "Mentorship invitation from Ckodon", 
+       text: message,
+       html: HTML_TEMPLATE(message, 'Mentorship'),
+     };
+ 
+     let {isSuccess} = await SENDMAIL(options, (info) => {
+       console.log("Email sent successfully");
+       console.log("MESSAGE ID: ", info.messageId);
+     });
+     
+     if(isSuccess){
+      return res.status(200).json({message: `You have successfuly invited a ${email}`, isSuccess: true});
+     }else{
+      return res.status(400).json({message: `Unable to invite ${email}. Try again later`, isError: true});
+     }
+ });
 
 const getSpecificMentor = asyncHandler(async (req, res) => {
  
@@ -186,7 +223,7 @@ const getSpecificMentor = asyncHandler(async (req, res) => {
   if (!mentor) {
     return res.status(400).json({ message: "No mentor found", isEmpty: true });
   }
-
+const mentees = []
   const mentorWithStudents = await Promise.all(
     mentor.students.map(async (studentId) => {
       const student = await Student.findById(studentId)
@@ -198,52 +235,27 @@ const getSpecificMentor = asyncHandler(async (req, res) => {
           return res.status(404).json({ error: "student not found" });
         }
 
-      return {
-        ...mentor,
-        mentee: { ...student },
-      };
+        mentees.push(student)
+    
     })
   );
-
-  return res.json(mentorWithStudents);
+  return res.json({...mentor, mentees: mentees});
  
 });
+
+
+
 
 
 const asignMentorMentee = asyncHandler(async (req, res) => {
  
   const {
-    id,
-    firstName,
-    lastName,
-    email,
-    residence,
-    students,
-    role,
-    school,
-    password,
-    isActive,
-    gender,
-    phone,
     mentorId,
     studentId,
-    avatar,
   } = req.body;
 
-  const anyEmptyField =
-    !id ||
-    !firstName ||
-    !lastName ||
-    !email ||
-    !residence ||
-    !school ||
-    !mentorId ||
-    !studentId ||
-    !isActive ||
-    !Array.isArray(students)
 
-
-  if (anyEmptyField) {
+  if (!mentorId || !studentId ) {
     return res.status(400).json({ message: "You must filled the form" });
   }
 
@@ -257,33 +269,29 @@ const asignMentorMentee = asyncHandler(async (req, res) => {
   if (!student) {
     return res.status(400).json({ message: "student not found" });
   }
-  //check duplicate
-  const duplicate = await Mentor.findOne({ email }).lean().exec();
-  //allow   original mentor
-  if (duplicate && duplicate?._id.toString() !== id) {
-    return res.status(409).json({ message: "Duplicate email" });
-  }
+
 
 let currentStudent = mentor.students
-currentStudent.push(studentId)
-  mentor.firstName = mentor.firstName;
-  mentor.lastName =  mentor.lastName;
-  mentor.email = mentor.email;
-  mentor.residence = mentor.residence;
-  mentor.school = mentor.school;
-  mentor.isActive = mentor.isActive;
-  mentor.role = mentor.role;
-  mentor.gender = mentor.gender;
-  mentor.phone = mentor.phone;
-  mentor.avatar = mentor.avatar;
-  mentor.students = currentStudent
-  if (password) {
-    //hash
-    mentor.password = await bcrypt.hash(password, 10); // salt rounds
-  }
+let currentMentor = student.mentors
+let alreadyAsignStudent = currentStudent.includes(studentId)
+let alreadyAsignMentor = currentMentor.includes(mentorId)
+if(alreadyAsignStudent || alreadyAsignMentor){
+  return res.status(409).json({ message: "It seems you have already asign this student to the mentor" });
+}
+ currentStudent.push(studentId)
+ currentMentor.push(mentorId)
+
+   mentor.students = currentStudent
+   student.mentors = currentMentor
 
   const updatedMentor = await mentor.save();
-  res.json({ message: `${updatedMentor.firstName} updated succesfully`, isSuccess: true, });
+  const updatedStudent = await student.save();
+  if(updatedMentor && updatedStudent){
+
+    res.json({ message: `You have succcessfully asign ${student.firstName} to mentor ${mentor.firstName} ${mentor.lastName}`, isSuccess: true, });
+  }else{
+    return resres.status(400).json({ message: `Invalid data input`, isSuccess: false, });
+  }
 
 
  
@@ -298,5 +306,6 @@ module.exports = {
   updateMentor,
   deleteMentor,
   getSpecificMentor,
-  asignMentorMentee
+  asignMentorMentee,
+  inviteMentor
 };

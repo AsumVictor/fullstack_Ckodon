@@ -36,6 +36,7 @@ const getSpecificUndergrad = asyncHandler(async (req, res) => {
 const addNewUser = asyncHandler(async (req, res) => {
   const {
     firstName,
+    mentors,
     lastName,
     email,
     residence,
@@ -62,7 +63,9 @@ const addNewUser = asyncHandler(async (req, res) => {
     !password ||
     !gender ||
     typeof updatedStatus !== 'boolean' ||
-    typeof isActive !== "boolean";
+    typeof isActive !== "boolean" ||
+    !Array.isArray(mentors)
+
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "all fileds are required" });
@@ -93,6 +96,7 @@ const addNewUser = asyncHandler(async (req, res) => {
     bio,
     intendedMajor,
     updatedStatus,
+    mentors,
   };
 
   //create and store new user
@@ -126,6 +130,7 @@ const updateUser = asyncHandler(async (req, res) => {
     bio,
     intendedMajor,
     updatedStatus,
+    mentors
   } = req.body;
   const anyEmptyField =
     !id ||
@@ -135,7 +140,8 @@ const updateUser = asyncHandler(async (req, res) => {
     !residence ||
     !school ||
     typeof isActive !== "boolean" ||
-    typeof updatedStatus !== 'boolean'
+    typeof updatedStatus !== 'boolean' || 
+    !Array.isArray(mentors)
 
   if (anyEmptyField) {
     return res.status(400).json({ message: "You must filled the form" });
@@ -168,6 +174,9 @@ const updateUser = asyncHandler(async (req, res) => {
   user.bio = bio;
   user.intendedMajor = intendedMajor;
   user.updatedStatus = updatedStatus;
+  user.mentors = mentors;
+
+
   if (newPassword && oldPassword) {
     //hash
     const passMath = await bcrypt.compare(oldPassword, user.password);

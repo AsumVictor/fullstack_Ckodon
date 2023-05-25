@@ -11,7 +11,7 @@ const initialState = adminsAdapter.getInitialState()
 export const adminsApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         getAdmins: builder.query({
-            query: () => '/undergrads',
+            query: () => '/mentors',
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
@@ -34,7 +34,7 @@ export const adminsApiSlice = apiSlice.injectEndpoints({
         
         addNewAdmin: builder.mutation({
             query: initialAdminData => ({
-                url: '/admins',
+                url: '/mentors',
                 method: 'POST',
                 body: {
                     ...initialAdminData,
@@ -46,7 +46,7 @@ export const adminsApiSlice = apiSlice.injectEndpoints({
         }),
         updateAdmin: builder.mutation({
             query: initialAdminData => ({
-                url: '/admins',
+                url: '/mentors',
                 method: 'PATCH',
                 body: {
                     ...initialAdminData,
@@ -58,7 +58,7 @@ export const adminsApiSlice = apiSlice.injectEndpoints({
         }),
         deleteAdmin: builder.mutation({
             query: ({ id }) => ({
-                url: `/admins`,
+                url: `/mentors`,
                 method: 'DELETE',
                 body: { id }
             }),
@@ -68,7 +68,7 @@ export const adminsApiSlice = apiSlice.injectEndpoints({
         }),
         getAdmin: builder.query({
             query: (id) => ({
-              url: `/admins/${id}`,
+              url: `/mentors/${id}`,
               method: "GET",
             }),
             providesTags:['Admin'],

@@ -49,7 +49,7 @@ const login = asyncHandler(async (req, res) => {
     },
 
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: "15m" }
+    { expiresIn: "59m" }
   );
 
   const refreshToken = jwt.sign(
@@ -61,7 +61,7 @@ const login = asyncHandler(async (req, res) => {
       },
     },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: "2d" }
+    { expiresIn: "5d" }
   );
 
   // Create secure cookie with refresh token
@@ -69,7 +69,7 @@ const login = asyncHandler(async (req, res) => {
     httpOnly: true, //accessible only by web server
     // secure: true, //https
     sameSite: "Lax", //cross-site cookie
-    maxAge: 2 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
+    maxAge: 7 * 24 * 60 * 60 * 1000, //cookie expiry: set to match rT
   });
 
   // Send accessToken containing email and roles
@@ -99,6 +99,9 @@ const refresh = (req, res) => {
         case "undergraduate":
           Collection = Undergrad_student;
           break;
+          case "mentor":
+            Collection = Mentor;
+            break;
         default:
           return res.status(401).json({ message: "Invalid role" });
       }

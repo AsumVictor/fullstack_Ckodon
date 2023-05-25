@@ -16,6 +16,7 @@ import User from "./user";
 import { useGetUsersQuery } from "../../../../apiSlice/usersApiSlice";
 import NoContent from "../../../../components/indications/noContent";
 import { CoverLoaderMedium } from "../../../../components/loaders/loader";
+import useAdmin from '../../../../hooks/useAdmin'
 
 function AllStudent() {
   const {
@@ -25,8 +26,10 @@ function AllStudent() {
     isError,
     error,
   } = useGetUsersQuery();
+  const {data:mentor, isLoading: gettingMentor} = useAdmin()
+
   let content;
-  if (isLoading) content = < CoverLoaderMedium />
+  if (isLoading || gettingMentor) content = < CoverLoaderMedium />
 
   if (isError) {
      if(error?.status == 400){
@@ -38,13 +41,18 @@ function AllStudent() {
   }
 
 
-  if (isSuccess) {
+  if (isSuccess && mentor) {
     const { ids } = users;
-
-    const tableContent = ids?.length
-      ? ids.map((userId, index) => <User key={userId} userId={userId} index={index + 1}/>)
-      : null
-
+    const tableContent = ids.map((userId,index)=>{
+      if (mentor.students.includes(userId)) {
+        return (
+          <User key={userId} userId={userId} index={index + 1}/>
+        )
+      }else{
+        return null
+      }
+    })
+   
     content = (
         <table className="w-full text-sm text-left text-gray-500 mt-14 dark:text-gray-400 shadow-md rounded-lg">
           <thead className="text-xs text-gray-700 uppercase bg-gray-200 ">
@@ -72,7 +80,7 @@ function AllStudent() {
   return (
     <Page>
       <h1 className="text-center font-bold text-MdBlue text-18">
-        All enrolled undergraduate students
+        All Students assigned to you
       </h1>
 
       <div className="flex felx-row justify-between items-center w-full flex-wrap gap-y-2 mt-5 sticky top-0">

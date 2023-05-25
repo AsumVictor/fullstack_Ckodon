@@ -12,9 +12,10 @@ const transporter = nodemailer.createTransport({
   const SENDMAIL = async (mailDetails, callback) => {
     try {
       const info = await transporter.sendMail(mailDetails)
-      callback(info);
+      return {...info, isSuccess: true}
     } catch (error) {
       console.log(error);
+      return {...error, isError: true}
     } 
   };
 
