@@ -10,10 +10,14 @@ router.route("/")
 .patch(mentorController.updateMentor)
 .delete(mentorController.deleteMentor);
 
-router.route("/:id")
-.get(mentorController.getSpecificMentor)
+router.route("/invite")
+.post(mentorController.inviteMentor)
 
 router.route("/asign")
 .patch(mentorController.asignMentorMentee)
+
+router.route("/:id")
+.get(mentorController.getSpecificMentor)
+
 
 module.exports = router

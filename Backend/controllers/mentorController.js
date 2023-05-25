@@ -2,6 +2,8 @@ const Mentor = require("../models/mentorsModel");
 const Student = require("../models/undergrad_student");
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
+const HTML_TEMPLATE = require("../notifications/email/htmlTemplates.js");
+const SENDMAIL = require("../notifications/email/mail.js");
 
 //asign mentor 
 //list all metors students
@@ -175,6 +177,41 @@ const deleteMentor = asyncHandler(async (req, res) => {
   res.json(reply);
 });
 
+const inviteMentor = asyncHandler(async (req, res) => {
+   const { email } = req.body;
+   const mentor = await Mentor.findOne({email: email})
+     .select("-password")
+     .lean()
+   // If no mentors
+   if (mentor) {
+     return res.status(400).json({ message: "You have already invited this mentor", isError: true });
+   }
+ 
+     const message = `
+       Congratulations Dear! Welcome to Ckodon.
+ 
+       Thank you for your interest in Mentor role. We are inviting you as a mentor.
+       Please confirm this offer by filling the form <a href='https://google.com'>here</a> here
+       `;
+     const options = {
+       from: "Mentorship invitation <iamasum369@outlook.com>", 
+       to: email, 
+       subject: "Mentorship invitation from Ckodon", 
+       text: message,
+       html: HTML_TEMPLATE(message, 'Mentorship'),
+     };
+ 
+     let {isSuccess} = await SENDMAIL(options, (info) => {
+       console.log("Email sent successfully");
+       console.log("MESSAGE ID: ", info.messageId);
+     });
+     
+     if(isSuccess){
+      return res.status(200).json({message: `You have successfuly invited a ${email}`, isSuccess: true});
+     }else{
+      return res.status(400).json({message: `Unable to invite ${email}. Try again later`, isError: true});
+     }
+ });
 
 const getSpecificMentor = asyncHandler(async (req, res) => {
  
@@ -205,6 +242,9 @@ const mentees = []
   return res.json({...mentor, mentees: mentees});
  
 });
+
+
+
 
 
 const asignMentorMentee = asyncHandler(async (req, res) => {
@@ -266,5 +306,6 @@ module.exports = {
   updateMentor,
   deleteMentor,
   getSpecificMentor,
-  asignMentorMentee
+  asignMentorMentee,
+  inviteMentor
 };
