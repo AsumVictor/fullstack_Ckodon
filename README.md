@@ -5,5 +5,5 @@ This is a project for Ckodon SAT consultant.
 
 - [Student Portal](https://student-ckodon.onrender.com/)
 - [Admin Portal](https://admin-ckodon.onrender.com/)
-- [Apply to Ckodon](https://student-ckodon.onrender.com/)
+- [Apply to Ckodon](https://student-ckodon.onrender.com/apply)
 - [Mentor Portal](https://student-ckodon.onrender.com/)
