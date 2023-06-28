@@ -31,6 +31,7 @@ export function CustomToolkit(props) {
         <div
           id={props.id}
           className="w-10 cursor-pointer h-10 flex items-center justify-center shadow-md rounded-2xl"
+          onClick={props.action}
         >
           <div className="text-2xl">
             {props.icon}

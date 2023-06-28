@@ -69,6 +69,13 @@ export const usersApiSlice = apiSlice.injectEndpoints({
             }),
             providesTags:['SpecificStudent'],
           }),
+          getStudents: builder.query({
+            query: () => ({
+              url: `/undergrads`,
+              method: "GET",
+            }),
+            providesTags:['User'],
+          }),
     }),
 })
 
@@ -77,7 +84,8 @@ export const {
     useAddNewUserMutation,
     useUpdateUserMutation,
     useDeleteUserMutation,
-    useGetStudentQuery
+    useGetStudentQuery,
+    useGetStudentsQuery
 } = usersApiSlice
 
 // returns the query result object

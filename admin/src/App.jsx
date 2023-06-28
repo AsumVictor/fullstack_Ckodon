@@ -32,6 +32,10 @@ import StudentDoc from "./features/admin/currentStudents/undergraduate/studentDo
 
 import PostFile from "./features/admin/files/PostFile";
 
+//mentor 
+import AllMentors from "./features/admin/mentors/allMentors";
+import DetailMentor from "./features/admin/mentors/detailMentor";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -90,6 +94,8 @@ const router = createBrowserRouter(
             <Route path="sat-students" element={<UnderConstruction />} />
             <Route path="broadcast" element={<UnderConstruction />} />
             <Route path="chat" element={<UnderConstruction />} />
+            <Route path="mentors" element={<AllMentors />} />
+            <Route path="mentors/:id" element={<DetailMentor />} />
           </Route>
         </Route>
       </Route>
